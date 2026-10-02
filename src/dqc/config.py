@@ -8,7 +8,8 @@ from pathlib import Path
 
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+# DQC_ROOT is needed when the package is installed (not editable), e.g. inside the Docker image
+ROOT = Path(os.environ.get("DQC_ROOT", Path(__file__).resolve().parents[2]))
 DATA_DIR = Path(os.environ.get("DQC_DATA_DIR", ROOT / "data"))
 RAW_DIR = DATA_DIR / "raw"
 REFERENCE_DIR = DATA_DIR / "reference"

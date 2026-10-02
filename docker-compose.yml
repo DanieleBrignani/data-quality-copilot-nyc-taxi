@@ -26,6 +26,8 @@ services:
       DQC_COPILOT_DSN: postgresql://dqc_copilot:copilot@postgres:5432/dqc
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     ports: ["${DQC_API_PORT:-8000}:8000"]
+    volumes:
+      - ./models:/app/models:ro
     depends_on:
       postgres: {condition: service_healthy}
 

@@ -1,4 +1,5 @@
 {
+  "fare_model_version": 1,
   "partition": "yellow_2025-01",
   "clean_real_records": 200000,
   "injected_error_rows": 4363,
@@ -284,21 +285,98 @@
         "swapped_zones": 0.0055,
         "tip_spike": 0.1543
       }
+    },
+    "fare_model": {
+      "tp": 939,
+      "fp": 271,
+      "fn": 3424,
+      "tn": 195729,
+      "precision": 0.776,
+      "recall": 0.2152,
+      "false_positive_rate": 0.001383,
+      "flagged": 1210,
+      "recall_by_error_type": {
+        "distance_unit_error": 0.5824,
+        "distance_x5": 0.0579,
+        "dropoff_before_pickup": 0.1071,
+        "exact_duplicate": 0.0,
+        "fare_over_cap": 1.0,
+        "fare_x10": 1.0,
+        "invalid_payment_type": 0.0027,
+        "negative_fare": 0.8269,
+        "null_mandatory": 0.0027,
+        "passenger_overflow": 0.0,
+        "stale_timestamp": 0.0027,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.0
+      }
+    },
+    "rules_critical+fare_model": {
+      "tp": 3295,
+      "fp": 271,
+      "fn": 1068,
+      "tn": 195729,
+      "precision": 0.924,
+      "recall": 0.7552,
+      "false_positive_rate": 0.001383,
+      "flagged": 3566,
+      "recall_by_error_type": {
+        "distance_unit_error": 1.0,
+        "distance_x5": 0.0579,
+        "dropoff_before_pickup": 1.0,
+        "exact_duplicate": 1.0,
+        "fare_over_cap": 1.0,
+        "fare_x10": 1.0,
+        "invalid_payment_type": 1.0,
+        "negative_fare": 1.0,
+        "null_mandatory": 1.0,
+        "passenger_overflow": 1.0,
+        "stale_timestamp": 1.0,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.0
+      }
+    },
+    "rules_critical+iqr_log+fare_model": {
+      "tp": 3398,
+      "fp": 622,
+      "fn": 965,
+      "tn": 195378,
+      "precision": 0.8453,
+      "recall": 0.7788,
+      "false_positive_rate": 0.003173,
+      "flagged": 4020,
+      "recall_by_error_type": {
+        "distance_unit_error": 1.0,
+        "distance_x5": 0.1763,
+        "dropoff_before_pickup": 1.0,
+        "exact_duplicate": 1.0,
+        "fare_over_cap": 1.0,
+        "fare_x10": 1.0,
+        "invalid_payment_type": 1.0,
+        "negative_fare": 1.0,
+        "null_mandatory": 1.0,
+        "passenger_overflow": 1.0,
+        "stale_timestamp": 1.0,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.1653
+      }
     }
   },
   "runtime_s": {
-    "rules": 0.205,
-    "iqr": 0.05,
-    "iqr_log": 0.051,
-    "zscore": 0.03,
-    "isolation_forest": 2.002
+    "rules": 0.102,
+    "iqr": 0.041,
+    "iqr_log": 0.061,
+    "zscore": 0.014,
+    "isolation_forest": 1.763,
+    "fare_model": 0.171
   },
   "rows_per_sec": {
-    "rules": 979713,
-    "iqr": 4017811,
-    "iqr_log": 3949176,
-    "zscore": 6598659,
-    "isolation_forest": 100077
+    "rules": 1962233,
+    "iqr": 4829479,
+    "iqr_log": 3288769,
+    "zscore": 14355118,
+    "isolation_forest": 113633,
+    "fare_model": 1171378
   },
   "seed": 42
 }

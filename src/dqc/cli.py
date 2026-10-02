@@ -39,6 +39,9 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("copilot", help="generate audited suggestions for the latest incidents")
     s.add_argument("--limit", type=int, default=5)
 
+    s = sub.add_parser("ml", help="expected-fare model: train | score")
+    s.add_argument("action", choices=["train", "score"])
+
     sub.add_parser("report", help="write reports/results.json + results.md from the warehouse")
 
     a = p.parse_args(argv)
@@ -77,6 +80,10 @@ def main(argv: list[str] | None = None) -> int:
     elif a.cmd == "copilot":
         from dqc import copilot
         print(json.dumps(copilot.explain_latest(a.limit), indent=2, default=str))
+    elif a.cmd == "ml":
+        from dqc.ml import fare_model
+        res = fare_model.train() if a.action == "train" else fare_model.score_partitions()
+        print(json.dumps(res, indent=2, default=str))
     elif a.cmd == "report":
         from dqc import report
         print(report.write())

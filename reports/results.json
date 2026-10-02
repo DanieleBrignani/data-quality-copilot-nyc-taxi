@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T19:07:32+00:00",
+  "generated_at": "2026-10-02T20:45:34+00:00",
   "totals": {
     "partitions": 4,
     "records_processed": 14367509,
@@ -1145,6 +1145,7 @@
     }
   ],
   "benchmark": {
+    "fare_model_version": 1,
     "partition": "yellow_2025-01",
     "clean_real_records": 200000,
     "injected_error_rows": 4363,
@@ -1430,21 +1431,98 @@
           "swapped_zones": 0.0055,
           "tip_spike": 0.1543
         }
+      },
+      "fare_model": {
+        "tp": 939,
+        "fp": 271,
+        "fn": 3424,
+        "tn": 195729,
+        "precision": 0.776,
+        "recall": 0.2152,
+        "false_positive_rate": 0.001383,
+        "flagged": 1210,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.5824,
+          "distance_x5": 0.0579,
+          "dropoff_before_pickup": 0.1071,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 0.0027,
+          "negative_fare": 0.8269,
+          "null_mandatory": 0.0027,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0027,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "rules_critical+fare_model": {
+        "tp": 3295,
+        "fp": 271,
+        "fn": 1068,
+        "tn": 195729,
+        "precision": 0.924,
+        "recall": 0.7552,
+        "false_positive_rate": 0.001383,
+        "flagged": 3566,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.0579,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "rules_critical+iqr_log+fare_model": {
+        "tp": 3398,
+        "fp": 622,
+        "fn": 965,
+        "tn": 195378,
+        "precision": 0.8453,
+        "recall": 0.7788,
+        "false_positive_rate": 0.003173,
+        "flagged": 4020,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.1763,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.1653
+        }
       }
     },
     "runtime_s": {
-      "rules": 0.205,
-      "iqr": 0.05,
-      "iqr_log": 0.051,
-      "zscore": 0.03,
-      "isolation_forest": 2.002
+      "rules": 0.102,
+      "iqr": 0.041,
+      "iqr_log": 0.061,
+      "zscore": 0.014,
+      "isolation_forest": 1.763,
+      "fare_model": 0.171
     },
     "rows_per_sec": {
-      "rules": 979713,
-      "iqr": 4017811,
-      "iqr_log": 3949176,
-      "zscore": 6598659,
-      "isolation_forest": 100077
+      "rules": 1962233,
+      "iqr": 4829479,
+      "iqr_log": 3288769,
+      "zscore": 14355118,
+      "isolation_forest": 113633,
+      "fare_model": 1171378
     },
     "seed": 42
   },
@@ -1549,6 +1627,343 @@
     "estimated_false_positive_share": 0.725,
     "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
   },
+  "fare_model": {
+    "registry": {
+      "model_name": "fare_model",
+      "version": 1,
+      "created_at": "2026-10-02 20:11:26+00:00",
+      "algorithm": "hgb_large (HistGradientBoostingRegressor)",
+      "params": {
+        "loss": "squared_error",
+        "max_iter": 400,
+        "random_state": 42,
+        "learning_rate": 0.1,
+        "max_leaf_nodes": 63
+      },
+      "features": [
+        "trip_distance",
+        "trip_duration_min",
+        "RatecodeID",
+        "VendorID",
+        "payment_type",
+        "passenger_count",
+        "pickup_hour",
+        "pickup_dow",
+        "PULocationID",
+        "DOLocationID"
+      ],
+      "train_partition": "yellow_2024-11",
+      "validation_partition": "yellow_2024-12",
+      "train_rows": 500000,
+      "train_data_sha256": "5ef321876de5007a7c147a347389133fc94fd7ac28f82eb1d57d8f2cf05cfd3b",
+      "selection": {
+        "hgb_large": {
+          "n": 300000,
+          "r2": 0.9267692649546315,
+          "mae": 1.302825539283401,
+          "rmse": 5.005130706376393,
+          "fit_s": 1.74,
+          "median_ae": 0.3932205989377433
+        },
+        "hgb_small": {
+          "n": 300000,
+          "r2": 0.9260418798730204,
+          "mae": 1.3582301632026437,
+          "rmse": 5.029926726522588,
+          "fit_s": 1.33,
+          "median_ae": 0.41755823934737
+        },
+        "hgb_large_l1": {
+          "n": 300000,
+          "r2": 0.8670917904946271,
+          "mae": 1.3850224034187293,
+          "rmse": 6.742867572206853,
+          "fit_s": 11.65,
+          "median_ae": 0.3420195748851995
+        },
+        "baseline_median": {
+          "n": 300000,
+          "r2": -0.11867891511826523,
+          "mae": 11.0810084,
+          "rmse": 19.562369284504708,
+          "fit_s": 0.02,
+          "median_ae": 6.299999999999999
+        },
+        "baseline_linear_distance_duration": {
+          "n": 300000,
+          "r2": 0.7557151122830899,
+          "mae": 4.512601577030721,
+          "rmse": 9.141490812377423,
+          "fit_s": 0.05,
+          "median_ae": 3.0064853839912846
+        }
+      },
+      "validation_metrics": {
+        "n": 300000,
+        "r2": 0.9267692649546315,
+        "mae": 1.302825539283401,
+        "rmse": 5.005130706376393,
+        "fit_s": 1.74,
+        "median_ae": 0.3932205989377433
+      },
+      "flag_threshold": 0.9195191471712273,
+      "alpha": 0.005,
+      "artifact": "fare_model_v1.joblib",
+      "artifact_sha256": "c896f728edde80b07df1f5ece0145c0b26d01e540b466064549d11ef520f1009",
+      "environment": {
+        "seed": 42,
+        "numpy": "2.5.3",
+        "python": "3.13.3",
+        "scikit_learn": "1.9.1"
+      }
+    },
+    "monitoring": [
+      {
+        "partition_id": "yellow_2024-11",
+        "split": "train",
+        "n": 3572569,
+        "mae": 1.148096642029806,
+        "rmse": 4.654648450307983,
+        "median_ae": 0.39150547798166624,
+        "r2": 0.9320595091892261,
+        "flagged": 16507,
+        "flag_rate": 0.0046204845868617235,
+        "mae_vs_validation": 0.8812359041267327,
+        "status": "ok",
+        "by_payment_type": [
+          {
+            "n": 361951,
+            "mae": 3.614408939048244,
+            "flag_rate": 0.03423667844542493,
+            "payment_type": 0
+          },
+          {
+            "n": 2717875,
+            "mae": 0.8338432018015507,
+            "flag_rate": 0.0009224118106976958,
+            "payment_type": 1
+          },
+          {
+            "n": 434350,
+            "mae": 0.9410656528745723,
+            "flag_rate": 0.0020697594106135605,
+            "payment_type": 2
+          },
+          {
+            "n": 17928,
+            "mae": 2.312736074892242,
+            "flag_rate": 0.015283355644801428,
+            "payment_type": 3
+          },
+          {
+            "n": 40465,
+            "mae": 1.900885991576238,
+            "flag_rate": 0.010750030890893365,
+            "payment_type": 4
+          }
+        ],
+        "scoring_s": 10.56
+      },
+      {
+        "partition_id": "yellow_2024-12",
+        "split": "validation",
+        "n": 3587974,
+        "mae": 1.2986532780982587,
+        "rmse": 5.2970734114653855,
+        "median_ae": 0.3951997369611888,
+        "r2": 0.9177291045928281,
+        "flagged": 17460,
+        "flag_rate": 0.00486625599851058,
+        "mae_vs_validation": 0.9967975288637363,
+        "status": "ok",
+        "by_payment_type": [
+          {
+            "n": 316362,
+            "mae": 4.975963825163885,
+            "flag_rate": 0.039691871969452716,
+            "payment_type": 0
+          },
+          {
+            "n": 2732785,
+            "mae": 0.8967521884086616,
+            "flag_rate": 0.0010381350892953525,
+            "payment_type": 1
+          },
+          {
+            "n": 473038,
+            "mae": 1.026434950302116,
+            "flag_rate": 0.0025537060447575035,
+            "payment_type": 2
+          },
+          {
+            "n": 19261,
+            "mae": 2.852740052347708,
+            "flag_rate": 0.01863869996365713,
+            "payment_type": 3
+          },
+          {
+            "n": 46528,
+            "mae": 2.02476009725659,
+            "flag_rate": 0.010724724896836313,
+            "payment_type": 4
+          }
+        ],
+        "scoring_s": 10.2
+      },
+      {
+        "partition_id": "yellow_2025-01",
+        "split": "test",
+        "n": 3328587,
+        "mae": 1.128140513512802,
+        "rmse": 4.7003590305830745,
+        "median_ae": 0.39824272575236197,
+        "r2": 0.9214656737774036,
+        "flagged": 8867,
+        "flag_rate": 0.00266389311740988,
+        "mae_vs_validation": 0.865918328660734,
+        "status": "ok",
+        "by_payment_type": [
+          {
+            "n": 455027,
+            "mae": 3.0606302375843075,
+            "flag_rate": 0.01032246438123452,
+            "payment_type": 0
+          },
+          {
+            "n": 2443108,
+            "mae": 0.7735622980576741,
+            "flag_rate": 0.0010167376964096552,
+            "payment_type": 1
+          },
+          {
+            "n": 375752,
+            "mae": 0.9560121285886604,
+            "flag_rate": 0.002517618003363921,
+            "payment_type": 2
+          },
+          {
+            "n": 15638,
+            "mae": 2.428555246590352,
+            "flag_rate": 0.018864304898324594,
+            "payment_type": 3
+          },
+          {
+            "n": 39061,
+            "mae": 1.9288404661580452,
+            "flag_rate": 0.011392437469598832,
+            "payment_type": 4
+          },
+          {
+            "n": 1,
+            "mae": 4.559715401875727,
+            "flag_rate": 0.0,
+            "payment_type": 5
+          }
+        ],
+        "scoring_s": 9.86
+      },
+      {
+        "partition_id": "yellow_2025-02",
+        "split": "test",
+        "n": 3389155,
+        "mae": 1.2324482198987106,
+        "rmse": 4.361704838872061,
+        "median_ae": 0.44019178669947934,
+        "r2": 0.9239834341847475,
+        "flagged": 4619,
+        "flag_rate": 0.0013628765872319207,
+        "mae_vs_validation": 0.9459810103021159,
+        "status": "ok",
+        "by_payment_type": [
+          {
+            "n": 678780,
+            "mae": 2.9351815419159366,
+            "flag_rate": 0.0012655057603347182,
+            "payment_type": 0
+          },
+          {
+            "n": 2332139,
+            "mae": 0.7663939506579415,
+            "flag_rate": 0.0009682098708524664,
+            "payment_type": 1
+          },
+          {
+            "n": 325376,
+            "mae": 0.9331073322201536,
+            "flag_rate": 0.0028920387490165224,
+            "payment_type": 2
+          },
+          {
+            "n": 14646,
+            "mae": 1.9669060645595082,
+            "flag_rate": 0.013928717738631708,
+            "payment_type": 3
+          },
+          {
+            "n": 38214,
+            "mae": 1.6972905334595465,
+            "flag_rate": 0.009342125922436804,
+            "payment_type": 4
+          }
+        ],
+        "scoring_s": 11.64
+      }
+    ],
+    "permutation_importance_mae": {
+      "trip_duration_min": 7.3476,
+      "trip_distance": 5.5467,
+      "RatecodeID": 2.5112,
+      "DOLocationID": 0.1248,
+      "VendorID": 0.096,
+      "PULocationID": 0.0544,
+      "pickup_hour": 0.0331,
+      "payment_type": 0.013,
+      "passenger_count": 0.0105,
+      "pickup_dow": 0.0041
+    },
+    "validation_mae_by_payment_type": [
+      {
+        "payment_type": 0,
+        "n": 26361,
+        "mae": 5.0174112800750015
+      },
+      {
+        "payment_type": 1,
+        "n": 228764,
+        "mae": 0.9034901315727107
+      },
+      {
+        "payment_type": 2,
+        "n": 39394,
+        "mae": 1.0060657398416772
+      },
+      {
+        "payment_type": 3,
+        "n": 1569,
+        "mae": 2.804099546951615
+      },
+      {
+        "payment_type": 4,
+        "n": 3912,
+        "mae": 2.0105011828665997
+      }
+    ]
+  },
+  "fare_model_review": {
+    "method": "fare_model",
+    "model_version": 1,
+    "partition": "yellow_2025-01",
+    "sample_size": 40,
+    "seed": 7,
+    "verdict_counts": {
+      "likely_data_error": 23,
+      "flex_fare_semantics": 15,
+      "plausible_legitimate": 1,
+      "undetermined": 1
+    },
+    "estimated_false_positive_share": 0.025,
+    "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+  },
   "rerun_check": {
     "partitions": [
       {
@@ -1607,7 +2022,7 @@
     {
       "provider": "deterministic_analyzer",
       "status": "proposed",
-      "n": 11
+      "n": 13
     },
     {
       "provider": "deterministic_template",

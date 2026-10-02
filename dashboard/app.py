@@ -71,7 +71,7 @@ drift_alerts = q("""SELECT d.partition_id, count(*) FILTER (WHERE status='alert'
                     FROM dq.drift_results d JOIN (""" + LATEST + """) l USING (run_id, partition_id) GROUP BY 1""")
 k[4].metric("Drift alerts (latest runs)", int(drift_alerts.alerts.sum()) if not drift_alerts.empty else 0)
 
-tabs = st.tabs(["Trends", "Rules", "Drift", "Anomalies", "Quarantine", "Schema", "Copilot", "Audit"])
+tabs = st.tabs(["Trends", "Rules", "Drift", "Anomalies", "Quarantine", "Schema", "Copilot", "Audit", "ML model"])
 
 with tabs[0]:
     c1, c2 = st.columns(2)
@@ -193,3 +193,29 @@ with tabs[7]:
     st.subheader("Quarantine review log")
     st.dataframe(q("SELECT * FROM dq.quarantine_review_log ORDER BY reviewed_at DESC LIMIT 100"), hide_index=True,
                  use_container_width=True)
+
+with tabs[8]:
+    reg = q("SELECT * FROM dq.model_registry ORDER BY version DESC LIMIT 1")
+    if reg.empty:
+        st.info("No model registered yet. Run `python -m dqc ml train` then `python -m dqc ml score`.")
+    else:
+        r = reg.iloc[0]
+        st.caption(f"{r.model_name} v{r.version} · {r.algorithm} · trained on {r.train_partition} "
+                   f"({r.train_rows:,} rows), selected and calibrated on {r.validation_partition} · "
+                   f"artifact sha256 {r.artifact_sha256[:16]}…")
+        mm = q("""SELECT partition_id, split, n, mae, rmse, median_ae, r2, flagged, flag_rate, mae_vs_validation, status
+                  FROM dq.model_metrics WHERE model_name=%s AND version=%s ORDER BY partition_id""",
+               (r.model_name, int(r.version)))
+        c1, c2 = st.columns(2)
+        c1.subheader("MAE per partition ($), out-of-time monitoring")
+        c1.altair_chart(bars(mm, "partition_id", "mae", title="MAE $", fmt=".3f"), use_container_width=True)
+        sel = pd.DataFrame([{"candidate": k, "validation_mae": v["mae"]} for k, v in (r.selection or {}).items()])
+        c2.subheader("Model selection on the validation month")
+        c2.altair_chart(bars(sel, "candidate", "validation_mae", title="MAE $", fmt=".3f"), use_container_width=True)
+        st.dataframe(mm, hide_index=True, use_container_width=True)
+        st.subheader("Top flagged records (fare far from the expected fare): investigation queue")
+        st.dataframe(q("""SELECT partition_id, record_id, fare_amount, round(predicted_fare::numeric, 2) AS predicted_fare,
+                                 round(relative_deviation::numeric, 3) AS log_ratio, features
+                          FROM dq.model_flags WHERE model_name=%s AND version=%s
+                          ORDER BY relative_deviation DESC LIMIT 100""", (r.model_name, int(r.version))),
+                     hide_index=True, use_container_width=True)

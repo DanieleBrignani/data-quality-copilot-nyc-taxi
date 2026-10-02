@@ -21,6 +21,8 @@ import numpy as np
 import polars as pl
 
 from dqc import anomaly, config, pipeline, profiling, rules
+from dqc.ml import fare_model
+from dqc.ml import features as ml_features
 
 ERROR_TYPES = {
     # name: (family, description)
@@ -154,7 +156,20 @@ def run(partition_id: str = "yellow_2025-01", sample: int = 200_000) -> dict:
         layered = np.isin(rid, list(crit_ids)) | r.flags
         results[f"rules_critical+{name}"] = _metrics(layered, is_err, labels)
 
+    # supervised residual detector (trained on 2024-11, calibrated on 2024-12: this partition is out-of-time)
+    lm = fare_model.load()
+    if lm is not None and partition_id not in (lm.meta["train_partition"], lm.meta["validation_partition"]):
+        t = time.perf_counter()
+        _, _, fm_flags = lm.score_frame(ml_features.add_features(feat_df))
+        timings["fare_model"] = time.perf_counter() - t
+        results["fare_model"] = _metrics(fm_flags, is_err, labels)
+        crit = np.isin(rid, list(crit_ids))
+        results["rules_critical+fare_model"] = _metrics(crit | fm_flags, is_err, labels)
+        log_flags = anomaly.iqr(feat_df, feats, th["iqr_k"], log_transform=True).flags
+        results["rules_critical+iqr_log+fare_model"] = _metrics(crit | fm_flags | log_flags, is_err, labels)
+
     out = {
+        "fare_model_version": lm.version if lm is not None else None,
         "partition": partition_id, "clean_real_records": clean.height, "injected_error_rows": int(is_err.sum()),
         "total_rows": df.height, "error_types": {**{k: v[0] for k, v in ERROR_TYPES.items()}, **DERIVED_TYPES},
         "label_counts": dict(zip(*np.unique(labels, return_counts=True), strict=True)),

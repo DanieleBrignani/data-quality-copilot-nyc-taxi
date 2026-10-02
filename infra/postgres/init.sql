@@ -233,6 +233,60 @@ CREATE TABLE IF NOT EXISTS dq.quarantine_review_log (
     reviewed_at    timestamptz NOT NULL DEFAULT now()
 );
 
+-- ---------------------------------------------------------------- dq: ML model registry & monitoring
+CREATE TABLE IF NOT EXISTS dq.model_registry (
+    model_name           text NOT NULL,
+    version              integer NOT NULL,
+    created_at           timestamptz NOT NULL,
+    algorithm            text NOT NULL,
+    params               jsonb,
+    features             jsonb NOT NULL,
+    train_partition      text NOT NULL,
+    validation_partition text NOT NULL,
+    train_rows           bigint,
+    train_data_sha256    text NOT NULL,       -- sha256 of the raw file the model was trained on
+    selection            jsonb,               -- validation metrics of every candidate
+    validation_metrics   jsonb,
+    flag_threshold       double precision NOT NULL,
+    alpha                double precision NOT NULL,
+    artifact             text NOT NULL,
+    artifact_sha256      text NOT NULL,
+    environment          jsonb,
+    PRIMARY KEY (model_name, version)
+);
+
+CREATE TABLE IF NOT EXISTS dq.model_metrics (
+    model_name         text NOT NULL,
+    version            integer NOT NULL,
+    partition_id       text NOT NULL,
+    split              text NOT NULL,         -- train | validation | test (out-of-time)
+    n                  bigint NOT NULL,
+    mae                double precision NOT NULL,
+    rmse               double precision NOT NULL,
+    median_ae          double precision NOT NULL,
+    r2                 double precision NOT NULL,
+    flagged            bigint NOT NULL,
+    flag_rate          double precision NOT NULL,
+    mae_vs_validation  double precision NOT NULL,
+    status             text NOT NULL,         -- ok | retrain_recommended
+    by_payment_type    jsonb,
+    scoring_s          double precision,
+    scored_at          timestamptz NOT NULL DEFAULT now(),
+    PRIMARY KEY (model_name, version, partition_id)
+);
+
+CREATE TABLE IF NOT EXISTS dq.model_flags (
+    model_name          text NOT NULL,
+    version             integer NOT NULL,
+    partition_id        text NOT NULL,
+    record_id           text NOT NULL,
+    fare_amount         double precision,
+    predicted_fare      double precision,
+    relative_deviation  double precision,
+    features            jsonb,
+    PRIMARY KEY (model_name, version, record_id)
+);
+
 -- ---------------------------------------------------------------- dq: copilot (suggestions only)
 CREATE TABLE IF NOT EXISTS dq.copilot_suggestions (
     suggestion_id     bigserial PRIMARY KEY,

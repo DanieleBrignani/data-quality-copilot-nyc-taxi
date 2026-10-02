@@ -1,4 +1,4 @@
-# Results (generated 2026-10-02T19:07:32+00:00)
+# Results (generated 2026-10-02T20:45:34+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
@@ -105,34 +105,37 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 | detector | precision | recall | FPR | flagged | runtime s |
 |---|---:|---:|---:|---:|---:|
-| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.205 |
-| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.205 |
-| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.05 |
+| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.102 |
+| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.102 |
+| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.041 |
 | rules_critical+iqr | 0.1657 | 0.8746 | 0.098046 | 23,033 |  |
-| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.051 |
+| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.061 |
 | rules_critical+iqr_log | 0.8777 | 0.7222 | 0.00224 | 3,590 |  |
-| zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.03 |
+| zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.014 |
 | rules_critical+zscore | 0.6748 | 0.7889 | 0.008464 | 5,101 |  |
-| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 2.002 |
+| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 1.763 |
 | rules_critical+isolation_forest | 0.628 | 0.6981 | 0.009204 | 4,850 |  |
+| fare_model | 0.776 | 0.2152 | 0.001383 | 1,210 | 0.171 |
+| rules_critical+fare_model | 0.924 | 0.7552 | 0.001383 | 3,566 |  |
+| rules_critical+iqr_log+fare_model | 0.8453 | 0.7788 | 0.003173 | 4,020 |  |
 
 ### Recall by error type
 
-| error type | family | rules_critical | rules_critical_plus_warning | iqr | iqr_log | zscore | isolation_forest |
-|---|---|---:|---:|---:|---:|---:|---:|
-| distance_unit_error | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 0.8736 | 0.1209 |
-| distance_x5 | plausible | 0.0 | 0.1157 | 0.4656 | 0.1212 | 0.011 | 0.0303 |
-| dropoff_before_pickup | rule_detectable | 1.0 | 1.0 | 0.0962 | 1.0 | 0.0027 | 0.011 |
-| exact_duplicate | rule_detectable | 1.0 | 1.0 | 0.1019 | 0.0028 | 0.011 | 0.0083 |
-| fare_over_cap | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
-| fare_x10 | plausible | 0.0 | 0.0 | 0.9612 | 0.3712 | 0.6842 | 0.1773 |
-| invalid_payment_type | rule_detectable | 1.0 | 1.0 | 0.1264 | 0.0027 | 0.0055 | 0.0082 |
-| negative_fare | rule_detectable | 1.0 | 1.0 | 0.1813 | 1.0 | 0.0577 | 0.0055 |
-| null_mandatory | rule_detectable | 1.0 | 1.0 | 0.1044 | 0.0 | 0.0 | 0.0055 |
-| passenger_overflow | rule_detectable | 1.0 | 1.0 | 0.0824 | 0.0 | 0.0055 | 0.0027 |
-| stale_timestamp | rule_detectable | 1.0 | 1.0 | 0.1181 | 0.0082 | 0.0137 | 0.0137 |
-| swapped_zones | plausible | 0.0 | 0.0 | 0.0826 | 0.0 | 0.0055 | 0.0055 |
-| tip_spike | plausible | 0.0 | 0.0 | 0.9835 | 0.1653 | 0.7603 | 0.1543 |
+| error type | family | rules_critical | rules_critical_plus_warning | iqr | iqr_log | zscore | isolation_forest | fare_model |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| distance_unit_error | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 0.8736 | 0.1209 | 0.5824 |
+| distance_x5 | plausible | 0.0 | 0.1157 | 0.4656 | 0.1212 | 0.011 | 0.0303 | 0.0579 |
+| dropoff_before_pickup | rule_detectable | 1.0 | 1.0 | 0.0962 | 1.0 | 0.0027 | 0.011 | 0.1071 |
+| exact_duplicate | rule_detectable | 1.0 | 1.0 | 0.1019 | 0.0028 | 0.011 | 0.0083 | 0.0 |
+| fare_over_cap | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
+| fare_x10 | plausible | 0.0 | 0.0 | 0.9612 | 0.3712 | 0.6842 | 0.1773 | 1.0 |
+| invalid_payment_type | rule_detectable | 1.0 | 1.0 | 0.1264 | 0.0027 | 0.0055 | 0.0082 | 0.0027 |
+| negative_fare | rule_detectable | 1.0 | 1.0 | 0.1813 | 1.0 | 0.0577 | 0.0055 | 0.8269 |
+| null_mandatory | rule_detectable | 1.0 | 1.0 | 0.1044 | 0.0 | 0.0 | 0.0055 | 0.0027 |
+| passenger_overflow | rule_detectable | 1.0 | 1.0 | 0.0824 | 0.0 | 0.0055 | 0.0027 | 0.0 |
+| stale_timestamp | rule_detectable | 1.0 | 1.0 | 0.1181 | 0.0082 | 0.0137 | 0.0137 | 0.0027 |
+| swapped_zones | plausible | 0.0 | 0.0 | 0.0826 | 0.0 | 0.0055 | 0.0055 | 0.0 |
+| tip_spike | plausible | 0.0 | 0.0 | 0.9835 | 0.1653 | 0.7603 | 0.1543 | 0.0 |
 
 ## Failure demo
 
@@ -155,6 +158,64 @@ identical quality results: True · raw rows not duplicated: True
 | yellow_2024-12 | 95.2894 | 95.2894 | 80,397 | 80,397 | 3,668,371 | 115.2 | 74.8 | 6.2 |
 | yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 113.0 | 101.1 | 4.5 |
 | yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 163.9 | 143.2 | 16.8 |
+
+## Fare model v1 (hgb_large (HistGradientBoostingRegressor))
+
+trained on yellow_2024-11 (500,000 sampled rule-valid rows), selected and calibrated on yellow_2024-12; flag threshold (log-ratio) 0.9195 = validation quantile 0.995
+
+### Model selection on the validation month
+
+| candidate | MAE $ | RMSE $ | median AE $ | R2 | fit s |
+|---|---:|---:|---:|---:|---:|
+| hgb_large | 1.303 | 5.005 | 0.393 | 0.9268 | 1.74 |
+| hgb_small | 1.358 | 5.030 | 0.418 | 0.9260 | 1.33 |
+| hgb_large_l1 | 1.385 | 6.743 | 0.342 | 0.8671 | 11.65 |
+| baseline_median | 11.081 | 19.562 | 6.300 | -0.1187 | 0.02 |
+| baseline_linear_distance_duration | 4.513 | 9.141 | 3.006 | 0.7557 | 0.05 |
+
+### Performance per partition (all rule-valid records)
+
+| partition | split | n | MAE $ | RMSE $ | median AE $ | R2 | flagged | flag % | MAE / validation | status |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
+| yellow_2024-11 | train | 3,572,569 | 1.148 | 4.655 | 0.392 | 0.9321 | 16,507 | 0.462 | 0.881 | ok |
+| yellow_2024-12 | validation | 3,587,974 | 1.299 | 5.297 | 0.395 | 0.9177 | 17,460 | 0.487 | 0.997 | ok |
+| yellow_2025-01 | test | 3,328,587 | 1.128 | 4.700 | 0.398 | 0.9215 | 8,867 | 0.266 | 0.866 | ok |
+| yellow_2025-02 | test | 3,389,155 | 1.232 | 4.362 | 0.440 | 0.9240 | 4,619 | 0.136 | 0.946 | ok |
+
+### Permutation importance (increase in validation MAE, $)
+
+| feature | ΔMAE |
+|---|---:|
+| trip_duration_min | 7.348 |
+| trip_distance | 5.547 |
+| RatecodeID | 2.511 |
+| DOLocationID | 0.125 |
+| VendorID | 0.096 |
+| PULocationID | 0.054 |
+| pickup_hour | 0.033 |
+| payment_type | 0.013 |
+| passenger_count | 0.011 |
+| pickup_dow | 0.004 |
+
+### MAE by payment type ($)
+
+| partition | type 0 | type 1 | type 2 | type 3 | type 4 |
+|---|---:|---:|---:|---:|---:|
+| yellow_2024-11 | 3.61 | 0.83 | 0.94 | 2.31 | 1.90 |
+| yellow_2024-12 | 4.98 | 0.90 | 1.03 | 2.85 | 2.02 |
+| yellow_2025-01 | 3.06 | 0.77 | 0.96 | 2.43 | 1.93 |
+| yellow_2025-02 | 2.94 | 0.77 | 0.93 | 1.97 | 1.70 |
+
+## Manual review of real fare-model flags
+
+partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
+
+| verdict | count |
+|---|---:|
+| likely_data_error | 23 |
+| flex_fare_semantics | 15 |
+| plausible_legitimate | 1 |
+| undetermined | 1 |
 
 ## Manual review of real anomalies
 

@@ -43,6 +43,21 @@ def rerun_check() -> dict | None:
             "no_duplicate_rows": all(r["raw_rows"] == r["rows_total"] for r in rows)}
 
 
+def fare_model_section() -> dict | None:
+    reg = db.query_df("SELECT * FROM dq.model_registry ORDER BY version DESC LIMIT 1")
+    if reg.is_empty():
+        return None
+    r = reg.to_dicts()[0]
+    mm = db.query_df("""SELECT partition_id, split, n, mae, rmse, median_ae, r2, flagged, flag_rate, mae_vs_validation,
+                               status, by_payment_type, scoring_s FROM dq.model_metrics
+                        WHERE model_name=%s AND version=%s ORDER BY partition_id""", (r["model_name"], r["version"]))
+    from dqc.ml import fare_model
+    lm = fare_model.load(r["version"])
+    return {"registry": r, "monitoring": mm.to_dicts(),
+            "permutation_importance_mae": lm.meta["permutation_importance_mae"] if lm else None,
+            "validation_mae_by_payment_type": lm.meta["validation_mae_by_payment_type"] if lm else None}
+
+
 def collect() -> dict:
     parts = db.query_df(LATEST).sort("partition_id").to_dicts()
     total_rows = sum(p["rows_total"] for p in parts)
@@ -89,6 +104,8 @@ def collect() -> dict:
         "anomalies": anomalies, "quarantine_by_rule": quarantine, "runs": runs,
         "benchmark": _read("benchmark.json"), "failure_demo": _read("failure_demo.json"),
         "anomaly_review": _read("anomaly_review.json"),
+        "fare_model": fare_model_section(),
+        "fare_model_review": _read("fare_model_review.json"),
         "rerun_check": rerun_check(),
         "copilot": db.query_df("""SELECT provider, status, count(*) AS n FROM dq.copilot_suggestions
                                   GROUP BY 1, 2 ORDER BY 1, 2""").to_dicts(),
@@ -153,7 +170,8 @@ def _md(res: dict) -> str:
             rt = b["runtime_s"].get("rules" if name.startswith("rules_critical") and "+" not in name else name, "")
             out.append(f"| {name} | {m['precision']} | {m['recall']} | {m['false_positive_rate']} | {m['flagged']:,} | {rt} |")
         types = sorted({t for m in b["results"].values() for t in m["recall_by_error_type"]})
-        keys = ["rules_critical", "rules_critical_plus_warning", "iqr", "iqr_log", "zscore", "isolation_forest"]
+        keys = [k for k in ("rules_critical", "rules_critical_plus_warning", "iqr", "iqr_log", "zscore",
+                             "isolation_forest", "fare_model") if k in b["results"]]
         out += ["", "### Recall by error type", "", "| error type | family | " + " | ".join(keys) + " |",
                 "|---|---|" + "---:|" * len(keys)]
         for tp in types:
@@ -174,6 +192,39 @@ def _md(res: dict) -> str:
         out += [f"| {r['partition_id']} | {r['ref_score']:.4f} | {r['rerun_score']:.4f} | {r['ref_q']:,} | "
                 f"{r['rerun_q']:,} | {r['raw_rows']:,} | {r['ref_s']:.1f} | {r['rerun_s']:.1f} | "
                 f"{r['rerun_raw_landing_s']:.1f} |" for r in rc["partitions"]]
+    fm = res.get("fare_model")
+    if fm:
+        g = fm["registry"]
+        out += ["", f"## Fare model v{g['version']} ({g['algorithm']})", "",
+                f"trained on {g['train_partition']} ({g['train_rows']:,} sampled rule-valid rows), selected and "
+                f"calibrated on {g['validation_partition']}; flag threshold (log-ratio) {g['flag_threshold']:.4f} "
+                f"= validation quantile {1 - g['alpha']}", "",
+                "### Model selection on the validation month", "",
+                "| candidate | MAE $ | RMSE $ | median AE $ | R2 | fit s |", "|---|---:|---:|---:|---:|---:|"]
+        out += [f"| {k} | {v['mae']:.3f} | {v['rmse']:.3f} | {v['median_ae']:.3f} | {v['r2']:.4f} | {v['fit_s']} |"
+                for k, v in g["selection"].items()]
+        out += ["", "### Performance per partition (all rule-valid records)", "",
+                "| partition | split | n | MAE $ | RMSE $ | median AE $ | R2 | flagged | flag % | MAE / validation | status |",
+                "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|"]
+        out += [f"| {m['partition_id']} | {m['split']} | {m['n']:,} | {m['mae']:.3f} | {m['rmse']:.3f} | "
+                f"{m['median_ae']:.3f} | {m['r2']:.4f} | {m['flagged']:,} | {100 * m['flag_rate']:.3f} | "
+                f"{m['mae_vs_validation']:.3f} | {m['status']} |" for m in fm["monitoring"]]
+        if fm.get("permutation_importance_mae"):
+            out += ["", "### Permutation importance (increase in validation MAE, $)", "", "| feature | ΔMAE |",
+                    "|---|---:|"]
+            out += [f"| {k} | {v:.3f} |" for k, v in fm["permutation_importance_mae"].items()]
+        out += ["", "### MAE by payment type ($)", "",
+                "| partition | " + " | ".join(f"type {i}" for i in range(5)) + " |", "|---|" + "---:|" * 5]
+        for m in fm["monitoring"]:
+            by = {b["payment_type"]: b["mae"] for b in (m["by_payment_type"] or [])}
+            out.append(f"| {m['partition_id']} | " + " | ".join(
+                f"{by[i]:.2f}" if i in by else "-" for i in range(5)) + " |")
+    fr = res.get("fare_model_review")
+    if fr:
+        out += ["", "## Manual review of real fare-model flags", "",
+                f"partition {fr['partition']} (out-of-time), sample {fr['sample_size']} (seed {fr['seed']})", "",
+                "| verdict | count |", "|---|---:|"]
+        out += [f"| {k} | {v} |" for k, v in fr["verdict_counts"].items()]
     ar = res.get("anomaly_review")
     if ar:
         out += ["", "## Manual review of real anomalies", "", f"method: {ar['method']}, partition {ar['partition']}, "

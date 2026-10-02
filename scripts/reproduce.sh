@@ -33,6 +33,12 @@ step "soda contract (SLO check is EXPECTED to fail on 2025-02 — see README)"
 (cd soda && "$BIN/soda" scan -d dqc -c configuration.yml checks_clean_trips.yml) > reports/soda_scan.log 2>&1
 echo "soda exit code: $?" | tee -a reports/soda_scan.log
 
+step "ML: train the fare model (2024-11), select + calibrate (2024-12), score every partition"
+rm -f models/fare_model_v*.joblib models/fare_model_v*.json
+"$PY" -m dqc ml train > reports/ml_train.json 2> /dev/null || exit 1
+"$PY" -m dqc ml score > reports/ml_score.json 2> /dev/null || exit 1
+"$PY" -m dqc.ml.review sample > /dev/null 2>&1 && "$PY" -m dqc.ml.review summarize > /dev/null || exit 1
+
 step "failure demo, benchmark, anomaly review, copilot"
 "$PY" -m dqc demo-failures > /dev/null || exit 1
 "$PY" -m dqc benchmark > /dev/null || exit 1

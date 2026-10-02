@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime
 from typing import Literal
 
 import psycopg
@@ -140,6 +141,77 @@ def review_suggestion(suggestion_id: int, body: SuggestionReview):
     return {"suggestion_id": suggestion_id, "status": body.status}
 
 
+# --------------------------------------------------------------------------- ML model serving
+class Trip(BaseModel):
+    trip_distance: float
+    pickup_datetime: datetime
+    dropoff_datetime: datetime
+    PULocationID: int
+    DOLocationID: int
+    RatecodeID: int | None = None
+    VendorID: int | None = None
+    payment_type: int | None = None
+    passenger_count: int | None = None
+    fare_amount: float | None = None   # optional: when given, the response says whether it would be flagged
+
+
+_MODEL_CACHE: dict = {}
+
+
+def _model():
+    """Latest registered model, loaded once. A missing model is not cached, so training later is picked up."""
+    from dqc.ml import fare_model
+    if "lm" not in _MODEL_CACHE:
+        lm = fare_model.load()
+        if lm is None:
+            return None
+        _MODEL_CACHE["lm"] = lm
+    return _MODEL_CACHE["lm"]
+
+
+@app.get("/model")
+def model_info():
+    lm = _model()
+    if lm is None:
+        raise HTTPException(503, "no trained model available (run `python -m dqc ml train`)")
+    keep = ("model_name", "version", "created_at", "algorithm", "params", "features", "train_partition",
+            "validation_partition", "train_rows", "train_data_sha256", "validation_metrics", "flag_threshold",
+            "alpha", "artifact_sha256", "environment", "permutation_importance_mae")
+    return {**{k: lm.meta[k] for k in keep},
+            "monitoring": q("SELECT partition_id, split, n, mae, rmse, r2, flag_rate, mae_vs_validation, status "
+                            "FROM dq.model_metrics WHERE model_name=%s AND version=%s ORDER BY partition_id",
+                            (lm.meta["model_name"], lm.version))}
+
+
+@app.post("/predict/fare")
+def predict_fare(trip: Trip):
+    """Expected fare for one trip. Read-only: nothing is stored and no record is changed."""
+    import numpy as np
+    import polars as pl
+
+    from dqc.ml import fare_model
+    from dqc.ml import features as F
+
+    lm = _model()
+    if lm is None:
+        raise HTTPException(503, "no trained model available")
+    if trip.dropoff_datetime <= trip.pickup_datetime:
+        raise HTTPException(422, "dropoff_datetime must be after pickup_datetime (rule DQ010)")
+    df = F.add_features(pl.DataFrame({
+        "trip_distance": [trip.trip_distance], "tpep_pickup_datetime": [trip.pickup_datetime.replace(tzinfo=None)],
+        "tpep_dropoff_datetime": [trip.dropoff_datetime.replace(tzinfo=None)], "RatecodeID": [trip.RatecodeID],
+        "VendorID": [trip.VendorID], "payment_type": [trip.payment_type], "passenger_count": [trip.passenger_count],
+        "PULocationID": [trip.PULocationID], "DOLocationID": [trip.DOLocationID]},
+        schema_overrides={"RatecodeID": pl.Int64, "VendorID": pl.Int64, "payment_type": pl.Int64,
+                          "passenger_count": pl.Int64}))
+    pred = float(lm.predict(F.matrix(df))[0])
+    out = {"model_version": lm.version, "predicted_fare": round(pred, 2), "flag_threshold": lm.threshold}
+    if trip.fare_amount is not None:
+        dev = float(fare_model.relative_deviation(np.array([trip.fare_amount]), np.array([pred]))[0])
+        out.update(fare_amount=trip.fare_amount, log_ratio=round(dev, 4), flagged=dev > lm.threshold)
+    return out
+
+
 # --------------------------------------------------------------------------- Prometheus
 class DQWarehouseCollector:
     """Derives metrics from the persisted quality history at scrape time."""
@@ -184,6 +256,18 @@ class DQWarehouseCollector:
                        GROUP BY 1"""):
             drift.add_metric([r["partition_id"]], r["n"])
         yield drift
+
+        mae = GaugeMetricFamily("dq_model_mae", "Fare model MAE ($) per partition", labels=["partition", "split"])
+        ratio = GaugeMetricFamily("dq_model_mae_vs_validation", "Fare model MAE / validation MAE",
+                                  labels=["partition"])
+        frate = GaugeMetricFamily("dq_model_flag_rate", "Share of valid records flagged by the fare model",
+                                  labels=["partition"])
+        for r in q("""SELECT DISTINCT ON (partition_id) partition_id, split, mae, mae_vs_validation, flag_rate
+                      FROM dq.model_metrics ORDER BY partition_id, version DESC"""):
+            mae.add_metric([r["partition_id"], r["split"]], r["mae"])
+            ratio.add_metric([r["partition_id"]], r["mae_vs_validation"])
+            frate.add_metric([r["partition_id"]], r["flag_rate"])
+        yield from (mae, ratio, frate)
 
 
 REGISTRY = CollectorRegistry()

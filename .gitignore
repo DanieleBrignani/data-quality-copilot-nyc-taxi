@@ -7,6 +7,7 @@ data/reference/*.csv
 reports/_*
 reports/*.log
 reports/run_*.json
+reports/ml_*.json
 dbt/target/
 dbt/logs/
 dbt/dbt_packages/

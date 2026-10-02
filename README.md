@@ -1,8 +1,18 @@
 # Data Quality Copilot — NYC Taxi
 
-**14,367,509 real NYC TLC trips · 4 monthly partitions · 21 versioned rules · 489,224 records quarantined (3.41%), 0 silently lost · 1 real schema change and 9 drift alerts detected · deterministic rules: precision 1.00 / recall 1.00 on every contract-violating error type · Isolation Forest: precision 0.10 on the same benchmark · the Feb-2025 partition breaches the 95% valid-record SLO, and the system says so.**
+**14,367,509 real NYC TLC trips · 4 monthly partitions · 21 versioned rules · 489,224 records quarantined (3.41%), 0 silently lost · 1 real schema change and 9 drift alerts detected · a supervised fare model (R² 0.92 out-of-time, MAE $1.13–1.23) used as a detector: rules + model reach precision 0.92 / recall 0.76 on labelled errors, and 38 of 40 manually reviewed real flags are genuine issues (Isolation Forest: 6 of 40) · the Feb-2025 partition breaches the 95% valid-record SLO, and the system says so.**
 
 All numbers in this README are read from `reports/results.md`, which `scripts/reproduce.sh` regenerates from scratch (raw files → wiped warehouse → pipeline → rerun → dbt → Soda → failure demo → benchmark → report). End-to-end processing of the 14.4M rows: 508 s (28,308 rows/s) on a 16-logical-core / 16 GB Windows machine (Docker Desktop).
+
+---
+
+## What this project demonstrates
+
+| Role | What to look at |
+|---|---|
+| **Data Engineering** | immutable hash-verified raw layer, schema contract, idempotent loads, quarantine with audit trail, dbt models + tests, Soda contract, Prefect flow, Docker, Prometheus/Grafana, CI quality gate, one-command reproduction |
+| **Data Science** | rules grounded in measured data, drift statistics (PSI, KS), a supervised model with out-of-time validation, baselines, feature importance, segment error analysis, a labelled benchmark comparing six detectors, two manual false-positive reviews, documented negative results |
+| **ML Engineering** | versioned model registry with data and artifact hashes, deterministic retraining, leakage guard enforced by tests, model serving endpoint, per-partition performance monitoring and a degradation alert, model card ([docs/MODEL_CARD.md](docs/MODEL_CARD.md)) |
 
 ---
 
@@ -47,6 +57,7 @@ flowchart TD
 | Profiling | Polars | `src/dqc/profiling.py` |
 | Rule engine (YAML → Polars expressions) | Polars | `src/dqc/rules.py`, `config/rules.yaml` |
 | Anomaly detection | NumPy, scikit-learn | `src/dqc/anomaly.py` |
+| Supervised fare model (train, registry, scoring, review) | scikit-learn, joblib | `src/dqc/ml/` |
 | Drift | SciPy, NumPy | `src/dqc/drift.py` |
 | Warehouse, quarantine, audit | PostgreSQL 16 | `infra/postgres/init.sql` |
 | Modelling + tests | dbt-postgres | `dbt/` |
@@ -140,6 +151,51 @@ Runs **after** the rules, **only on rule-valid records**, and never quarantines 
 3. **It is not explainable or stable enough to quarantine on.** A record's IF score changes when the rest of the month changes; a rule verdict does not. Quarantine decisions must be reproducible and reviewable.
 4. **Where it helps:** errors with *valid* values but *unusual magnitude* (fare ×10, tip spikes) that no rule can express without false positives — that is where a statistical second line earns its place.
 
+## Machine Learning: expected-fare model
+
+The unsupervised detectors above answer "is this record unusual?". A supervised model answers a sharper question: **"is this fare consistent with this trip?"** — which is where the plausible-looking errors live. Full details in the [model card](docs/MODEL_CARD.md).
+
+**Protocol (chronological, no leakage)**
+
+| split | partition | used for |
+|---|---|---|
+| train | 2024-11 (500k sampled rule-valid rows) | fitting five candidates |
+| validation | 2024-12 | model selection, flag-threshold calibration, permutation importance |
+| test | 2025-01, 2025-02 (every rule-valid row) | reported only — never used for a decision |
+
+Features: distance, duration, RatecodeID, VendorID, payment type, passenger count, pickup hour and weekday, pickup/drop-off zone (target-encoded with 5-fold cross-fitting). **No monetary column is a feature**; a unit test fails if one is added.
+
+**Model selection on the validation month**
+
+| candidate | MAE $ | R² |
+|---|---:|---:|
+| median baseline | 11.08 | −0.12 |
+| linear regression (distance + duration) | 4.51 | 0.76 |
+| gradient boosting, 200 iterations | 1.36 | 0.93 |
+| **gradient boosting, 400 iterations (selected)** | **1.30** | **0.93** |
+| gradient boosting, absolute-error loss | 1.39 | 0.87 |
+
+**Out-of-time performance** (all rule-valid records of each month)
+
+| partition | split | MAE $ | median AE $ | R² | flagged |
+|---|---|---:|---:|---:|---:|
+| 2024-11 | train | 1.15 | 0.39 | 0.932 | 0.46% |
+| 2024-12 | validation | 1.30 | 0.40 | 0.918 | 0.49% |
+| 2025-01 | **test** | 1.13 | 0.40 | 0.922 | 0.27% |
+| 2025-02 | **test** | 1.23 | 0.44 | 0.924 | 0.14% |
+
+- **No degradation after the congestion-pricing launch** (test MAE is 0.87× and 0.95× the validation MAE): the new fee is a separate column, so the metered-fare relationship did not move. The monitoring alert (`MAE > 1.25×` validation) stays silent — and that is the measured result, not an assumption.
+- **Segment analysis:** Flex Fare records are 3–5× harder to predict (MAE $2.9–5.0 vs $0.8–0.9 for card trips). Their fare does not follow the meter — independent evidence, from a different method, for the Flex Fare issue the rules surfaced.
+- **Feature importance** (permutation, ΔMAE in $): duration 7.35, distance 5.55, RatecodeID 2.51; zones, vendor and clock together < 0.35.
+
+**As a detector.** A record is flagged when `|ln((fare + 5) / (predicted + 5))|` exceeds the 99.5th percentile of that score on the validation month (threshold 0.92). Like every statistical detector here it only feeds the investigation queue.
+
+- On the labelled benchmark it has the best precision of any statistical method (0.78, false-positive rate 0.14%) and catches **100% of `fare ×10`** errors, which log-IQR catches at 37% and Isolation Forest at 18%. **Rules + fare model: precision 0.92, recall 0.76** — the best combination measured.
+- On real data, **38 of 40 manually reviewed flags are genuine issues**, 1 is legitimate and 1 undetermined (see False Positive Analysis).
+- It is **blind** to errors that leave the fare relationship intact: tip spikes 0%, swapped zones 0%, distance ×5 only 6% (duration dominates the prediction, and a mismatched distance/duration pair is out of distribution).
+
+**ML engineering.** `python -m dqc ml train` writes a versioned artifact (`models/fare_model_v1.joblib`, 292 KB) and metadata with the sha256 of the raw training file, every candidate's metrics, the threshold, library versions and the artifact's sha256; the same record goes to `dq.model_registry`. Retraining on the same raw file reproduces the same metrics, threshold **and artifact hash**. Loading refuses an artifact whose hash does not match. `python -m dqc ml score` writes per-partition performance to `dq.model_metrics` and the top flags to `dq.model_flags`. Serving: `POST /predict/fare`, `GET /model`.
+
 ## Drift Detection
 
 Each partition is compared with the previous one (`dq.drift_results`, history kept per run), thresholds in `config/thresholds.yaml`:
@@ -213,40 +269,44 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 
 | detector | precision | recall | false-positive rate | flagged | runtime s (204k rows) |
 |---|---:|---:|---:|---:|---:|
-| rules_critical | 1.00 | 0.67 | 0.00% | 2,913 | 0.205 |
-| rules_critical_plus_warning | 1.00 | 0.68 | 0.00% | 2,955 | 0.205 |
-| iqr | 0.08 | 0.36 | 9.80% | 20,781 | 0.05 |
+| rules_critical | 1.00 | 0.67 | 0.00% | 2,913 | 0.102 |
+| rules_critical_plus_warning | 1.00 | 0.68 | 0.00% | 2,955 | 0.102 |
+| iqr | 0.08 | 0.36 | 9.80% | 20,781 | 0.041 |
 | rules_critical+iqr | 0.17 | 0.87 | 9.80% | 23,033 |  |
-| iqr_log | 0.75 | 0.31 | 0.22% | 1,776 | 0.051 |
+| iqr_log | 0.75 | 0.31 | 0.22% | 1,776 | 0.061 |
 | rules_critical+iqr_log | 0.88 | 0.72 | 0.22% | 3,590 |  |
-| zscore | 0.35 | 0.20 | 0.85% | 2,543 | 0.03 |
+| zscore | 0.35 | 0.20 | 0.85% | 2,543 | 0.014 |
 | rules_critical+zscore | 0.67 | 0.79 | 0.85% | 5,101 |  |
-| isolation_forest | 0.10 | 0.05 | 0.92% | 2,003 | 2.002 |
+| isolation_forest | 0.10 | 0.05 | 0.92% | 2,003 | 1.763 |
 | rules_critical+isolation_forest | 0.63 | 0.70 | 0.92% | 4,850 |  |
+| fare_model | 0.78 | 0.22 | 0.14% | 1,210 | 0.171 |
+| rules_critical+fare_model | 0.92 | 0.76 | 0.14% | 3,566 |  |
+| rules_critical+iqr_log+fare_model | 0.85 | 0.78 | 0.32% | 4,020 |  |
 
 Recall by error type:
 
-| error type | family | rules (critical) | rules (+warning) | IQR | log-IQR | z-score | Isolation Forest |
-|---|---|---:|---:|---:|---:|---:|---:|
-| distance_unit_error | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 0.87 | 0.12 |
-| distance_x5 | plausible | 0.00 | 0.12 | 0.47 | 0.12 | 0.01 | 0.03 |
-| dropoff_before_pickup | rule_detectable | 1.00 | 1.00 | 0.10 | 1.00 | 0.00 | 0.01 |
-| exact_duplicate | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.01 | 0.01 |
-| fare_over_cap | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
-| fare_x10 | plausible | 0.00 | 0.00 | 0.96 | 0.37 | 0.68 | 0.18 |
-| invalid_payment_type | rule_detectable | 1.00 | 1.00 | 0.13 | 0.00 | 0.01 | 0.01 |
-| negative_fare | rule_detectable | 1.00 | 1.00 | 0.18 | 1.00 | 0.06 | 0.01 |
-| null_mandatory | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.00 | 0.01 |
-| passenger_overflow | rule_detectable | 1.00 | 1.00 | 0.08 | 0.00 | 0.01 | 0.00 |
-| stale_timestamp | rule_detectable | 1.00 | 1.00 | 0.12 | 0.01 | 0.01 | 0.01 |
-| swapped_zones | plausible | 0.00 | 0.00 | 0.08 | 0.00 | 0.01 | 0.01 |
-| tip_spike | plausible | 0.00 | 0.00 | 0.98 | 0.17 | 0.76 | 0.15 |
+| error type | family | rules (critical) | rules (+warning) | IQR | log-IQR | z-score | Isolation Forest | fare model |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| distance_unit_error | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 0.87 | 0.12 | 0.58 |
+| distance_x5 | plausible | 0.00 | 0.12 | 0.47 | 0.12 | 0.01 | 0.03 | 0.06 |
+| dropoff_before_pickup | rule_detectable | 1.00 | 1.00 | 0.10 | 1.00 | 0.00 | 0.01 | 0.11 |
+| exact_duplicate | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.01 | 0.01 | 0.00 |
+| fare_over_cap | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 |
+| fare_x10 | plausible | 0.00 | 0.00 | 0.96 | 0.37 | 0.68 | 0.18 | 1.00 |
+| invalid_payment_type | rule_detectable | 1.00 | 1.00 | 0.13 | 0.00 | 0.01 | 0.01 | 0.00 |
+| negative_fare | rule_detectable | 1.00 | 1.00 | 0.18 | 1.00 | 0.06 | 0.01 | 0.83 |
+| null_mandatory | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.00 | 0.01 | 0.00 |
+| passenger_overflow | rule_detectable | 1.00 | 1.00 | 0.08 | 0.00 | 0.01 | 0.00 | 0.00 |
+| stale_timestamp | rule_detectable | 1.00 | 1.00 | 0.12 | 0.01 | 0.01 | 0.01 | 0.00 |
+| swapped_zones | plausible | 0.00 | 0.00 | 0.08 | 0.00 | 0.01 | 0.01 | 0.00 |
+| tip_spike | plausible | 0.00 | 0.00 | 0.98 | 0.17 | 0.76 | 0.15 | 0.00 |
 
 - Rules: **precision 1.00, recall 1.00 on every rule-detectable type**, 0.00 on every plausible type → overall recall 0.67. FPR is 0 **by construction** here (negatives were selected as rule-clean) — an upper bound, not a claim that rules never misfire; the real-data false positives of the rules are the ambiguous Flex Fare cases discussed above.
 - Plain IQR has the highest standalone recall (0.36) at a useless **9.8% FPR** (19,217 false alarms on 196,000 clean rows).
 - **log-IQR is the best complement**: FPR 0.22%; *rules + log-IQR* = precision 0.88, recall 0.72.
-- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~39× slower than log-IQR (2.00 s vs 0.051 s on 204k rows).
-- Nothing catches **swapped PU/DO zones** (≤ 8%): detecting it would need a zone-pair distance reference — listed under limitations.
+- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~29× slower than log-IQR (1.76 s vs 0.061 s on 204k rows).
+- **The supervised fare model is the best statistical detector**: precision 0.78 at a 0.14% false-positive rate; with the rules, precision 0.92 and recall 0.76. Adding log-IQR on top raises recall to 0.78 and lowers precision to 0.85.
+- Nothing catches **swapped PU/DO zones** (≤ 8%), including the fare model: swapping the zones barely changes the expected fare. Detecting it would need a zone-pair distance reference — listed under limitations.
 
 **2. Manual inspection of real anomalies.** 40 randomly sampled (seed 11) Isolation-Forest flags on rule-valid Jan-2025 data, inspected record by record against explicit criteria — $/mile, implied speed, RatecodeID vs zones (JFK flat fare $70, Newark, Nassau/Westchester), distance/duration vs fare (`reports/anomaly_review_labels.csv`, with a note per record):
 
@@ -258,12 +318,23 @@ Recall by error type:
 
 → **~73% of Isolation Forest flags are false positives** on real data. The 6 true issues suggest two candidate *rules* (zero-distance trips with fare > $X; RatecodeID 2 without a JFK endpoint) — i.e. the anomaly detector's real value was to *discover rules*, not to replace them. The labels were assigned by the project author (AI-assisted build), not an independent TLC domain expert.
 
+**3. Manual inspection of real fare-model flags.** Same procedure on 40 random flags (seed 7) from Jan-2025, a month the model never saw (`reports/fare_model_review_labels.csv`):
+
+| verdict | count |
+|---|---:|
+| likely data error (19 trips with ~0 distance and ~0 duration that still carry a fare; a JFK flat-fare trip with fare $0; a 3.7 mi trip with fare $3 and tip $10) | 23 |
+| Flex Fare semantic inconsistency (real multi-mile trips whose `fare_amount` is $0.30–$8 while the total is higher) | 15 |
+| plausible legitimate (a no-charge trip with fare $0) | 1 |
+| undetermined | 1 |
+
+→ **1 false positive in 40 (2.5%)**, against 29 in 40 for Isolation Forest on the same month. Two caveats: 40 records, labelled by the author; and for the zero-distance records the model is right partly for the wrong reason (it predicts an average negotiated fare for an input it rarely saw) — the proper control for that pattern is a rule, which this review suggests adding.
+
 ## Observability
 
-- **Prometheus** (`http://localhost:9091`) scrapes `GET /metrics` on the API. Metrics are derived at scrape time from the persisted history, so they survive restarts and reflect the warehouse, not a process: `dq_records_checked_total`, `dq_quality_failures_total{rule_id,severity}`, `dq_quarantined_records_total`, `dq_quality_run_duration_seconds`, `dq_schema_failures_total`, `dq_drift_alerts_total`, `dq_quality_score`, `dq_valid_record_rate`, `dq_rule_failure_rate`, `dq_rows_per_second`, `dq_source_lag_days`. The pipeline also exposes an in-process registry that can be pushed to a Pushgateway (`DQC_PUSHGATEWAY`).
-- **Alert rules** (`infra/prometheus/alerts.yml`): valid-record rate < 95, score < 92, unexpected schema change, drift alerts, source lag > 75 d.
+- **Prometheus** (`http://localhost:9091`) scrapes `GET /metrics` on the API. Metrics are derived at scrape time from the persisted history, so they survive restarts and reflect the warehouse, not a process: `dq_records_checked_total`, `dq_quality_failures_total{rule_id,severity}`, `dq_quarantined_records_total`, `dq_quality_run_duration_seconds`, `dq_schema_failures_total`, `dq_drift_alerts_total`, `dq_quality_score`, `dq_valid_record_rate`, `dq_rule_failure_rate`, `dq_rows_per_second`, `dq_source_lag_days`, and for the model `dq_model_mae`, `dq_model_mae_vs_validation`, `dq_model_flag_rate`. The pipeline also exposes an in-process registry that can be pushed to a Pushgateway (`DQC_PUSHGATEWAY`).
+- **Alert rules** (`infra/prometheus/alerts.yml`): valid-record rate < 95, score < 92, unexpected schema change, drift alerts, source lag > 75 d, fare-model MAE > 1.25× validation.
 - **Grafana** (`http://localhost:3001`, provisioned): quality score over time, dataset vs quarantine volume, failing rules, failure rate by column, drift table, freshness, schema events, detectors.
-- **Streamlit** (`http://localhost:8502`): KPIs, trends, rules, drift heat-map (status also written as text), anomalies, quarantine browser with original records, schema events, copilot suggestions, audit (runs, raw hashes, review log).
+- **Streamlit** (`http://localhost:8502`): KPIs, trends, rules, drift heat-map (status also written as text), anomalies, quarantine browser with original records, schema events, copilot suggestions, audit (runs, raw hashes, review log), ML model (selection, per-month MAE, top flags).
 
 ## Quality SLO
 
@@ -281,7 +352,7 @@ Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --sl
 
 ## Testing
 
-`pytest` — 46 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
+`pytest` — 54 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
 
 | requirement | test |
 |---|---|
@@ -297,6 +368,7 @@ Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --sl
 | raw immutability | `test_tampered_raw_file_is_detected`, `test_raw_integrity_violation_fails_the_run` |
 | audit / least privilege | `test_review_is_audited_and_copilot_role_cannot_touch_data` |
 | copilot (no API) | `test_copilot.py` (systematic segment + candidate rule, diffuse failures → low confidence, negative fare with positive total, null-rate drift linked to payment type) |
+| ML model | `test_ml.py` (no monetary feature leakage, feature matrix contract, symmetric score, learned model beats baselines, threshold calibration, registry round-trip, tampered artifact refused, `/predict/fare`) |
 | CI gate | `test_gate.py` (degraded data fails, schema regression fails, unexplained improvement fails) |
 
 Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contract, **no silent loss**, no quarantined record in clean) and Soda: 19 checks — 18 pass, the valid-record-rate SLO check fails on 2025-02 by design of the data, not of the code.
@@ -329,12 +401,14 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Drift on the input (pre-rules) distribution.** Rule failures that surge (e.g. negative fares) show up in drift too — intentional: drift is about what upstream sends.
 - **Record-level quality score** (sensitive, interpretable) over mean rule pass rate (always ≈ 99.9).
 - **Raw landing in Postgres** (62–91 s/partition, the slowest stage) buys SQL lineage from any curated row back to the source row; a lakehouse (DuckDB/Iceberg) would be faster.
-- **Isolation Forest kept** in the pipeline despite poor results — as a measured baseline that justifies the choice of log-IQR, not as a control.
+- **Isolation Forest kept** in the pipeline despite poor results — as a measured baseline that justifies the choice of log-IQR and of the supervised model, not as a control.
+- **Fare model outside the gating path.** It is trained and scored after the pipeline (`dqc ml …`) and never quarantines: a model whose flag rate is a quantile cannot be a contract.
 
 ## What Failed and What I Changed
 
 | what failed | evidence | change |
 |---|---|---|
+| Fare-model score `|fare − predicted| / predicted` | bounded by 1 when the fare is too low: recall 0.00 on distance ×5 | symmetric log-ratio score; recall on that type only reached 0.06 — the remaining gap is a model limitation, documented instead of tuned away on the benchmark |
 | Naive `total_amount = Σ components` rule (v1) | flagged **28%** of Nov-2024 rows | measured that VendorID 1 embeds congestion/airport fees in `extra` → v2 |
 | v2 of the same rule | flagged **15%** of Jan-2025 rows | VendorID 1 also embeds the new `cbd_congestion_fee` → v3, surcharge-embedding accepted only for the vendors that do it; 1.07% remains (real VendorID-2 inconsistency) |
 | "Duplicate trips" on business key | 52,531 groups in Jan-2025 | all are charge + reversal pairs → excluded; real non-reversal duplicates: 0 |
@@ -356,7 +430,8 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Semantics of Flex Fare negatives are unresolved** — they drive the SLO breach and may be false positives of DQ021; needs the source owner.
 - **Benchmark negatives are "rule-clean", not "verified correct"**, so rule FPR = 0 is by construction; plausible-error recall numbers depend on the chosen corruption types.
 - **Manual review** covers 40 records, one method, one month, by the author.
-- **Swapped zones and other plausible errors** are undetected; a zone-pair distance/fare model would be the next control.
+- **Swapped zones, tip spikes and distance ×5** remain undetected by every method, the fare model included; a zone-pair distance reference would be the next control.
+- **Fare model**: one training run, one validation month, a three-configuration search, no confidence intervals; it is unreliable on negotiated and Flex fares. See the model card.
 - **Freshness** uses HTTP `Last-Modified`, which changes on re-publication.
 - **Single machine** (16 logical cores, 16 GB, Docker Desktop/WSL2). Throughput numbers are for that host; raw landing dominates.
 - **Optional LLM provider never executed** (no API key in the build environment). All stored suggestions come from the built-in deterministic analyzer, which only handles the incident shapes it was coded for.
@@ -371,6 +446,7 @@ pip install -e ".[dev,dbt,soda,dashboard,copilot,orchestration]"
 docker compose up -d postgres
 python -m dqc ingest 2024-11 2024-12 2025-01 2025-02
 python -m dqc run
+python -m dqc ml train && python -m dqc ml score   # fare model: train, register, score all months
 (cd dbt && dbt build --profiles-dir .)
 docker compose up -d            # API :8000, Streamlit :8502, Prometheus :9091, Grafana :3001
 ```
