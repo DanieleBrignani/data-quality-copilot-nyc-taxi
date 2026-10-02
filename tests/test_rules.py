@@ -124,3 +124,23 @@ def test_warning_does_not_quarantine():
     flags = rules.record_flags(ev, RS)
     assert flags["is_valid"].to_list() == [True]
     assert rules.quarantine_rows(df, flags, RS).is_empty()
+
+
+def test_zero_distance_between_different_zones_is_flagged_only_for_real_trips():
+    p = datetime(2025, 1, 10, 8)
+    rows = [valid_trip(trip_distance=0.0),                                                    # 20 min, 161 -> 236
+            valid_trip(trip_distance=0.0, DOLocationID=161),                                  # same zone
+            valid_trip(trip_distance=0.0, tpep_pickup_datetime=p, tpep_dropoff_datetime=p + timedelta(seconds=30)),
+            valid_trip()]
+    assert failed(rows, "DQ027_zero_distance_between_zones") == [True, False, False, False]
+
+
+def test_charge_without_a_recorded_trip():
+    p = datetime(2025, 1, 10, 8)
+    short = dict(tpep_pickup_datetime=p, tpep_dropoff_datetime=p + timedelta(seconds=12))
+    rows = [valid_trip(trip_distance=0.0, **short),                    # charged, no trip
+            valid_trip(trip_distance=0.0, fare_amount=0.0, **short),   # nothing charged
+            valid_trip(trip_distance=0.4, **short),                    # distance present
+            valid_trip(trip_distance=0.0)]                             # 20 minutes: DQ027's case, not this one
+    assert failed(rows, "DQ028_charged_without_trip") == [True, False, False, False]
+    assert RS.by_id("DQ028_charged_without_trip").severity == "warning"   # never quarantines

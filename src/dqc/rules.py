@@ -46,6 +46,10 @@ class Rule:
                 ["trip_distance"] if self.type == "implied_speed" else [])
         if self.type == "total_reconciliation":
             return ["total_amount"]
+        if self.type == "zero_distance_between_zones":
+            return ["trip_distance", "PULocationID", "DOLocationID"]
+        if self.type == "charged_without_trip":
+            return ["trip_distance", "fare_amount"]
         if self.type == "business_key_duplicate":
             return list(s["key"])
         return []
@@ -129,6 +133,14 @@ def _failed_expr(rule: Rule, ctx: dict) -> pl.Expr:
         hours = (pl.col("tpep_dropoff_datetime") - pl.col("tpep_pickup_datetime")).dt.total_seconds() / 3600
         return (pl.when(hours > 0).then(pl.col("trip_distance") / hours > s["max_mph"])
                 .otherwise(False)).fill_null(False)
+    if t in ("zero_distance_between_zones", "charged_without_trip"):
+        seconds = (pl.col("tpep_dropoff_datetime") - pl.col("tpep_pickup_datetime")).dt.total_seconds()
+        zero = pl.col("trip_distance") == 0
+        if t == "zero_distance_between_zones":
+            cond = zero & (pl.col("PULocationID") != pl.col("DOLocationID")) & (seconds >= s["min_duration_seconds"])
+        else:
+            cond = zero & (pl.col("fare_amount") > 0) & (seconds < s["max_duration_seconds"]) & (seconds >= 0)
+        return cond.fill_null(False)
     if t == "total_reconciliation":
         comps = ["fare_amount", "extra", "mta_tax", "tip_amount", "tolls_amount", "improvement_surcharge",
                  "congestion_surcharge", "Airport_fee", "cbd_congestion_fee"]

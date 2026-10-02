@@ -11,7 +11,7 @@
 # (https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf),
 # TLC rules, or a quantile measured on the real partitions (see docs in README "Deterministic Rules").
 
-ruleset_version: "1.3.0"
+ruleset_version: "1.4.0"
 
 rules:
   # ---------------- completeness ----------------
@@ -136,6 +136,30 @@ rules:
     type: implied_speed
     max_mph: 90
     description: distance / duration implying > 90 mph average speed signals distance or clock errors.
+
+  - rule_id: DQ027_zero_distance_between_zones
+    rule_version: 1
+    severity: warning
+    dimension: consistency
+    type: zero_distance_between_zones
+    min_duration_seconds: 60
+    description: >
+      trip_distance = 0 on a trip of at least one minute between two DIFFERENT zones: the distance was
+      not captured. Discovered by the distance model's manual review (35 of 40 flags) and then measured:
+      0.9-1.7% of rule-valid records per month, 71-84% of them Flex Fare. Warning, not critical: the fare
+      of these trips is real and usable; promoting it would quarantine a further ~1-2% of trips, which is
+      a decision for the data owner.
+
+  - rule_id: DQ028_charged_without_trip
+    rule_version: 1
+    severity: warning
+    dimension: consistency
+    type: charged_without_trip
+    max_duration_seconds: 60
+    description: >
+      fare_amount > 0 with trip_distance = 0 and a duration under one minute: a charge with no recorded
+      trip. Discovered by the fare model's manual review and then measured: ~0.6% of rule-valid records
+      per month, about 45% of them negotiated-rate (RatecodeID 5).
 
   # ---------------- validity: domains (TLC data dictionary) ----------------
   - rule_id: DQ030_vendor_id_accepted
