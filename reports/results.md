@@ -1,4 +1,4 @@
-# Results (generated 2026-10-02T20:45:34+00:00)
+# Results (generated 2026-10-02T21:28:41+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
@@ -8,7 +8,7 @@ All values below are read from the warehouse / report files; regenerate with `py
 - records processed: 14,367,509
 - quarantined records: 489,224 (3.405%)
 - warning-only records (kept, flagged): 1,995,424 (13.888%)
-- processing time (sum of partitions): 507.6s -> 28,308 rows/s
+- processing time (sum of partitions): 658.7s -> 21,812 rows/s
 - schema changes detected between consecutive partitions: 1 (unexpected / contract-breaking: 0)
 - drift alerts: 9 (warnings: 2)
 
@@ -16,19 +16,19 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 | partition | rows | quarantined | % | warning-only | valid % | score | schema | duration s | rows/s | source lag d |
 |---|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|
-| yellow_2024-11 | 3,646,369 | 73,800 | 2.024 | 411,958 | 97.976 | 95.152 | ok | 115.5 | 31,575 | 47.8 |
-| yellow_2024-12 | 3,668,371 | 80,397 | 2.192 | 369,614 | 97.808 | 95.289 | ok | 115.2 | 31,849 | 51.9 |
-| yellow_2025-01 | 3,475,226 | 146,639 | 4.220 | 497,833 | 95.780 | 92.199 | additive_change | 113.0 | 30,759 | 81.7 |
-| yellow_2025-02 | 3,577,543 | 188,388 | 5.266 | 716,019 | 94.734 | 89.731 | additive_change | 163.9 | 21,826 | 53.7 |
+| yellow_2024-11 | 3,646,369 | 73,800 | 2.024 | 411,958 | 97.976 | 95.152 | ok | 128.6 | 28,354 | 47.8 |
+| yellow_2024-12 | 3,668,371 | 80,397 | 2.192 | 369,614 | 97.808 | 95.289 | ok | 130.1 | 28,202 | 51.9 |
+| yellow_2025-01 | 3,475,226 | 146,639 | 4.220 | 497,833 | 95.780 | 92.199 | additive_change | 178.5 | 19,465 | 81.7 |
+| yellow_2025-02 | 3,577,543 | 188,388 | 5.266 | 716,019 | 94.734 | 89.731 | additive_change | 221.5 | 16,153 | 53.7 |
 
 ## Stage timings (s)
 
 | partition | read_and_schema | raw_landing | profiling | rules | persist_quality | anomaly | drift |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| yellow_2024-11 | 0.5 | 71.5 | 2.1 | 7.4 | 12.0 | 22.1 | - |
-| yellow_2024-12 | 0.4 | 67.6 | 2.8 | 5.6 | 16.8 | 19.3 | 2.8 |
-| yellow_2025-01 | 0.2 | 62.2 | 1.8 | 7.3 | 18.7 | 19.6 | 3.0 |
-| yellow_2025-02 | 0.3 | 91.0 | 2.0 | 9.4 | 39.3 | 19.0 | 2.8 |
+| yellow_2024-11 | 0.5 | 81.9 | 2.3 | 6.7 | 15.9 | 21.4 | - |
+| yellow_2024-12 | 0.4 | 72.6 | 2.2 | 7.6 | 25.2 | 19.0 | 3.1 |
+| yellow_2025-01 | 0.4 | 113.1 | 1.9 | 9.4 | 28.9 | 21.7 | 3.2 |
+| yellow_2025-02 | 0.3 | 154.0 | 2.0 | 8.8 | 34.7 | 18.1 | 3.5 |
 
 ## Rule failures (failed rows / failure rate %)
 
@@ -84,38 +84,38 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 | partition | method | scored | flagged | % | runtime s |
 |---|---|---:|---:|---:|---:|
-| yellow_2024-11 | iqr | 3,572,569 | 311,070 | 8.707 | 1.08 |
-| yellow_2024-11 | iqr_log | 3,572,569 | 4,849 | 0.136 | 1.85 |
-| yellow_2024-11 | isolation_forest | 3,572,569 | 33,683 | 0.943 | 16.87 |
-| yellow_2024-11 | zscore | 3,572,569 | 62,322 | 1.744 | 0.64 |
-| yellow_2024-12 | iqr | 3,587,974 | 316,460 | 8.820 | 1.25 |
-| yellow_2024-12 | iqr_log | 3,587,974 | 4,301 | 0.120 | 1.19 |
-| yellow_2024-12 | isolation_forest | 3,587,974 | 35,614 | 0.993 | 14.59 |
-| yellow_2024-12 | zscore | 3,587,974 | 60,619 | 1.690 | 0.33 |
-| yellow_2025-01 | iqr | 3,328,587 | 295,939 | 8.891 | 1.70 |
-| yellow_2025-01 | iqr_log | 3,328,587 | 6,828 | 0.205 | 1.39 |
-| yellow_2025-01 | isolation_forest | 3,328,587 | 33,251 | 0.999 | 14.59 |
-| yellow_2025-01 | zscore | 3,328,587 | 62,158 | 1.867 | 0.40 |
-| yellow_2025-02 | iqr | 3,389,155 | 267,919 | 7.905 | 1.84 |
-| yellow_2025-02 | iqr_log | 3,389,155 | 5,974 | 0.176 | 1.08 |
-| yellow_2025-02 | isolation_forest | 3,389,155 | 33,890 | 1.000 | 14.22 |
-| yellow_2025-02 | zscore | 3,389,155 | 70,776 | 2.088 | 0.36 |
+| yellow_2024-11 | iqr | 3,572,569 | 311,070 | 8.707 | 1.60 |
+| yellow_2024-11 | iqr_log | 3,572,569 | 4,849 | 0.136 | 1.47 |
+| yellow_2024-11 | isolation_forest | 3,572,569 | 33,683 | 0.943 | 15.27 |
+| yellow_2024-11 | zscore | 3,572,569 | 62,322 | 1.744 | 0.36 |
+| yellow_2024-12 | iqr | 3,587,974 | 316,460 | 8.820 | 0.91 |
+| yellow_2024-12 | iqr_log | 3,587,974 | 4,301 | 0.120 | 1.29 |
+| yellow_2024-12 | isolation_forest | 3,587,974 | 35,614 | 0.993 | 14.68 |
+| yellow_2024-12 | zscore | 3,587,974 | 60,619 | 1.690 | 0.35 |
+| yellow_2025-01 | iqr | 3,328,587 | 295,939 | 8.891 | 1.50 |
+| yellow_2025-01 | iqr_log | 3,328,587 | 6,828 | 0.205 | 1.27 |
+| yellow_2025-01 | isolation_forest | 3,328,587 | 33,251 | 0.999 | 15.99 |
+| yellow_2025-01 | zscore | 3,328,587 | 62,158 | 1.867 | 0.38 |
+| yellow_2025-02 | iqr | 3,389,155 | 267,919 | 7.905 | 0.86 |
+| yellow_2025-02 | iqr_log | 3,389,155 | 5,974 | 0.176 | 1.04 |
+| yellow_2025-02 | isolation_forest | 3,389,155 | 33,890 | 1.000 | 13.79 |
+| yellow_2025-02 | zscore | 3,389,155 | 70,776 | 2.088 | 0.35 |
 
 ## Benchmark on injected errors (yellow_2025-01, 200,000 real rule-clean records + 4,363 labelled errors, seed 42)
 
 | detector | precision | recall | FPR | flagged | runtime s |
 |---|---:|---:|---:|---:|---:|
-| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.102 |
-| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.102 |
-| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.041 |
+| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.174 |
+| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.174 |
+| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.043 |
 | rules_critical+iqr | 0.1657 | 0.8746 | 0.098046 | 23,033 |  |
-| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.061 |
+| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.052 |
 | rules_critical+iqr_log | 0.8777 | 0.7222 | 0.00224 | 3,590 |  |
 | zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.014 |
 | rules_critical+zscore | 0.6748 | 0.7889 | 0.008464 | 5,101 |  |
-| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 1.763 |
+| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 1.691 |
 | rules_critical+isolation_forest | 0.628 | 0.6981 | 0.009204 | 4,850 |  |
-| fare_model | 0.776 | 0.2152 | 0.001383 | 1,210 | 0.171 |
+| fare_model | 0.776 | 0.2152 | 0.001383 | 1,210 | 0.172 |
 | rules_critical+fare_model | 0.924 | 0.7552 | 0.001383 | 3,566 |  |
 | rules_critical+iqr_log+fare_model | 0.8453 | 0.7788 | 0.003173 | 4,020 |  |
 
@@ -154,10 +154,10 @@ identical quality results: True · raw rows not duplicated: True
 
 | partition | score ref | score rerun | quarantined ref | quarantined rerun | raw rows | duration ref s | duration rerun s | rerun raw landing s |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| yellow_2024-11 | 95.1516 | 95.1516 | 73,800 | 73,800 | 3,646,369 | 115.5 | 66.3 | 2.1 |
-| yellow_2024-12 | 95.2894 | 95.2894 | 80,397 | 80,397 | 3,668,371 | 115.2 | 74.8 | 6.2 |
-| yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 113.0 | 101.1 | 4.5 |
-| yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 163.9 | 143.2 | 16.8 |
+| yellow_2024-11 | 95.1516 | 95.1516 | 73,800 | 73,800 | 3,646,369 | 128.6 | 80.9 | 3.5 |
+| yellow_2024-12 | 95.2894 | 95.2894 | 80,397 | 80,397 | 3,668,371 | 130.1 | 94.3 | 3.2 |
+| yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 178.5 | 95.4 | 5.3 |
+| yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 221.5 | 107.3 | 3.1 |
 
 ## Fare model v1 (hgb_large (HistGradientBoostingRegressor))
 
@@ -167,11 +167,11 @@ trained on yellow_2024-11 (500,000 sampled rule-valid rows), selected and calibr
 
 | candidate | MAE $ | RMSE $ | median AE $ | R2 | fit s |
 |---|---:|---:|---:|---:|---:|
-| hgb_large | 1.303 | 5.005 | 0.393 | 0.9268 | 1.74 |
-| hgb_small | 1.358 | 5.030 | 0.418 | 0.9260 | 1.33 |
-| hgb_large_l1 | 1.385 | 6.743 | 0.342 | 0.8671 | 11.65 |
-| baseline_median | 11.081 | 19.562 | 6.300 | -0.1187 | 0.02 |
-| baseline_linear_distance_duration | 4.513 | 9.141 | 3.006 | 0.7557 | 0.05 |
+| hgb_large | 1.303 | 5.005 | 0.393 | 0.9268 | 1.65 |
+| hgb_small | 1.358 | 5.030 | 0.418 | 0.9260 | 1.85 |
+| hgb_large_l1 | 1.385 | 6.743 | 0.342 | 0.8671 | 13.91 |
+| baseline_median | 11.081 | 19.562 | 6.300 | -0.1187 | 0.45 |
+| baseline_linear_distance_duration | 4.513 | 9.141 | 3.006 | 0.7557 | 1.34 |
 
 ### Performance per partition (all rule-valid records)
 
@@ -214,8 +214,8 @@ partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
 |---|---:|
 | likely_data_error | 23 |
 | flex_fare_semantics | 15 |
-| plausible_legitimate | 1 |
 | undetermined | 1 |
+| plausible_legitimate | 1 |
 
 ## Manual review of real anomalies
 

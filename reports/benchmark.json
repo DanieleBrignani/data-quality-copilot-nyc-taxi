@@ -363,20 +363,20 @@
     }
   },
   "runtime_s": {
-    "rules": 0.102,
-    "iqr": 0.041,
-    "iqr_log": 0.061,
+    "rules": 0.174,
+    "iqr": 0.043,
+    "iqr_log": 0.052,
     "zscore": 0.014,
-    "isolation_forest": 1.763,
-    "fare_model": 0.171
+    "isolation_forest": 1.691,
+    "fare_model": 0.172
   },
   "rows_per_sec": {
-    "rules": 1962233,
-    "iqr": 4829479,
-    "iqr_log": 3288769,
-    "zscore": 14355118,
-    "isolation_forest": 113633,
-    "fare_model": 1171378
+    "rules": 1154809,
+    "iqr": 4695905,
+    "iqr_log": 3824422,
+    "zscore": 13857800,
+    "isolation_forest": 118518,
+    "fare_model": 1166647
   },
   "seed": 42
 }

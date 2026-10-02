@@ -7,8 +7,8 @@
   "verdict_counts": {
     "likely_data_error": 23,
     "flex_fare_semantics": 15,
-    "plausible_legitimate": 1,
-    "undetermined": 1
+    "undetermined": 1,
+    "plausible_legitimate": 1
   },
   "estimated_false_positive_share": 0.025,
   "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
