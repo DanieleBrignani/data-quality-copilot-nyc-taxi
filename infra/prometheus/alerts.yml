@@ -26,8 +26,8 @@ groups:
         labels: {severity: warning}
         annotations:
           summary: "TLC published {{ $labels.partition }} {{ $value | printf \"%.0f\" }} days after month end"
-      - alert: FareModelDegraded
+      - alert: ModelDegraded
         expr: dq_model_mae_vs_validation > 1.25
         labels: {severity: warning}
         annotations:
-          summary: "Fare model MAE on {{ $labels.partition }} is {{ $value | printf \"%.2f\" }}x validation MAE: retrain"
+          summary: "{{ $labels.model }} MAE on {{ $labels.partition }} is {{ $value | printf \"%.2f\" }}x validation MAE: retrain"

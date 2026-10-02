@@ -1,95 +1,148 @@
-# Model card — `fare_model` v1
+# Model card — `fare_model` v2 and `distance_model` v1
 
-All figures come from `reports/results.md` (section *Fare model*) and `models/fare_model_v1.json`; `scripts/reproduce.sh` retrains the model and reproduces them, including the artifact's sha256.
+All figures come from `reports/results.md` and `models/*.json`. `scripts/reproduce.sh` retrains both models; training is deterministic, so it reproduces the same artifacts byte for byte.
 
 ## Intended use
 
-Estimate the **expected metered fare** (`fare_amount`, USD) of a NYC yellow-taxi trip from attributes known when the trip ends, and flag records whose actual fare is far from that expectation. It is a **data-quality detector**: flags go to an investigation queue (`dq.model_flags`). It does **not** quarantine, correct or price anything, and must not be used to set or audit fares for individual drivers or passengers.
+Two regression models used as **data-quality detectors** on NYC yellow-taxi trip records:
+
+| model | predicts | question |
+|---|---|---|
+| `fare_model` | metered fare (`fare_amount`, USD) | is this fare consistent with this trip? |
+| `distance_model` | trip distance (`trip_distance`, miles) | is this distance consistent with this trip? |
+
+A record whose actual value is far from the prediction is flagged and sent to an investigation queue (`dq.model_flags`). The models do **not** quarantine, correct or price anything, and must not be used to set or audit fares for individual drivers or passengers.
 
 ## Data
 
-| split | partition | role | rows used |
+| split | partition | role | rows |
 |---|---|---|---:|
-| train | yellow_2024-11 | fit all candidates | 500,000 (seeded sample of 3,572,569 rule-valid rows) |
+| train | yellow_2024-11 | fit every candidate | 500,000 (seeded sample of 3,572,569 rule-valid rows) |
 | validation | yellow_2024-12 | model selection, flag-threshold calibration, permutation importance | 300,000 (sample) |
-| test | yellow_2025-01, yellow_2025-02 | reported only — never used for any decision | 3,328,587 and 3,389,155 (all rule-valid rows) |
+| test | yellow_2025-01, yellow_2025-02 | reported only — never used for a decision | 3,328,587 and 3,389,155 (all rule-valid rows) |
 
-Splits are **chronological** (no shuffling across months): the test months are in the future relative to training, and include the congestion-pricing launch (5 Jan 2025). Only records that pass every critical rule are used, so label noise from known-invalid fares is excluded; records that pass the rules but are still wrong remain in the training data (see Limitations).
+Splits are chronological. The test months are in the future relative to training and include the congestion-pricing launch (5 Jan 2025). Only records that pass every critical rule are used; records that pass the rules but are still wrong remain in the training data (see Limitations).
 
 ## Features and leakage control
 
-`trip_distance`, `trip_duration_min`, `RatecodeID`, `VendorID`, `payment_type`, `passenger_count`, `pickup_hour`, `pickup_dow`, `PULocationID`, `DOLocationID`.
+- `fare_model`: `trip_distance`, `trip_duration_min`, `RatecodeID`, `VendorID`, `payment_type`, `passenger_count`, `pickup_hour`, `pickup_dow`, `PULocationID`, `DOLocationID`.
+- `distance_model`: `trip_duration_min`, `RatecodeID`, `VendorID`, `pickup_hour`, `pickup_dow`, `PULocationID`, `DOLocationID`.
 
-No monetary column is a feature (`tip`, `tolls`, `total`, `extra`, surcharges are forbidden by `features.FORBIDDEN`; a unit test enforces it). Zones (265 categories) are target-encoded with 5-fold cross-fitting inside the scikit-learn pipeline, so the encoding of a training row never uses that row's own target. Missing values are encoded as −1.
+No model sees its own target or any monetary column (tip, tolls, total, extra, surcharges). The distance model does not see the fare either, so a wrong fare cannot hide a wrong distance. A unit test enforces all three constraints. Zones (265 categories) are target-encoded with 5-fold cross-fitting inside the scikit-learn pipeline. Missing values are encoded as −1.
 
-## Model
+## Candidates and selection
 
-`HistGradientBoostingRegressor` (squared error, learning rate 0.1, 400 iterations, 63 leaves, seed 42), chosen as the lowest validation MAE among five candidates:
+Per model: a median baseline, a linear baseline, a random forest (trained on 200k rows), a default gradient boosting, and a seeded random search over 10 gradient-boosting configurations (learning rate, iterations, leaves, minimum leaf size, L2).
 
-| candidate | validation MAE $ | RMSE $ | R² |
-|---|---:|---:|---:|
-| median baseline | 11.081 | 19.562 | −0.119 |
-| linear regression on distance + duration | 4.513 | 9.141 | 0.756 |
-| HGB small (200 it., 31 leaves) | 1.358 | 5.030 | 0.926 |
-| **HGB large (400 it., 63 leaves)** | **1.303** | **5.005** | **0.927** |
-| HGB large, absolute-error loss | 1.385 | 6.743 | 0.867 |
+**Selection rule, fixed before looking at results:** among the candidates within 1% of the best validation MAE, take the smallest serialised model.
 
-The search is deliberately small: three boosted configurations and two baselines, compared on one validation month. No claim is made that this is the best achievable model.
+| | fare model (MAE $) | distance model (MAE mi) |
+|---|---:|---:|
+| median baseline | 11.081 | 2.316 |
+| linear baseline | 4.513 | 2.514 |
+| random forest | **1.2645** (47.6 MB) | 0.789 (47.4 MB) |
+| gradient boosting, default | 1.303 (0.29 MB) | 0.739 (1.08 MB) |
+| best searched configuration | 1.2666 (0.81 MB) | 0.732 (2.36 MB) |
+| **selected** | **1.2666 (0.81 MB)** — lr 0.1, 600 iterations, 255 leaves, min leaf 50, L2 1.0 | **0.736 (1.48 MB)** — lr 0.2, 600 iterations, 255 leaves, min leaf 200, L2 10.0 |
+
+For the fare model the random forest is the most accurate by $0.002 and 59× larger; the rule selects the gradient boosting. The whole search improved the fare MAE by 3% over the default configuration: the model is limited by the data, not by the algorithm. No statistical test was run between candidates; "within 1%" is a practical tolerance, not a significance claim.
 
 ## Performance
 
-| partition | split | MAE $ | RMSE $ | median AE $ | R² | MAE / validation |
-|---|---|---:|---:|---:|---:|---:|
-| yellow_2024-11 | train (mostly in-sample) | 1.148 | 4.655 | 0.392 | 0.932 | 0.88 |
-| yellow_2024-12 | validation | 1.299 | 5.297 | 0.395 | 0.918 | 1.00 |
-| yellow_2025-01 | **test** | 1.128 | 4.700 | 0.398 | 0.922 | 0.87 |
-| yellow_2025-02 | **test** | 1.232 | 4.362 | 0.440 | 0.924 | 0.95 |
+MAE with a 95% interval computed on the same rows as the estimate (normal approximation above 200k rows, percentile bootstrap below).
 
-No degradation out of time: the congestion fee is a separate column, so the metered fare relationship did not move. The median error is ~$0.40; the mean is pulled up by a heavy tail (RMSE ≈ 4–5).
+**Fare model ($)**
 
-**Error is not uniform across segments** (MAE, $):
+| partition | split | MAE | 95% CI | median AE | R² | MAE / validation |
+|---|---|---:|---|---:|---:|---:|
+| yellow_2024-11 | train (mostly in-sample) | 1.110 | [1.105, 1.114] | 0.36 | 0.932 | 0.88 |
+| yellow_2024-12 | validation | 1.263 | [1.258, 1.269] | 0.37 | 0.918 | 1.00 |
+| yellow_2025-01 | **test** | 1.100 | [1.095, 1.105] | 0.37 | 0.922 | 0.87 |
+| yellow_2025-02 | **test** | 1.204 | [1.200, 1.208] | 0.41 | 0.925 | 0.95 |
+
+**Distance model (miles)**
+
+| partition | split | MAE | 95% CI | R² | MAE / validation |
+|---|---|---:|---|---:|---:|
+| yellow_2024-11 | train (mostly in-sample) | 0.680 | [0.679, 0.681] | 0.905 | 0.92 |
+| yellow_2024-12 | validation | 0.739 | [0.738, 0.740] | 0.891 | 1.00 |
+| yellow_2025-01 | **test** | 0.665 | [0.664, 0.667] | 0.893 | 0.90 |
+| yellow_2025-02 | **test** | 0.671 | [0.669, 0.672] | 0.889 | 0.91 |
+
+**Rolling-origin backtest** — the selected configuration refit on month *t* and evaluated on *t+1* (300k sampled rows):
+
+| train → evaluate | fare MAE $ [95% CI] | fare R² | distance MAE mi [95% CI] | distance R² |
+|---|---|---:|---|---:|
+| 2024-11 → 2024-12 | 1.292 [1.274, 1.309] | 0.925 | 0.746 [0.742, 0.751] | 0.888 |
+| 2024-12 → 2025-01 | 1.225 [1.209, 1.241] | 0.925 | 0.670 [0.665, 0.674] | 0.889 |
+| 2025-01 → 2025-02 | 1.203 [1.188, 1.218] | 0.924 | 0.686 [0.681, 0.690] | 0.882 |
+
+Performance does not depend on which month is used for training, and there is no degradation across the congestion-pricing launch: the fee is a separate column, so neither relationship moved. The backtest evaluates; it selects nothing.
+
+**Error is not uniform across segments.** Fare-model MAE by payment type ($):
 
 | partition | Flex Fare (0) | credit card (1) | cash (2) | no charge (3) | dispute (4) |
 |---|---:|---:|---:|---:|---:|
-| yellow_2024-12 | 4.98 | 0.90 | 1.03 | 2.85 | 2.02 |
-| yellow_2025-01 | 3.06 | 0.77 | 0.96 | 2.43 | 1.93 |
-| yellow_2025-02 | 2.94 | 0.77 | 0.93 | 1.97 | 1.70 |
+| yellow_2024-12 | 4.96 | 0.85 | 1.01 | 2.85 | 2.00 |
+| yellow_2025-01 | 3.08 | 0.74 | 0.92 | 2.39 | 1.86 |
+| yellow_2025-02 | 2.93 | 0.73 | 0.89 | 2.00 | 1.63 |
 
-Flex Fare records are 3–5× harder to predict than card or cash trips: their `fare_amount` does not follow the meter. This is independent evidence for the Flex Fare semantics issue found by the rules.
+Flex Fare records are 3–6× harder to price than card or cash trips: their `fare_amount` does not follow the meter. This is independent evidence for the Flex Fare semantics issue found by the rules. The distance model shows a much smaller gap (0.92–1.07 mi for Flex Fare vs 0.60–0.70 for card), as expected: distance does not depend on how the fare is reported.
 
-**Permutation importance** (increase in validation MAE when a feature is shuffled): duration 7.35, distance 5.55, RatecodeID 2.51, drop-off zone 0.12, VendorID 0.10, pickup zone 0.05, hour 0.03, payment type 0.01, passenger count 0.01, day of week 0.004.
+**Permutation importance** (increase in validation MAE): fare model — duration 7.47, distance 5.58, rate code 2.58, drop-off zone 0.19, pickup zone 0.09, vendor 0.08, hour 0.04. Distance model — duration 1.45, pickup zone 0.76, drop-off zone 0.59, hour 0.20, rate code 0.08.
 
-## Detector
+## Detectors
 
-Score: `|ln((fare + 5) / (predicted + 5))|` — symmetric, so "10× too high" and "10× too low" score the same. Threshold 0.9195 = the 99.5th percentile of the score on the validation month, i.e. **0.5% of validation records are flagged by construction**. On the test months the flag rate is 0.27% and 0.14%.
+Score: `|ln((actual + floor) / (predicted + floor))|` (floor $5 for the fare, 0.5 mi for the distance) — symmetric, so "10× too high" and "10× too low" score the same. Threshold: the 99.5th percentile of the score on the validation month, i.e. a **0.5% review budget fixed in advance and identical for both models** (fare 0.908, distance 1.593). By construction 0.5% of validation records are flagged; on the test months the fare model flags 0.28% and 0.14%, the distance model 0.49% and 0.60%.
 
-Benchmark on 200,000 real Jan-2025 rule-clean records + 4,363 labelled injected errors:
+Benchmark: 200,000 real Jan-2025 rule-clean records + 4,363 labelled injected errors; 95% bootstrap intervals over benchmark rows.
 
 | detector | precision | recall | false-positive rate |
-|---|---:|---:|---:|
-| fare model alone | 0.78 | 0.22 | 0.14% |
-| rules + fare model | 0.92 | 0.76 | 0.14% |
-| rules + log-IQR | 0.88 | 0.72 | 0.22% |
-| Isolation Forest alone | 0.10 | 0.05 | 0.92% |
+|---|---|---|---:|
+| fare model | 0.78 [0.76–0.80] | 0.22 [0.21–0.24] | 0.14% |
+| distance model | 0.60 [0.57–0.63] | 0.14 [0.13–0.15] | 0.20% |
+| rules + fare model | 0.92 [0.91–0.93] | 0.75 [0.74–0.76] | 0.14% |
+| rules + both models | 0.84 [0.83–0.85] | 0.78 [0.77–0.79] | 0.33% |
+| rules + log-IQR | 0.88 [0.87–0.89] | 0.72 [0.71–0.73] | 0.22% |
+| Isolation Forest | 0.10 [0.09–0.11] | 0.05 [0.04–0.05] | 0.92% |
 
-It catches 100% of `fare ×10`, 83% of negative fares and 58% of distance unit errors, and **0–6%** of `tip spike`, `distance ×5` and `swapped zones`.
+Operating points (thresholds from the validation month; the budget was not changed after seeing this):
 
-Manual review of 40 random real flags (Jan 2025, seed 7): 23 likely data errors (mostly trips with ~0 distance and ~0 duration that still carry a fare), 15 Flex Fare semantic inconsistencies, 1 legitimate (a no-charge trip), 1 undetermined → **1 false positive in 40**, against 29 in 40 for Isolation Forest. Verdicts were assigned by the project author, not an independent domain expert.
+| budget | fare: precision / recall | fare: `fare ×10` | distance: precision / recall | distance: `distance ×5` |
+|---:|---|---:|---|---:|
+| 0.1% | 0.84 / 0.10 | 0.98 | 0.73 / 0.09 | 0.00 |
+| 0.2% | 0.80 / 0.13 | 1.00 | 0.65 / 0.09 | 0.01 |
+| **0.5%** | **0.78 / 0.22** | **1.00** | **0.60 / 0.14** | **0.33** |
+| 1% | 0.68 / 0.34 | 1.00 | 0.54 / 0.20 | 0.79 |
+| 2% | 0.58 / 0.38 | 1.00 | 0.42 / 0.23 | 0.94 |
+
+Manual review of 40 random real flags per model (Jan 2025, seed 7):
+
+| verdict | fare model | distance model |
+|---|---:|---:|
+| likely data error | 22 | 38 |
+| Flex Fare semantic inconsistency | 16 | 0 |
+| plausible legitimate | 1 | 1 |
+| undetermined | 1 | 1 |
+
+One false positive in 40 for each model, against 29 in 40 for Isolation Forest. Verdicts were assigned by the project author, not an independent domain expert.
 
 ## Limitations
 
 - **Not a fare authority.** Negotiated fares (RatecodeID 5) and Flex Fares are not determined by distance and time; predictions there are averages of unrelated prices.
-- **Zero-distance / zero-duration records**: the model flags them, but partly for the wrong reason — it predicts the average negotiated fare for an input it has rarely seen. A rule ("fare charged with no distance and no duration") would be the right control; the model's contribution was to surface the pattern.
-- **Out-of-distribution feature combinations** are handled poorly: a distance multiplied by 5 with an unchanged duration is detected only 6% of the time, because duration dominates the prediction.
-- **It cannot see errors that leave the fare relationship intact**: swapped zones, wrong tips, wrong passenger counts.
-- **Label noise**: training labels are "passed the rules", not "verified correct".
-- **Threshold is a quantile**, so some share of any month is always flagged; the flag rate is not a measure of data quality by itself.
-- **One model, one validation month, one training run.** No confidence intervals, no cross-validation across months, no comparison with other model families.
+- **Zero-distance / zero-duration records**: the fare model flags them partly for the wrong reason — it predicts an average negotiated fare for an input it rarely saw. Both manual reviews point to a missing rule ("a fare is charged but distance is 0"); a rule is the right control for it.
+- **Errors that leave the modelled relationship intact are invisible**: swapped pickup/drop-off zones (0%), tip spikes (0%), wrong passenger counts.
+- **`distance ×5` is only partly caught** at the fixed budget (33%); a larger budget catches more at the cost of precision.
+- **Label noise**: training labels are "passed the rules", not "verified correct" — the reviews show that zero-distance trips are in the training data.
+- **Thresholds are quantiles**, so some share of any month is always flagged; the flag rate is not a measure of data quality by itself.
+- **One validation month for selection**, a 10-configuration search, two model families, no significance test between candidates.
+- **Intervals are for the mean error**, not prediction intervals for individual trips.
+- **Benchmark errors are synthetic** corruptions of real records; recall on real-world error types may differ.
 - **Fairness / geography**: errors by borough or zone were not analysed.
 
 ## Operations
 
-- **Registry**: `models/fare_model_v1.json` (metadata) + `.joblib` (artifact, 292 KB) and table `dq.model_registry`: version, algorithm, hyper-parameters, features, training partition and the **sha256 of the raw training file**, all candidates' validation metrics, threshold, artifact sha256, library versions. Loading refuses an artifact whose sha256 does not match (tested).
-- **Reproducibility**: fixed seeds; retraining on the same raw file reproduces the same metrics, threshold and artifact hash.
+- **Registry**: `models/<name>_v<N>.json` + `.joblib` and table `dq.model_registry`: version, algorithm, hyper-parameters, features, training partition and the **sha256 of the raw training file**, every candidate's metrics and size, the selection rule, thresholds for five budgets, backtest, artifact sha256, library versions. History is kept: `fare_model` v1 (default configuration, 0.29 MB) and v2 (after the search) are both registered. Loading refuses an artifact whose sha256 does not match (tested).
+- **Reproducibility**: fixed seeds; retraining on the same raw file reproduces the artifact byte for byte and therefore does not create a new version (tested).
 - **Serving**: `POST /predict/fare` (read-only) and `GET /model`.
-- **Monitoring**: `dq.model_metrics` per partition; Prometheus gauges `dq_model_mae`, `dq_model_mae_vs_validation`, `dq_model_flag_rate`; alert `FareModelDegraded` when MAE exceeds 1.25× the validation MAE. Retraining is a manual, versioned step (`python -m dqc ml train`), never automatic.
+- **Monitoring**: `dq.model_metrics` per model and partition; Prometheus gauges `dq_model_mae`, `dq_model_mae_vs_validation`, `dq_model_flag_rate`; alert `ModelDegraded` when MAE exceeds 1.25× the validation MAE. Retraining is a manual, versioned step (`python -m dqc ml train`), never automatic.

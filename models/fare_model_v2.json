@@ -1,0 +1,290 @@
+{
+  "model_name": "fare_model",
+  "version": 2,
+  "target": "fare_amount",
+  "unit": "$",
+  "created_at": "2026-10-02T21:58:43+00:00",
+  "algorithm": "hgb_search_05 (HistGradientBoostingRegressor)",
+  "params": {
+    "l2_regularization": 1.0,
+    "learning_rate": 0.1,
+    "loss": "squared_error",
+    "max_iter": 600,
+    "max_leaf_nodes": 255,
+    "min_samples_leaf": 50,
+    "random_state": 42
+  },
+  "features": [
+    "trip_distance",
+    "trip_duration_min",
+    "RatecodeID",
+    "VendorID",
+    "payment_type",
+    "passenger_count",
+    "pickup_hour",
+    "pickup_dow",
+    "PULocationID",
+    "DOLocationID"
+  ],
+  "train_partition": "yellow_2024-11",
+  "validation_partition": "yellow_2024-12",
+  "train_rows": 500000,
+  "validation_rows": 300000,
+  "train_data_sha256": "5ef321876de5007a7c147a347389133fc94fd7ac28f82eb1d57d8f2cf05cfd3b",
+  "selection_rule": "smallest artifact among candidates within 1% of the best validation MAE",
+  "selection": {
+    "baseline_median": {
+      "n": 300000,
+      "mae": 11.0810084,
+      "rmse": 19.562369284504708,
+      "median_ae": 6.299999999999999,
+      "r2": -0.11867891511826523,
+      "fit_s": 0.0,
+      "size_bytes": 75,
+      "within_tolerance": false
+    },
+    "baseline_linear": {
+      "n": 300000,
+      "mae": 4.512601577030721,
+      "rmse": 9.141490812377423,
+      "median_ae": 3.0064853839912846,
+      "r2": 0.7557151122830899,
+      "fit_s": 0.04,
+      "size_bytes": 919,
+      "within_tolerance": false
+    },
+    "random_forest": {
+      "n": 300000,
+      "mae": 1.264484862911903,
+      "rmse": 4.910941340791378,
+      "median_ae": 0.3543636214319408,
+      "r2": 0.9294995254920195,
+      "fit_s": 7.2,
+      "size_bytes": 47588143,
+      "within_tolerance": true
+    },
+    "hgb_default": {
+      "n": 300000,
+      "mae": 1.302825539283401,
+      "rmse": 5.005130706376393,
+      "median_ae": 0.3932205989377433,
+      "r2": 0.9267692649546315,
+      "fit_s": 1.83,
+      "size_bytes": 292266,
+      "within_tolerance": false
+    },
+    "hgb_search_00": {
+      "n": 300000,
+      "mae": 1.2763120520684466,
+      "rmse": 4.982034104657043,
+      "median_ae": 0.3715538429890284,
+      "r2": 0.9274435644720149,
+      "fit_s": 4.45,
+      "size_bytes": 1070948,
+      "within_tolerance": true
+    },
+    "hgb_search_01": {
+      "n": 300000,
+      "mae": 1.315549134658719,
+      "rmse": 5.05152531104415,
+      "median_ae": 0.40044991595330615,
+      "r2": 0.9254053615274954,
+      "fit_s": 0.92,
+      "size_bytes": 182586,
+      "within_tolerance": false
+    },
+    "hgb_search_02": {
+      "n": 300000,
+      "mae": 1.2789067669834513,
+      "rmse": 4.967844027432591,
+      "median_ae": 0.37046764999012627,
+      "r2": 0.9278562935498083,
+      "fit_s": 4.04,
+      "size_bytes": 794212,
+      "within_tolerance": false
+    },
+    "hgb_search_03": {
+      "n": 300000,
+      "mae": 1.3534510359371865,
+      "rmse": 5.0027160738157725,
+      "median_ae": 0.4293954610900741,
+      "r2": 0.9268399055331102,
+      "fit_s": 1.57,
+      "size_bytes": 181884,
+      "within_tolerance": false
+    },
+    "hgb_search_04": {
+      "n": 300000,
+      "mae": 1.3378073409799986,
+      "rmse": 5.009258404951764,
+      "median_ae": 0.4047586480248899,
+      "r2": 0.926648429332019,
+      "fit_s": 1.63,
+      "size_bytes": 180418,
+      "within_tolerance": false
+    },
+    "hgb_search_05": {
+      "n": 300000,
+      "mae": 1.2666245597082748,
+      "rmse": 4.980263029204395,
+      "median_ae": 0.3643865009758773,
+      "r2": 0.9274951418310967,
+      "fit_s": 2.43,
+      "size_bytes": 809093,
+      "within_tolerance": true
+    },
+    "hgb_search_06": {
+      "n": 300000,
+      "mae": 1.3386873115168019,
+      "rmse": 4.994715886226116,
+      "median_ae": 0.4125189262592812,
+      "r2": 0.9270737091225364,
+      "fit_s": 1.64,
+      "size_bytes": 188486,
+      "within_tolerance": false
+    },
+    "hgb_search_07": {
+      "n": 300000,
+      "mae": 1.2750530017645443,
+      "rmse": 5.025516586251319,
+      "median_ae": 0.3739952813939711,
+      "r2": 0.9261715130521401,
+      "fit_s": 3.37,
+      "size_bytes": 1275736,
+      "within_tolerance": true
+    },
+    "hgb_search_08": {
+      "n": 300000,
+      "mae": 1.2759501117610124,
+      "rmse": 4.9834102674274465,
+      "median_ae": 0.37174638261007686,
+      "r2": 0.9274034751214837,
+      "fit_s": 3.64,
+      "size_bytes": 1043302,
+      "within_tolerance": true
+    },
+    "hgb_search_09": {
+      "n": 300000,
+      "mae": 1.3007480795294561,
+      "rmse": 4.98177721613139,
+      "median_ae": 0.3747366157346832,
+      "r2": 0.9274510467311962,
+      "fit_s": 4.14,
+      "size_bytes": 1523205,
+      "within_tolerance": false
+    }
+  },
+  "selected": "hgb_search_05",
+  "validation_metrics": {
+    "n": 300000,
+    "mae": 1.2666245597082748,
+    "rmse": 4.980263029204395,
+    "median_ae": 0.3643865009758773,
+    "r2": 0.9274951418310967,
+    "fit_s": 2.43,
+    "size_bytes": 809093,
+    "within_tolerance": true,
+    "mae_ci95": [
+      1.249388903441106,
+      1.2838602159754435
+    ]
+  },
+  "validation_mae_by_payment_type": [
+    {
+      "payment_type": 0,
+      "n": 26361,
+      "mae": 4.9957290851829645
+    },
+    {
+      "payment_type": 1,
+      "n": 228764,
+      "mae": 0.8604029241896781
+    },
+    {
+      "payment_type": 2,
+      "n": 39394,
+      "mae": 0.9923577469059992
+    },
+    {
+      "payment_type": 3,
+      "n": 1569,
+      "mae": 2.8859636906524426
+    },
+    {
+      "payment_type": 4,
+      "n": 3912,
+      "mae": 2.005296737320619
+    }
+  ],
+  "permutation_importance_mae": {
+    "trip_duration_min": 7.4707,
+    "trip_distance": 5.5845,
+    "RatecodeID": 2.58,
+    "DOLocationID": 0.1913,
+    "PULocationID": 0.0893,
+    "VendorID": 0.0776,
+    "pickup_hour": 0.0422,
+    "passenger_count": 0.0112,
+    "payment_type": 0.0107,
+    "pickup_dow": 0.0069
+  },
+  "backtest": [
+    {
+      "train": "yellow_2024-11",
+      "evaluate": "yellow_2024-12",
+      "n": 300000,
+      "mae": 1.2918388862132468,
+      "rmse": 5.083612096523824,
+      "median_ae": 0.3696092690274151,
+      "r2": 0.9244547164615449,
+      "mae_ci95": [
+        1.2742445535021254,
+        1.3094332189243683
+      ]
+    },
+    {
+      "train": "yellow_2024-12",
+      "evaluate": "yellow_2025-01",
+      "n": 300000,
+      "mae": 1.2250504763204089,
+      "rmse": 4.59807234262775,
+      "median_ae": 0.37372199809519735,
+      "r2": 0.9244898612607633,
+      "mae_ci95": [
+        1.209191187029032,
+        1.2409097656117858
+      ]
+    },
+    {
+      "train": "yellow_2025-01",
+      "evaluate": "yellow_2025-02",
+      "n": 300000,
+      "mae": 1.2027131359216805,
+      "rmse": 4.380946287625166,
+      "median_ae": 0.4059482018942955,
+      "r2": 0.9241942593550779,
+      "mae_ci95": [
+        1.187638441935434,
+        1.217787829907927
+      ]
+    }
+  ],
+  "flag_threshold": 0.9078316786493671,
+  "alpha": 0.005,
+  "threshold_by_alpha": {
+    "0.001": 1.5840863896294635,
+    "0.002": 1.357104526318462,
+    "0.005": 0.9078316786493671,
+    "0.01": 0.4924543454322206,
+    "0.02": 0.31035433331243273
+  },
+  "log_ratio_floor": 5.0,
+  "artifact": "fare_model_v2.joblib",
+  "artifact_sha256": "fa96c014613c7eb37e06e691710756aaf120d1dac07e097f3c9ca514c2502637",
+  "environment": {
+    "python": "3.13.3",
+    "scikit_learn": "1.9.1",
+    "numpy": "2.5.3",
+    "seed": 42
+  }
+}

@@ -9,8 +9,8 @@ import numpy as np
 import polars as pl
 import pytest
 
-from dqc.ml import fare_model
 from dqc.ml import features as F
+from dqc.ml import residual as fare_model
 from tests.conftest import trips_frame, valid_trip
 
 
@@ -29,8 +29,17 @@ def _synthetic(n: int, seed: int = 0) -> pl.DataFrame:
 
 
 def test_feature_contract_has_no_target_or_monetary_leakage():
-    assert not set(F.FEATURES) & F.FORBIDDEN
-    assert F.TARGET not in F.FEATURES
+    for spec in F.SPECS.values():
+        assert not set(spec.features) & spec.forbidden, spec.name
+    # the distance model must not see the fare, so the two detectors fail independently
+    assert "fare_amount" not in F.DISTANCE.features and "trip_distance" not in F.DISTANCE.features
+
+
+def test_bootstrap_interval_contains_the_mean_and_search_space_is_seeded():
+    v = np.random.default_rng(0).exponential(2.0, 50_000)
+    lo, hi = fare_model.bootstrap_ci(v, n_boot=200)
+    assert lo < v.mean() < hi and hi - lo < 0.2
+    assert fare_model.search_space(5) == fare_model.search_space(5)
 
 
 def test_matrix_shape_order_and_missing_encoding():
@@ -53,18 +62,21 @@ def test_relative_deviation_is_symmetric_and_handles_low_fares():
 def test_selection_picks_a_learned_model_over_the_baselines():
     tr, va = _synthetic(1500, 1), _synthetic(500, 2)
     best, model, table = fare_model.fit_and_select(F.matrix(tr), tr[F.TARGET].to_numpy(),
-                                                   F.matrix(va), va[F.TARGET].to_numpy())
-    assert set(table) == set(fare_model.candidates())
-    assert table[best]["mae"] == min(v["mae"] for v in table.values())
+                                                   F.matrix(va), va[F.TARGET].to_numpy(), search=2)
+    assert set(table) == set(fare_model.candidates(search=2))
+    best_mae = min(v["mae"] for v in table.values())
+    eligible = [k for k, v in table.items() if v["within_tolerance"]]
+    # rule: smallest artifact among the candidates within 1% of the best validation MAE
+    assert all(table[k]["mae"] <= best_mae * 1.01 for k in eligible) and best in eligible
+    assert table[best]["size_bytes"] == min(table[k]["size_bytes"] for k in eligible)
     assert table[best]["mae"] < table["baseline_median"]["mae"] / 5
-    assert not best.startswith("baseline_median")
 
 
 @pytest.fixture
 def registered(tmp_path):
     tr, va = _synthetic(1500, 1), _synthetic(500, 2)
     _, model, table = fare_model.fit_and_select(F.matrix(tr), tr[F.TARGET].to_numpy(),
-                                                F.matrix(va), va[F.TARGET].to_numpy())
+                                                F.matrix(va), va[F.TARGET].to_numpy(), search=1)
     import joblib
     artifact = tmp_path / "fare_model_v1.joblib"
     joblib.dump(model, artifact)
@@ -79,7 +91,7 @@ def registered(tmp_path):
 def test_registry_roundtrip_and_threshold_calibration(registered):
     models_dir, va = registered
     lm = fare_model.load(models_dir=models_dir)
-    assert lm.version == 1 and fare_model.latest_version(models_dir) == 1
+    assert lm.version == 1 and fare_model.latest_version("fare_model", models_dir) == 1
     _, _, flag = lm.score_frame(va)
     assert 0.0 <= flag.mean() <= 0.02            # ~alpha of the calibration set, by construction
 
@@ -118,3 +130,25 @@ def test_predict_endpoint(registered, monkeypatch):
     assert client.post("/predict/fare", json={**trip, "fare_amount": 900.0}).json()["flagged"] is True
     bad = {**trip, "dropoff_datetime": "2025-01-06T07:00:00"}
     assert client.post("/predict/fare", json=bad).status_code == 422
+
+
+def test_training_is_idempotent_and_versions_only_change_with_the_model(tmp_path, monkeypatch):
+    tr, va = _synthetic(1200, 1), _synthetic(400, 2)
+    frames = {"p_train": tr, "p_val": va}
+    monkeypatch.setattr(F, "valid_frame", lambda pid, sample=None, seed=0: frames[pid])
+    monkeypatch.setattr(fare_model, "SEARCH_CONFIGS", 1)
+    monkeypatch.setattr(fare_model, "candidates",
+                        lambda spec=F.FARE, search=1, _c=fare_model.candidates: {
+                            k: v for k, v in _c(spec, 1).items() if k != "random_forest"})
+
+    class Src:
+        partition_id, sha256 = "p_train", "abc"
+
+    monkeypatch.setattr(fare_model.pipeline, "manifest_sources", lambda: [Src()])
+    kw = dict(train_partition="p_train", validation_partition="p_val", models_dir=tmp_path, register_in_db=False,
+              run_backtest=False)
+    first = fare_model.train("fare_model", **kw)
+    second = fare_model.train("fare_model", **kw)
+    assert first["version"] == 1 and second["version"] == 1 and second.get("unchanged") is True
+    assert len(list(tmp_path.glob("fare_model_v*.joblib"))) == 1
+    assert first["train_data_sha256"] == "abc" and set(first["threshold_by_alpha"]) == {"0.001", "0.002", "0.005", "0.01", "0.02"}

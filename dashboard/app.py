@@ -195,27 +195,32 @@ with tabs[7]:
                  use_container_width=True)
 
 with tabs[8]:
-    reg = q("SELECT * FROM dq.model_registry ORDER BY version DESC LIMIT 1")
-    if reg.empty:
+    regs = q("SELECT DISTINCT ON (model_name) * FROM dq.model_registry ORDER BY model_name, version DESC")
+    if regs.empty:
         st.info("No model registered yet. Run `python -m dqc ml train` then `python -m dqc ml score`.")
     else:
-        r = reg.iloc[0]
-        st.caption(f"{r.model_name} v{r.version} · {r.algorithm} · trained on {r.train_partition} "
+        name = st.radio("Model", list(regs.model_name), horizontal=True)
+        r = regs[regs.model_name == name].iloc[0]
+        st.caption(f"{r.model_name} v{r.version} · target {r.target} · {r.algorithm} · trained on {r.train_partition} "
                    f"({r.train_rows:,} rows), selected and calibrated on {r.validation_partition} · "
                    f"artifact sha256 {r.artifact_sha256[:16]}…")
-        mm = q("""SELECT partition_id, split, n, mae, rmse, median_ae, r2, flagged, flag_rate, mae_vs_validation, status
+        mm = q("""SELECT partition_id, split, n, mae, mae_ci_low, mae_ci_high, rmse, median_ae, r2, flagged, flag_rate,
+                         mae_vs_validation, status
                   FROM dq.model_metrics WHERE model_name=%s AND version=%s ORDER BY partition_id""",
                (r.model_name, int(r.version)))
         c1, c2 = st.columns(2)
-        c1.subheader("MAE per partition ($), out-of-time monitoring")
-        c1.altair_chart(bars(mm, "partition_id", "mae", title="MAE $", fmt=".3f"), use_container_width=True)
-        sel = pd.DataFrame([{"candidate": k, "validation_mae": v["mae"]} for k, v in (r.selection or {}).items()])
-        c2.subheader("Model selection on the validation month")
-        c2.altair_chart(bars(sel, "candidate", "validation_mae", title="MAE $", fmt=".3f"), use_container_width=True)
+        c1.subheader("MAE per partition, out-of-time monitoring")
+        c1.altair_chart(bars(mm, "partition_id", "mae", title="MAE", fmt=".3f"), use_container_width=True)
+        sel = pd.DataFrame([{"candidate": k, "validation_mae": v["mae"]} for k, v in (r.selection or {}).items()
+                            if not k.startswith("baseline_median")]).sort_values("validation_mae")
+        c2.subheader("Candidates on the validation month (median baseline omitted)")
+        c2.altair_chart(bars(sel, "candidate", "validation_mae", title="MAE", fmt=".3f"), use_container_width=True)
         st.dataframe(mm, hide_index=True, use_container_width=True)
-        st.subheader("Top flagged records (fare far from the expected fare): investigation queue")
-        st.dataframe(q("""SELECT partition_id, record_id, fare_amount, round(predicted_fare::numeric, 2) AS predicted_fare,
-                                 round(relative_deviation::numeric, 3) AS log_ratio, features
+        st.subheader("Rolling-origin backtest (train on month t, evaluate on t+1)")
+        st.dataframe(pd.DataFrame(r.backtest or []), hide_index=True, use_container_width=True)
+        st.subheader("Top flagged records: investigation queue")
+        st.dataframe(q("""SELECT partition_id, record_id, actual_value, round(predicted_value::numeric, 2) AS predicted,
+                                 round(log_ratio::numeric, 3) AS log_ratio, features
                           FROM dq.model_flags WHERE model_name=%s AND version=%s
-                          ORDER BY relative_deviation DESC LIMIT 100""", (r.model_name, int(r.version))),
+                          ORDER BY log_ratio DESC LIMIT 100""", (r.model_name, int(r.version))),
                      hide_index=True, use_container_width=True)

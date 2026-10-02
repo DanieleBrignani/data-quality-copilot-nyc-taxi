@@ -39,8 +39,9 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("copilot", help="generate audited suggestions for the latest incidents")
     s.add_argument("--limit", type=int, default=5)
 
-    s = sub.add_parser("ml", help="expected-fare model: train | score")
+    s = sub.add_parser("ml", help="residual models (fare_model, distance_model): train | score")
     s.add_argument("action", choices=["train", "score"])
+    s.add_argument("--model", choices=["fare_model", "distance_model", "all"], default="all")
 
     sub.add_parser("report", help="write reports/results.json + results.md from the warehouse")
 
@@ -81,8 +82,10 @@ def main(argv: list[str] | None = None) -> int:
         from dqc import copilot
         print(json.dumps(copilot.explain_latest(a.limit), indent=2, default=str))
     elif a.cmd == "ml":
-        from dqc.ml import fare_model
-        res = fare_model.train() if a.action == "train" else fare_model.score_partitions()
+        from dqc.ml import features as ml_features
+        from dqc.ml import residual
+        names = list(ml_features.SPECS) if a.model == "all" else [a.model]
+        res = {n: (residual.train(n) if a.action == "train" else residual.score_partitions(n)) for n in names}
         print(json.dumps(res, indent=2, default=str))
     elif a.cmd == "report":
         from dqc import report

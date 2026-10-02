@@ -238,6 +238,7 @@ CREATE TABLE IF NOT EXISTS dq.model_registry (
     model_name           text NOT NULL,
     version              integer NOT NULL,
     created_at           timestamptz NOT NULL,
+    target               text NOT NULL,
     algorithm            text NOT NULL,
     params               jsonb,
     features             jsonb NOT NULL,
@@ -247,6 +248,7 @@ CREATE TABLE IF NOT EXISTS dq.model_registry (
     train_data_sha256    text NOT NULL,       -- sha256 of the raw file the model was trained on
     selection            jsonb,               -- validation metrics of every candidate
     validation_metrics   jsonb,
+    backtest             jsonb,               -- rolling-origin evaluation (month t -> month t+1)
     flag_threshold       double precision NOT NULL,
     alpha                double precision NOT NULL,
     artifact             text NOT NULL,
@@ -262,6 +264,8 @@ CREATE TABLE IF NOT EXISTS dq.model_metrics (
     split              text NOT NULL,         -- train | validation | test (out-of-time)
     n                  bigint NOT NULL,
     mae                double precision NOT NULL,
+    mae_ci_low         double precision,      -- 95% bootstrap interval
+    mae_ci_high        double precision,
     rmse               double precision NOT NULL,
     median_ae          double precision NOT NULL,
     r2                 double precision NOT NULL,
@@ -276,14 +280,14 @@ CREATE TABLE IF NOT EXISTS dq.model_metrics (
 );
 
 CREATE TABLE IF NOT EXISTS dq.model_flags (
-    model_name          text NOT NULL,
-    version             integer NOT NULL,
-    partition_id        text NOT NULL,
-    record_id           text NOT NULL,
-    fare_amount         double precision,
-    predicted_fare      double precision,
-    relative_deviation  double precision,
-    features            jsonb,
+    model_name       text NOT NULL,
+    version          integer NOT NULL,
+    partition_id     text NOT NULL,
+    record_id        text NOT NULL,
+    actual_value     double precision,
+    predicted_value  double precision,
+    log_ratio        double precision,
+    features         jsonb,
     PRIMARY KEY (model_name, version, record_id)
 );
 

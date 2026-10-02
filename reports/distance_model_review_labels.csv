@@ -1,0 +1,41 @@
+record_id,verdict,note
+yellow_2025-01:418214,likely_data_error,Canarsie to Financial District South in 45 min with 0.0 mi and fare 35.5: distance not captured
+yellow_2025-01:1218348,likely_data_error,TriBeCa/Civic Center to Times Sq/Theatre District in 25 min with 0.0 mi and fare 19.8: distance not captured
+yellow_2025-01:3267530,likely_data_error,Murray Hill to Hamilton Heights in 39 min with 0.0 mi and fare 38.07: distance not captured
+yellow_2025-01:2985635,likely_data_error,Morningside Heights to JFK Airport in 91 min with 0.0 mi and fare 85.59: distance not captured
+yellow_2025-01:3456793,likely_data_error,Murray Hill to Financial District North in 18 min with 0.0 mi and fare 24.24: distance not captured
+yellow_2025-01:3013119,likely_data_error,"12.4 mi in 0.7 min (1,036 mph): duration not captured"
+yellow_2025-01:3269725,likely_data_error,Financial District South to Kips Bay in 18 min with 0.0 mi and fare 19.53: distance not captured
+yellow_2025-01:2558526,likely_data_error,East Harlem South to South Jamaica in 48 min with 0.0 mi and fare 43.5: distance not captured
+yellow_2025-01:3461374,likely_data_error,Financial District North to West Chelsea/Hudson Yards in 14 min with 0.0 mi and fare 20.22: distance not captured
+yellow_2025-01:525274,undetermined,"LaGuardia to LaGuardia, 0.0 mi in 6.4 min with a 3.0 fare: possibly an aborted pickup"
+yellow_2025-01:808934,likely_data_error,LaGuardia Airport to Midtown Center in 33 min with 0.0 mi and fare 26.1: distance not captured
+yellow_2025-01:1217637,likely_data_error,LaGuardia Airport to Bloomingdale in 28 min with 0.0 mi and fare 22.6: distance not captured
+yellow_2025-01:3282819,likely_data_error,Upper West Side North to Union Sq in 18 min with 0.0 mi and fare 19.25: distance not captured
+yellow_2025-01:801502,likely_data_error,East Harlem South to Eastchester in 24 min with 0.0 mi and fare 37.5: distance not captured
+yellow_2025-01:3064384,likely_data_error,Sheepshead Bay to Gravesend in 20 min with 0.0 mi and fare 18.11: distance not captured
+yellow_2025-01:682900,likely_data_error,East Harlem North to Lenox Hill East in 31 min with 0.0 mi and fare 20.5: distance not captured
+yellow_2025-01:1162174,likely_data_error,Highbridge to TriBeCa/Civic Center in 30 min with 0.0 mi and fare 41.5: distance not captured
+yellow_2025-01:1314002,likely_data_error,Upper West Side South to Riverdale/North Riverdale/Fieldston in 23 min with 0.0 mi and fare 18.4: distance not captured
+yellow_2025-01:783952,likely_data_error,Flatiron to East Village in 20 min with 0.0 mi and fare 17.0: distance not captured
+yellow_2025-01:3318723,likely_data_error,TriBeCa/Civic Center to Murray Hill in 29 min with 0.0 mi and fare 25.52: distance not captured
+yellow_2025-01:3226466,plausible_legitimate,9.1 mi in 28 min (19.6 mph) Williamsburg to Glendale is a plausible route; the model under-predicted
+yellow_2025-01:2974896,likely_data_error,East Harlem South to Financial District South in 28 min with 0.0 mi and fare 29.68: distance not captured
+yellow_2025-01:3319360,likely_data_error,Yorkville East to Financial District North in 23 min with 0.0 mi and fare 29.11: distance not captured
+yellow_2025-01:3079574,likely_data_error,SoHo to Kips Bay in 19 min with 0.0 mi and fare 16.89: distance not captured
+yellow_2025-01:3385613,likely_data_error,Little Italy/NoLiTa to Lenox Hill West in 21 min with 0.0 mi and fare 27.77: distance not captured
+yellow_2025-01:37803,likely_data_error,Douglaston to University Heights/Morris Heights in 30 min with 0.0 mi and fare 47.5: distance not captured
+yellow_2025-01:35225,likely_data_error,2.7 mi in 0.4 min (442 mph): duration not captured
+yellow_2025-01:846721,likely_data_error,Penn Station/Madison Sq West to Yorkville West in 26 min with 0.0 mi and fare 21.2: distance not captured
+yellow_2025-01:2948919,likely_data_error,TriBeCa/Civic Center to Murray Hill in 16 min with 0.0 mi and fare 16.0: distance not captured
+yellow_2025-01:2167994,likely_data_error,East Harlem South to Elmhurst in 36 min with 0.0 mi and fare 35.5: distance not captured
+yellow_2025-01:3321993,likely_data_error,Central Harlem to Midtown South in 30 min with 0.01 mi and fare 33.0: distance not captured
+yellow_2025-01:588109,likely_data_error,Sunset Park East to Homecrest in 31 min with 0.0 mi and fare 21.5: distance not captured
+yellow_2025-01:3065946,likely_data_error,West Chelsea/Hudson Yards to UN/Turtle Bay South in 30 min with 0.0 mi and fare 22.74: distance not captured
+yellow_2025-01:3384220,likely_data_error,SoHo to East Harlem North in 26 min with 0.0 mi and fare 35.43: distance not captured
+yellow_2025-01:2645207,likely_data_error,East Harlem South to Bedford in 54 min with 0.0 mi and fare 40.5: distance not captured
+yellow_2025-01:3130974,likely_data_error,Midtown South to Upper East Side South in 13 min with 0.0 mi and fare 17.51: distance not captured
+yellow_2025-01:1900207,likely_data_error,LaGuardia to Midtown East in 26 min with 0.3 mi and a 20.5 metered fare: distance not captured
+yellow_2025-01:3118270,likely_data_error,Richmond Hill to Greenpoint in 32 min with 0.0 mi and fare 38.16: distance not captured
+yellow_2025-01:3384902,likely_data_error,Battery Park City to Kips Bay in 15 min with 0.01 mi and fare 21.58: distance not captured
+yellow_2025-01:3290490,likely_data_error,Richmond Hill to Corona in 20 min with 0.0 mi and fare 30.29: distance not captured

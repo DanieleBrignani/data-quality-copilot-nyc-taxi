@@ -160,9 +160,9 @@ _MODEL_CACHE: dict = {}
 
 def _model():
     """Latest registered model, loaded once. A missing model is not cached, so training later is picked up."""
-    from dqc.ml import fare_model
+    from dqc.ml import residual
     if "lm" not in _MODEL_CACHE:
-        lm = fare_model.load()
+        lm = residual.load("fare_model")
         if lm is None:
             return None
         _MODEL_CACHE["lm"] = lm
@@ -171,16 +171,25 @@ def _model():
 
 @app.get("/model")
 def model_info():
-    lm = _model()
-    if lm is None:
+    """Registry entry + per-partition monitoring for every registered residual model."""
+    from dqc.ml import features as F
+    from dqc.ml import residual
+
+    keep = ("model_name", "version", "created_at", "target", "algorithm", "params", "features", "train_partition",
+            "validation_partition", "train_rows", "train_data_sha256", "selection_rule", "validation_metrics",
+            "backtest", "flag_threshold", "alpha", "artifact_sha256", "environment", "permutation_importance_mae")
+    out = []
+    for name in F.SPECS:
+        lm = _model() if name == "fare_model" else residual.load(name)
+        if lm is None:
+            continue
+        out.append({**{k: lm.meta[k] for k in keep},
+                    "monitoring": q("SELECT partition_id, split, n, mae, mae_ci_low, mae_ci_high, rmse, r2, flag_rate, "
+                                    "mae_vs_validation, status FROM dq.model_metrics WHERE model_name=%s AND version=%s "
+                                    "ORDER BY partition_id", (name, lm.version))})
+    if not out:
         raise HTTPException(503, "no trained model available (run `python -m dqc ml train`)")
-    keep = ("model_name", "version", "created_at", "algorithm", "params", "features", "train_partition",
-            "validation_partition", "train_rows", "train_data_sha256", "validation_metrics", "flag_threshold",
-            "alpha", "artifact_sha256", "environment", "permutation_importance_mae")
-    return {**{k: lm.meta[k] for k in keep},
-            "monitoring": q("SELECT partition_id, split, n, mae, rmse, r2, flag_rate, mae_vs_validation, status "
-                            "FROM dq.model_metrics WHERE model_name=%s AND version=%s ORDER BY partition_id",
-                            (lm.meta["model_name"], lm.version))}
+    return out
 
 
 @app.post("/predict/fare")
@@ -189,8 +198,8 @@ def predict_fare(trip: Trip):
     import numpy as np
     import polars as pl
 
-    from dqc.ml import fare_model
     from dqc.ml import features as F
+    from dqc.ml import residual
 
     lm = _model()
     if lm is None:
@@ -207,7 +216,7 @@ def predict_fare(trip: Trip):
     pred = float(lm.predict(F.matrix(df))[0])
     out = {"model_version": lm.version, "predicted_fare": round(pred, 2), "flag_threshold": lm.threshold}
     if trip.fare_amount is not None:
-        dev = float(fare_model.relative_deviation(np.array([trip.fare_amount]), np.array([pred]))[0])
+        dev = float(residual.relative_deviation(np.array([trip.fare_amount]), np.array([pred]))[0])
         out.update(fare_amount=trip.fare_amount, log_ratio=round(dev, 4), flagged=dev > lm.threshold)
     return out
 
@@ -257,16 +266,17 @@ class DQWarehouseCollector:
             drift.add_metric([r["partition_id"]], r["n"])
         yield drift
 
-        mae = GaugeMetricFamily("dq_model_mae", "Fare model MAE ($) per partition", labels=["partition", "split"])
-        ratio = GaugeMetricFamily("dq_model_mae_vs_validation", "Fare model MAE / validation MAE",
-                                  labels=["partition"])
-        frate = GaugeMetricFamily("dq_model_flag_rate", "Share of valid records flagged by the fare model",
-                                  labels=["partition"])
-        for r in q("""SELECT DISTINCT ON (partition_id) partition_id, split, mae, mae_vs_validation, flag_rate
-                      FROM dq.model_metrics ORDER BY partition_id, version DESC"""):
-            mae.add_metric([r["partition_id"], r["split"]], r["mae"])
-            ratio.add_metric([r["partition_id"]], r["mae_vs_validation"])
-            frate.add_metric([r["partition_id"]], r["flag_rate"])
+        mae = GaugeMetricFamily("dq_model_mae", "Residual model MAE per partition", labels=["model", "partition", "split"])
+        ratio = GaugeMetricFamily("dq_model_mae_vs_validation", "Residual model MAE / validation MAE",
+                                  labels=["model", "partition"])
+        frate = GaugeMetricFamily("dq_model_flag_rate", "Share of valid records flagged by the model",
+                                  labels=["model", "partition"])
+        for r in q("""SELECT DISTINCT ON (model_name, partition_id) model_name, partition_id, split, mae,
+                             mae_vs_validation, flag_rate
+                      FROM dq.model_metrics ORDER BY model_name, partition_id, version DESC"""):
+            mae.add_metric([r["model_name"], r["partition_id"], r["split"]], r["mae"])
+            ratio.add_metric([r["model_name"], r["partition_id"]], r["mae_vs_validation"])
+            frate.add_metric([r["model_name"], r["partition_id"]], r["flag_rate"])
         yield from (mae, ratio, frate)
 
 

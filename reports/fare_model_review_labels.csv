@@ -1,41 +1,41 @@
 record_id,verdict,note
-yellow_2025-01:262795,likely_data_error,0.0 mi and 0.0 min with a charged fare: trip attributes not captured
-yellow_2025-01:1023888,likely_data_error,0.0 mi and 0.1 min with a charged fare: trip attributes not captured
-yellow_2025-01:2948731,flex_fare_semantics,Flex Fare: 3.5 mi / 26 min trip with fare_amount 6.15 but total 14.52; fare field is not the trip fare
-yellow_2025-01:2644978,likely_data_error,fare 0.01 on a 0.0 mi / 0.3 min negotiated-rate record: placeholder amount
-yellow_2025-01:3174708,likely_data_error,Flex Fare record with 0.01 mi and 0.2 min: trip attributes not captured
-yellow_2025-01:2884534,likely_data_error,JFK flat-fare trip (19.3 mi; 69 min) with fare_amount 0.0 and total 6.5
-yellow_2025-01:2948950,flex_fare_semantics,Flex Fare: 5.2 mi trip with fare_amount 6.35 and total 10.35
-yellow_2025-01:1997320,likely_data_error,0.09 mi and 1.4 min with a 15.0 negotiated fare: trip attributes not captured
-yellow_2025-01:3326035,likely_data_error,Flex Fare record with 0.0 mi and 0.2 min: trip attributes not captured
-yellow_2025-01:373615,likely_data_error,0.02 mi and 1.9 min with a 24.0 negotiated fare: trip attributes not captured
-yellow_2025-01:679527,likely_data_error,0.0 mi and 0.1 min with a charged fare: trip attributes not captured
-yellow_2025-01:1023975,plausible_legitimate,payment_type 3 (no charge): fare 0.0 on a real 2 mi trip is the expected value
-yellow_2025-01:2949262,flex_fare_semantics,Flex Fare: 5.8 mi / 30 min trip with fare_amount 8.31 and total 17.47
-yellow_2025-01:673099,likely_data_error,0.0 mi and 0.0 min with a charged fare: trip attributes not captured
-yellow_2025-01:2936369,flex_fare_semantics,Flex Fare: 0.5 mi / 7 min trip with fare_amount 0.36 and total 4.36
-yellow_2025-01:544540,likely_data_error,20 min metered cash trip between different zones with 0.0 mi and fare 3.0: distance not captured
-yellow_2025-01:984435,likely_data_error,0.0 mi and 1.3 min with a 15.0 negotiated fare: trip attributes not captured
-yellow_2025-01:1091331,likely_data_error,3.7 mi / 32 min metered trip with fare 3.0 but tip 10.0 and total 17.75: fare inconsistent with the meter
-yellow_2025-01:654541,likely_data_error,0.0 mi and 0.2 min with a 23.0 negotiated fare: trip attributes not captured
-yellow_2025-01:2950986,flex_fare_semantics,Flex Fare: 4.1 mi / 24 min trip with fare_amount 1.42 and total 7.92
-yellow_2025-01:2947098,flex_fare_semantics,Flex Fare: 0.7 mi / 11 min trip with fare_amount 1.71 and total 5.71
-yellow_2025-01:2568220,likely_data_error,0.0 mi and 0.1 min with a charged fare: trip attributes not captured
-yellow_2025-01:2951046,flex_fare_semantics,Flex Fare: 5.2 mi / 18 min trip with fare_amount 4.53 and total 8.53
-yellow_2025-01:2939720,flex_fare_semantics,Flex Fare: 10.9 mi / 27 min trip with fare_amount 1.52 and total 17.98
-yellow_2025-01:2953382,likely_data_error,Flex Fare record with 0.0 mi and 2.0 min charged 90.12: trip attributes not captured
-yellow_2025-01:20212,likely_data_error,0.0 mi and 0.6 min with a charged fare: trip attributes not captured
-yellow_2025-01:18144,undetermined,negotiated rate; 0.23 mi in 23 min to Outside of NYC with fare 0.0 and total 3.5
-yellow_2025-01:716921,likely_data_error,1.7 mi / 17 min metered cash trip with fare_amount 0.0 and total 4.75
-yellow_2025-01:2363734,likely_data_error,0.0 mi and 0.1 min with a 140.0 negotiated fare: trip attributes not captured
-yellow_2025-01:1746353,likely_data_error,0.0 mi and 0.0 min with a charged fare: trip attributes not captured
-yellow_2025-01:2951530,flex_fare_semantics,Flex Fare: 7.0 mi / 26 min trip with fare_amount 3.74 and total 5.24
-yellow_2025-01:436349,likely_data_error,0.0 mi and 1.0 min with a 300.0 negotiated fare: trip attributes not captured
-yellow_2025-01:2937619,flex_fare_semantics,Flex Fare: 2.6 mi / 14 min trip with fare_amount 2.6 and total 10.09
-yellow_2025-01:2953060,flex_fare_semantics,Flex Fare: 0.8 mi / 19 min trip with fare_amount 1.57 and total 9.6
-yellow_2025-01:2081018,likely_data_error,0.0 mi and 0.1 min between different zones with an 18.0 fare: trip attributes not captured
-yellow_2025-01:2944733,flex_fare_semantics,Flex Fare: 7.2 mi / 18 min trip with fare_amount 5.31 and total 6.81
-yellow_2025-01:1548026,likely_data_error,0.0 mi and 1.2 min with an 89.9 negotiated fare: trip attributes not captured
-yellow_2025-01:2943364,flex_fare_semantics,Flex Fare: 2.3 mi / 11 min trip with fare_amount 0.86 and total 7.23
-yellow_2025-01:2953259,flex_fare_semantics,Flex Fare: 17 min trip between different zones with fare_amount 0.3 and total 4.3
-yellow_2025-01:2949530,flex_fare_semantics,Flex Fare: 5.7 mi / 26 min trip with fare_amount 6.92 and total 10.92
+yellow_2025-01:266342,likely_data_error,0.17 mi and 0.3 min with a charged fare: trip attributes not captured
+yellow_2025-01:3452674,flex_fare_semantics,Flex Fare (vendor 6): 1.0 mi / 60 min trip with fare_amount 2.90 and total 16.00
+yellow_2025-01:2949251,flex_fare_semantics,Flex Fare: 3.0 mi / 19 min trip with fare_amount 0.71 and total 4.71
+yellow_2025-01:2709407,likely_data_error,0.01 mi and 0.1 min with a charged fare: trip attributes not captured
+yellow_2025-01:3223296,flex_fare_semantics,Flex Fare (vendor 1): 1.7 mi / 6 min trip with fare_amount 32.83; fare field does not follow the meter
+yellow_2025-01:2935425,flex_fare_semantics,Flex Fare: 6.7 mi / 17 min trip with fare_amount 1.72 and total 5.72
+yellow_2025-01:2949441,flex_fare_semantics,Flex Fare: 5.5 mi / 32 min trip with fare_amount 9.55 and total 13.55
+yellow_2025-01:2058355,plausible_legitimate,payment_type 4 (dispute) on a real 0.9 mi trip: zeroed fare and total are the expected values
+yellow_2025-01:3370935,likely_data_error,Flex Fare record with 0.0 mi and 0.2 min: trip attributes not captured
+yellow_2025-01:383857,likely_data_error,non-trip record: 0.0 mi; 0.6 min; fare 0 and total 0
+yellow_2025-01:681113,likely_data_error,non-trip record: 0.0 mi; 0.1 min; fare 0 and total 0
+yellow_2025-01:1042493,likely_data_error,unknown zones; 0.03 mi and 0.2 min with a 27.0 fare: trip attributes not captured
+yellow_2025-01:2949762,flex_fare_semantics,Flex Fare: 4.4 mi / 20 min trip with fare_amount 3.90 and total 7.90
+yellow_2025-01:677198,likely_data_error,metered cash trip of 5.6 mi / 29 min with fare 8.60: far below the meter for that trip
+yellow_2025-01:2937714,flex_fare_semantics,Flex Fare: 7.0 mi / 23 min trip with fare_amount 2.97 and total 11.41
+yellow_2025-01:551947,likely_data_error,0.0 mi and 1.3 min with an 88.5 negotiated fare: trip attributes not captured
+yellow_2025-01:992698,likely_data_error,0.0 mi and 0.1 min with an 83.0 negotiated fare: trip attributes not captured
+yellow_2025-01:1106684,likely_data_error,0.0 mi and 0.2 min with a charged fare: trip attributes not captured
+yellow_2025-01:659179,likely_data_error,0.0 mi and 0.2 min with a charged fare: trip attributes not captured
+yellow_2025-01:2951657,flex_fare_semantics,Flex Fare: 5.4 mi / 23 min trip with fare_amount 7.41 and total 11.41
+yellow_2025-01:2947865,flex_fare_semantics,Flex Fare: 3.9 mi / 23 min trip with fare_amount 3.87 and total 5.37
+yellow_2025-01:2645532,likely_data_error,8.1 mi / 16 min trip with a placeholder fare of 0.01 and total 21.83
+yellow_2025-01:2951802,flex_fare_semantics,Flex Fare: 0.9 mi / 6 min trip with fare_amount 0.59 and total 2.09
+yellow_2025-01:2940912,flex_fare_semantics,Flex Fare: 2.5 mi / 23 min trip with fare_amount 3.69 and total 7.69
+yellow_2025-01:2953909,flex_fare_semantics,Flex Fare: 1.3 mi / 11 min trip with fare_amount 0.32 and total 4.32
+yellow_2025-01:17869,likely_data_error,0.0 mi and 0.3 min with a placeholder fare of 0.01
+yellow_2025-01:17086,likely_data_error,0.0 mi and 0.4 min with a charged fare: trip attributes not captured
+yellow_2025-01:719737,likely_data_error,JFK to JFK; 0.0 mi and 0.2 min with a charged fare: trip attributes not captured
+yellow_2025-01:2412294,likely_data_error,metered cash trip of 6.2 mi / 16 min from JFK with fare_amount 0.0 and total 3.25
+yellow_2025-01:1764806,likely_data_error,0.0 mi and 0.2 min with a charged fare: trip attributes not captured
+yellow_2025-01:2952308,flex_fare_semantics,Flex Fare: 1.4 mi / 8 min trip with fare_amount 0.72 and total 2.22
+yellow_2025-01:444981,undetermined,RatecodeID 4; 49 mi / 205 min between two Manhattan zones with fare 397.80: possible out-of-city round trip
+yellow_2025-01:2938984,likely_data_error,Flex Fare record of 0.55 mi and 1.1 min charged 50.80 plus a 10.46 tip: trip attributes not captured
+yellow_2025-01:2953608,likely_data_error,34 min trip between distant zones with 0.0 mi: distance not captured
+yellow_2025-01:2144597,likely_data_error,0.0 mi and 0.2 min with fare 0.15 and a 10.0 tip
+yellow_2025-01:2945523,flex_fare_semantics,Flex Fare: 1.9 mi / 7 min trip with fare_amount 1.47 and total 2.97
+yellow_2025-01:1592157,likely_data_error,0.0 mi and 0.3 min with a 100.0 negotiated fare: trip attributes not captured
+yellow_2025-01:2944182,flex_fare_semantics,Flex Fare: 4.9 mi / 18 min trip with fare_amount 1.45 and total 5.45
+yellow_2025-01:2953750,likely_data_error,15 min trip from Central Harlem to Sutton Place with 0.03 mi: distance not captured
+yellow_2025-01:2950038,flex_fare_semantics,Flex Fare: 0.8 mi / 14 min trip with fare_amount 2.43 and total 6.43

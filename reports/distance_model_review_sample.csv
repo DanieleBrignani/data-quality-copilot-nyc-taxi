@@ -1,0 +1,41 @@
+record_id,log_ratio,actual,predicted,VendorID,RatecodeID,payment_type,pu_zone,do_zone,trip_distance,trip_duration_min,mph,fare_amount,tip_amount,total_amount
+yellow_2025-01:418214,2.764,0.0,7.43,1,99,1,Canarsie,Financial District South,0.0,44.8,0.0,35.5,0.0,43.94
+yellow_2025-01:1218348,1.937,0.0,2.97,2,1,2,TriBeCa/Civic Center,Times Sq/Theatre District,0.0,24.7,0.0,19.8,0.0,24.55
+yellow_2025-01:3267530,1.767,0.0,2.43,2,,0,Murray Hill,Hamilton Heights,0.0,39.2,0.0,38.07,0.0,42.82
+yellow_2025-01:2985635,2.923,0.0,8.8,2,,0,Morningside Heights,JFK Airport,0.0,91.3,0.0,85.59,14.1,108.13
+yellow_2025-01:3456793,1.671,0.0,2.16,2,,0,Murray Hill,Financial District North,0.0,18.5,0.0,24.24,0.0,28.99
+yellow_2025-01:3013119,2.098,12.37,1.08,6,,0,Murray Hill-Queens,Sutton Place/Turtle Bay North,12.37,0.7,1035.6,2.9,0.0,40.95
+yellow_2025-01:3269725,1.858,0.0,2.71,2,,0,Financial District South,Kips Bay,0.0,18.1,0.0,19.53,0.0,24.28
+yellow_2025-01:2558526,3.044,0.0,10.0,1,99,1,East Harlem South,South Jamaica,0.0,48.3,0.0,43.5,0.0,51.94
+yellow_2025-01:3461374,1.724,0.0,2.3,2,,0,Financial District North,West Chelsea/Hudson Yards,0.0,13.6,0.0,20.22,0.0,24.97
+yellow_2025-01:525274,1.655,0.0,2.12,2,1,2,LaGuardia Airport,LaGuardia Airport,0.0,6.4,0.0,3.0,0.0,11.25
+yellow_2025-01:808934,2.999,0.0,9.54,2,1,1,LaGuardia Airport,Midtown Center,0.0,33.2,0.0,26.1,5.0,49.54
+yellow_2025-01:1217637,2.876,0.0,8.37,2,1,1,LaGuardia Airport,Bloomingdale,0.0,28.4,0.0,22.6,7.71,48.0
+yellow_2025-01:3282819,1.889,0.0,2.81,1,,0,Upper West Side North,Union Sq,0.0,18.4,0.0,19.25,1.2,27.2
+yellow_2025-01:801502,2.764,0.0,7.43,1,99,1,East Harlem South,Eastchester,0.0,23.6,0.0,37.5,0.0,39.0
+yellow_2025-01:3064384,1.953,0.0,3.03,2,,0,Sheepshead Bay,Gravesend,0.0,20.0,0.0,18.11,0.0,19.61
+yellow_2025-01:682900,2.39,0.0,4.95,1,99,1,East Harlem North,Lenox Hill East,0.0,31.2,0.0,20.5,0.0,22.0
+yellow_2025-01:1162174,2.762,0.0,7.42,1,99,1,Highbridge,TriBeCa/Civic Center,0.0,30.3,0.0,41.5,0.0,49.94
+yellow_2025-01:1314002,2.971,0.0,9.26,2,1,2,Upper West Side South,Riverdale/North Riverdale/Fieldston,0.0,22.7,0.0,18.4,0.0,25.58
+yellow_2025-01:783952,2.134,0.0,3.72,2,1,1,Flatiron,East Village,0.0,20.3,0.0,17.0,0.0,22.75
+yellow_2025-01:3318723,1.634,0.0,2.06,2,,0,TriBeCa/Civic Center,Murray Hill,0.0,29.3,0.0,25.52,0.0,30.27
+yellow_2025-01:3226466,1.749,9.11,1.17,2,,0,Williamsburg (South Side),Glendale,9.11,27.9,19.6,36.39,0.0,37.89
+yellow_2025-01:2974896,1.621,0.0,2.03,2,,0,East Harlem South,Financial District South,0.0,28.2,0.0,29.68,0.0,33.68
+yellow_2025-01:3319360,1.743,0.0,2.36,2,,0,Yorkville East,Financial District North,0.0,23.0,0.0,29.11,0.0,33.86
+yellow_2025-01:3079574,1.594,0.0,1.96,2,,0,SoHo,Kips Bay,0.0,19.4,0.0,16.89,0.0,21.64
+yellow_2025-01:3385613,1.688,0.0,2.21,2,,0,Little Italy/NoLiTa,Lenox Hill West,0.0,21.1,0.0,27.77,0.0,32.52
+yellow_2025-01:37803,2.321,0.0,4.59,1,99,1,Douglaston,University Heights/Morris Heights,0.0,29.8,0.0,47.5,0.0,55.94
+yellow_2025-01:35225,1.719,2.7,0.07,1,1,2,Long Island City/Hunters Point,Long Island City/Hunters Point,2.7,0.4,441.8,3.0,0.0,4.5
+yellow_2025-01:846721,1.595,0.0,1.96,1,1,1,Penn Station/Madison Sq West,Yorkville West,0.0,26.3,0.0,21.2,5.65,34.1
+yellow_2025-01:2948919,1.879,0.0,2.77,1,,0,TriBeCa/Civic Center,Murray Hill,0.0,16.1,0.0,16.0,3.0,25.0
+yellow_2025-01:2167994,2.656,0.0,6.62,1,99,1,East Harlem South,Elmhurst,0.0,35.7,0.0,35.5,0.0,43.94
+yellow_2025-01:3321993,1.773,0.01,2.5,2,,0,Central Harlem,Midtown South,0.01,30.3,0.0,33.0,0.0,37.75
+yellow_2025-01:588109,2.19,0.0,3.97,1,99,1,Sunset Park East,Homecrest,0.0,30.8,0.0,21.5,0.0,23.0
+yellow_2025-01:3065946,1.852,0.0,2.68,2,,0,West Chelsea/Hudson Yards,UN/Turtle Bay South,0.0,29.8,0.0,22.74,0.0,27.49
+yellow_2025-01:3384220,2.219,0.0,4.1,2,,0,SoHo,East Harlem North,0.0,25.6,0.0,35.43,0.0,40.18
+yellow_2025-01:2645207,3.117,0.0,10.79,1,99,1,East Harlem South,Bedford,0.0,54.4,0.0,40.5,0.0,42.0
+yellow_2025-01:3130974,1.628,0.0,2.05,1,,0,Midtown South,Upper East Side South,0.0,12.7,0.0,17.51,0.0,22.26
+yellow_2025-01:1900207,2.504,0.3,9.29,1,1,1,LaGuardia Airport,Midtown East,0.3,26.0,0.7,20.5,10.35,51.79
+yellow_2025-01:3118270,2.042,0.0,3.35,2,,0,Richmond Hill,Greenpoint,0.0,31.8,0.0,38.16,0.0,39.66
+yellow_2025-01:3384902,2.186,0.01,4.04,2,,0,Battery Park City,Kips Bay,0.01,15.2,0.0,21.58,0.0,26.33
+yellow_2025-01:3290490,1.79,0.0,2.49,2,,0,Richmond Hill,Corona,0.0,20.1,0.0,30.29,0.0,31.79

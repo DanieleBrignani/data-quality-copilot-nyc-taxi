@@ -21,8 +21,8 @@ import numpy as np
 import polars as pl
 
 from dqc import anomaly, config, pipeline, profiling, rules
-from dqc.ml import fare_model
 from dqc.ml import features as ml_features
+from dqc.ml import residual
 
 ERROR_TYPES = {
     # name: (family, description)
@@ -156,20 +156,61 @@ def run(partition_id: str = "yellow_2025-01", sample: int = 200_000) -> dict:
         layered = np.isin(rid, list(crit_ids)) | r.flags
         results[f"rules_critical+{name}"] = _metrics(layered, is_err, labels)
 
-    # supervised residual detector (trained on 2024-11, calibrated on 2024-12: this partition is out-of-time)
-    lm = fare_model.load()
-    if lm is not None and partition_id not in (lm.meta["train_partition"], lm.meta["validation_partition"]):
+    # supervised residual detectors (trained on 2024-11, calibrated on 2024-12: this partition is out-of-time)
+    crit = np.isin(rid, list(crit_ids))
+    ml_frame = ml_features.add_features(feat_df)
+    model_flags, operating_points, versions = {}, {}, {}
+    for name in ml_features.SPECS:
+        lm = residual.load(name)
+        if lm is None or partition_id in (lm.meta["train_partition"], lm.meta["validation_partition"]):
+            continue
         t = time.perf_counter()
-        _, _, fm_flags = lm.score_frame(ml_features.add_features(feat_df))
-        timings["fare_model"] = time.perf_counter() - t
-        results["fare_model"] = _metrics(fm_flags, is_err, labels)
-        crit = np.isin(rid, list(crit_ids))
-        results["rules_critical+fare_model"] = _metrics(crit | fm_flags, is_err, labels)
-        log_flags = anomaly.iqr(feat_df, feats, th["iqr_k"], log_transform=True).flags
-        results["rules_critical+iqr_log+fare_model"] = _metrics(crit | fm_flags | log_flags, is_err, labels)
+        _, dev, flags_m = lm.score_frame(ml_frame)
+        timings[name] = time.perf_counter() - t
+        versions[name] = lm.version
+        model_flags[name] = flags_m
+        results[name] = _metrics(flags_m, is_err, labels)
+        results[f"rules_critical+{name}"] = _metrics(crit | flags_m, is_err, labels)
+        # the same model at other review budgets: thresholds come from the VALIDATION month, never from here
+        operating_points[name] = {a: _metrics(np.nan_to_num(dev, nan=np.inf) > thr, is_err, labels)
+                                  for a, thr in lm.meta["threshold_by_alpha"].items()}
+    if len(model_flags) == 2:
+        both = model_flags["fare_model"] | model_flags["distance_model"]
+        results["fare_model+distance_model"] = _metrics(both, is_err, labels)
+        results["rules_critical+fare_model+distance_model"] = _metrics(crit | both, is_err, labels)
+
+    # 95% bootstrap intervals for precision / recall (resampling benchmark rows)
+    rng = np.random.default_rng(SEED)
+    names = list(results)
+    preds = {"rules_critical": crit, "rules_critical_plus_warning": np.isin(rid, list(any_ids)), **model_flags}
+    stat_flags = {}
+    for name, fn in dets.items():
+        stat_flags[name] = fn().flags
+    preds.update(stat_flags)
+    for name in stat_flags:
+        preds[f"rules_critical+{name}"] = crit | stat_flags[name]
+    for name in model_flags:
+        preds[f"rules_critical+{name}"] = crit | model_flags[name]
+    if len(model_flags) == 2:
+        preds["fare_model+distance_model"] = both
+        preds["rules_critical+fare_model+distance_model"] = crit | both
+    mat = np.stack([preds[n] for n in names])
+    boot = {n: {"precision": [], "recall": []} for n in names}
+    for _ in range(300):
+        idx = rng.integers(0, len(is_err), len(is_err))
+        e, m = is_err[idx], mat[:, idx]
+        tp = (m & e).sum(axis=1)
+        fl, pos = m.sum(axis=1), e.sum()
+        for i, n in enumerate(names):
+            boot[n]["precision"].append(tp[i] / fl[i] if fl[i] else np.nan)
+            boot[n]["recall"].append(tp[i] / pos)
+    for n in names:
+        for k in ("precision", "recall"):
+            v = np.array(boot[n][k], dtype=float)
+            results[n][f"{k}_ci95"] = [round(float(np.nanquantile(v, 0.025)), 4), round(float(np.nanquantile(v, 0.975)), 4)]
 
     out = {
-        "fare_model_version": lm.version if lm is not None else None,
+        "model_versions": versions, "operating_points": operating_points,
         "partition": partition_id, "clean_real_records": clean.height, "injected_error_rows": int(is_err.sum()),
         "total_rows": df.height, "error_types": {**{k: v[0] for k, v in ERROR_TYPES.items()}, **DERIVED_TYPES},
         "label_counts": dict(zip(*np.unique(labels, return_counts=True), strict=True)),

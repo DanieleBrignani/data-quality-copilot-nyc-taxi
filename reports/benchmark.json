@@ -1,5 +1,264 @@
 {
-  "fare_model_version": 1,
+  "model_versions": {
+    "fare_model": 2,
+    "distance_model": 1
+  },
+  "operating_points": {
+    "fare_model": {
+      "0.001": {
+        "tp": 454,
+        "fp": 89,
+        "fn": 3909,
+        "tn": 195911,
+        "precision": 0.8361,
+        "recall": 0.1041,
+        "false_positive_rate": 0.000454,
+        "flagged": 543,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.022,
+          "distance_x5": 0.0,
+          "dropoff_before_pickup": 0.0,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.9834,
+          "invalid_payment_type": 0.0027,
+          "negative_fare": 0.2418,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "0.002": {
+        "tp": 561,
+        "fp": 136,
+        "fn": 3802,
+        "tn": 195864,
+        "precision": 0.8049,
+        "recall": 0.1286,
+        "false_positive_rate": 0.000694,
+        "flagged": 697,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.1456,
+          "distance_x5": 0.0,
+          "dropoff_before_pickup": 0.0,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 0.0027,
+          "negative_fare": 0.3956,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "0.005": {
+        "tp": 972,
+        "fp": 273,
+        "fn": 3391,
+        "tn": 195727,
+        "precision": 0.7807,
+        "recall": 0.2228,
+        "false_positive_rate": 0.001393,
+        "flagged": 1245,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.7198,
+          "distance_x5": 0.022,
+          "dropoff_before_pickup": 0.0742,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 0.0027,
+          "negative_fare": 0.8516,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0027,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "0.01": {
+        "tp": 1481,
+        "fp": 685,
+        "fn": 2882,
+        "tn": 195315,
+        "precision": 0.6837,
+        "recall": 0.3394,
+        "false_positive_rate": 0.003495,
+        "flagged": 2166,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.8956,
+          "distance_x5": 0.7052,
+          "dropoff_before_pickup": 0.4533,
+          "exact_duplicate": 0.0055,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 0.0055,
+          "negative_fare": 0.9945,
+          "null_mandatory": 0.0027,
+          "passenger_overflow": 0.0027,
+          "stale_timestamp": 0.0055,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0028
+        }
+      },
+      "0.02": {
+        "tp": 1652,
+        "fp": 1184,
+        "fn": 2711,
+        "tn": 194816,
+        "precision": 0.5825,
+        "recall": 0.3786,
+        "false_positive_rate": 0.006041,
+        "flagged": 2836,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.9451,
+          "distance_x5": 0.8595,
+          "dropoff_before_pickup": 0.6923,
+          "exact_duplicate": 0.0055,
+          "fare_over_cap": 1.0,
+          "fare_x10": 1.0,
+          "invalid_payment_type": 0.0055,
+          "negative_fare": 1.0,
+          "null_mandatory": 0.0082,
+          "passenger_overflow": 0.0055,
+          "stale_timestamp": 0.0165,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0055
+        }
+      }
+    },
+    "distance_model": {
+      "0.001": {
+        "tp": 376,
+        "fp": 136,
+        "fn": 3987,
+        "tn": 195864,
+        "precision": 0.7344,
+        "recall": 0.0862,
+        "false_positive_rate": 0.000694,
+        "flagged": 512,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.0028,
+          "dropoff_before_pickup": 0.0275,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 0.0,
+          "fare_x10": 0.0,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.0,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0027,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "0.002": {
+        "tp": 411,
+        "fp": 224,
+        "fn": 3952,
+        "tn": 195776,
+        "precision": 0.6472,
+        "recall": 0.0942,
+        "false_positive_rate": 0.001143,
+        "flagged": 635,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.011,
+          "dropoff_before_pickup": 0.1154,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 0.0,
+          "fare_x10": 0.0,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.0,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0027,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "0.005": {
+        "tp": 596,
+        "fp": 399,
+        "fn": 3767,
+        "tn": 195601,
+        "precision": 0.599,
+        "recall": 0.1366,
+        "false_positive_rate": 0.002036,
+        "flagged": 995,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.3278,
+          "dropoff_before_pickup": 0.2995,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 0.0,
+          "fare_x10": 0.0028,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.0,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0055,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0028
+        }
+      },
+      "0.01": {
+        "tp": 856,
+        "fp": 723,
+        "fn": 3507,
+        "tn": 195277,
+        "precision": 0.5421,
+        "recall": 0.1962,
+        "false_positive_rate": 0.003689,
+        "flagged": 1579,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.7934,
+          "dropoff_before_pickup": 0.5385,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 0.0,
+          "fare_x10": 0.0028,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.0,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0137,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0055
+        }
+      },
+      "0.02": {
+        "tp": 990,
+        "fp": 1389,
+        "fn": 3373,
+        "tn": 194611,
+        "precision": 0.4161,
+        "recall": 0.2269,
+        "false_positive_rate": 0.007087,
+        "flagged": 2379,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.9366,
+          "dropoff_before_pickup": 0.739,
+          "exact_duplicate": 0.0,
+          "fare_over_cap": 0.0,
+          "fare_x10": 0.0028,
+          "invalid_payment_type": 0.0082,
+          "negative_fare": 0.0055,
+          "null_mandatory": 0.011,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0137,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0055
+        }
+      }
+    }
+  },
   "partition": "yellow_2025-01",
   "clean_real_records": 200000,
   "injected_error_rows": 4363,
@@ -59,7 +318,15 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0,
         "tip_spike": 0.0
-      }
+      },
+      "precision_ci95": [
+        1.0,
+        1.0
+      ],
+      "recall_ci95": [
+        0.6557,
+        0.6809
+      ]
     },
     "rules_critical_plus_warning": {
       "tp": 2955,
@@ -84,7 +351,15 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0,
         "tip_spike": 0.0
-      }
+      },
+      "precision_ci95": [
+        1.0,
+        1.0
+      ],
+      "recall_ci95": [
+        0.6658,
+        0.6916
+      ]
     },
     "iqr": {
       "tp": 1564,
@@ -109,7 +384,15 @@
         "stale_timestamp": 0.1181,
         "swapped_zones": 0.0826,
         "tip_spike": 0.9835
-      }
+      },
+      "precision_ci95": [
+        0.0719,
+        0.0794
+      ],
+      "recall_ci95": [
+        0.3454,
+        0.3734
+      ]
     },
     "rules_critical+iqr": {
       "tp": 3816,
@@ -134,7 +417,15 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0826,
         "tip_spike": 0.9835
-      }
+      },
+      "precision_ci95": [
+        0.1612,
+        0.1705
+      ],
+      "recall_ci95": [
+        0.8655,
+        0.884
+      ]
     },
     "iqr_log": {
       "tp": 1337,
@@ -159,7 +450,15 @@
         "stale_timestamp": 0.0082,
         "swapped_zones": 0.0,
         "tip_spike": 0.1653
-      }
+      },
+      "precision_ci95": [
+        0.7311,
+        0.773
+      ],
+      "recall_ci95": [
+        0.2926,
+        0.3197
+      ]
     },
     "rules_critical+iqr_log": {
       "tp": 3151,
@@ -184,7 +483,15 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0,
         "tip_spike": 0.1653
-      }
+      },
+      "precision_ci95": [
+        0.8669,
+        0.8882
+      ],
+      "recall_ci95": [
+        0.7092,
+        0.7346
+      ]
     },
     "zscore": {
       "tp": 884,
@@ -209,7 +516,15 @@
         "stale_timestamp": 0.0137,
         "swapped_zones": 0.0055,
         "tip_spike": 0.7603
-      }
+      },
+      "precision_ci95": [
+        0.3316,
+        0.3672
+      ],
+      "recall_ci95": [
+        0.1921,
+        0.2143
+      ]
     },
     "rules_critical+zscore": {
       "tp": 3442,
@@ -234,7 +549,15 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0055,
         "tip_spike": 0.7603
-      }
+      },
+      "precision_ci95": [
+        0.6624,
+        0.6878
+      ],
+      "recall_ci95": [
+        0.7788,
+        0.8006
+      ]
     },
     "isolation_forest": {
       "tp": 199,
@@ -259,7 +582,15 @@
         "stale_timestamp": 0.0137,
         "swapped_zones": 0.0055,
         "tip_spike": 0.1543
-      }
+      },
+      "precision_ci95": [
+        0.0866,
+        0.1136
+      ],
+      "recall_ci95": [
+        0.0393,
+        0.0524
+      ]
     },
     "rules_critical+isolation_forest": {
       "tp": 3046,
@@ -284,45 +615,61 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0055,
         "tip_spike": 0.1543
-      }
+      },
+      "precision_ci95": [
+        0.6149,
+        0.6403
+      ],
+      "recall_ci95": [
+        0.6852,
+        0.7114
+      ]
     },
     "fare_model": {
-      "tp": 939,
-      "fp": 271,
-      "fn": 3424,
-      "tn": 195729,
-      "precision": 0.776,
-      "recall": 0.2152,
-      "false_positive_rate": 0.001383,
-      "flagged": 1210,
+      "tp": 972,
+      "fp": 273,
+      "fn": 3391,
+      "tn": 195727,
+      "precision": 0.7807,
+      "recall": 0.2228,
+      "false_positive_rate": 0.001393,
+      "flagged": 1245,
       "recall_by_error_type": {
-        "distance_unit_error": 0.5824,
-        "distance_x5": 0.0579,
-        "dropoff_before_pickup": 0.1071,
+        "distance_unit_error": 0.7198,
+        "distance_x5": 0.022,
+        "dropoff_before_pickup": 0.0742,
         "exact_duplicate": 0.0,
         "fare_over_cap": 1.0,
         "fare_x10": 1.0,
         "invalid_payment_type": 0.0027,
-        "negative_fare": 0.8269,
-        "null_mandatory": 0.0027,
+        "negative_fare": 0.8516,
+        "null_mandatory": 0.0,
         "passenger_overflow": 0.0,
         "stale_timestamp": 0.0027,
         "swapped_zones": 0.0,
         "tip_spike": 0.0
-      }
+      },
+      "precision_ci95": [
+        0.7622,
+        0.8017
+      ],
+      "recall_ci95": [
+        0.211,
+        0.2361
+      ]
     },
     "rules_critical+fare_model": {
-      "tp": 3295,
-      "fp": 271,
-      "fn": 1068,
-      "tn": 195729,
-      "precision": 0.924,
-      "recall": 0.7552,
-      "false_positive_rate": 0.001383,
-      "flagged": 3566,
+      "tp": 3282,
+      "fp": 273,
+      "fn": 1081,
+      "tn": 195727,
+      "precision": 0.9232,
+      "recall": 0.7522,
+      "false_positive_rate": 0.001393,
+      "flagged": 3555,
       "recall_by_error_type": {
         "distance_unit_error": 1.0,
-        "distance_x5": 0.0579,
+        "distance_x5": 0.022,
         "dropoff_before_pickup": 1.0,
         "exact_duplicate": 1.0,
         "fare_over_cap": 1.0,
@@ -334,20 +681,127 @@
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0,
         "tip_spike": 0.0
-      }
+      },
+      "precision_ci95": [
+        0.9148,
+        0.9318
+      ],
+      "recall_ci95": [
+        0.7408,
+        0.7644
+      ]
     },
-    "rules_critical+iqr_log+fare_model": {
-      "tp": 3398,
-      "fp": 622,
-      "fn": 965,
-      "tn": 195378,
-      "precision": 0.8453,
-      "recall": 0.7788,
-      "false_positive_rate": 0.003173,
-      "flagged": 4020,
+    "distance_model": {
+      "tp": 596,
+      "fp": 399,
+      "fn": 3767,
+      "tn": 195601,
+      "precision": 0.599,
+      "recall": 0.1366,
+      "false_positive_rate": 0.002036,
+      "flagged": 995,
       "recall_by_error_type": {
         "distance_unit_error": 1.0,
-        "distance_x5": 0.1763,
+        "distance_x5": 0.3278,
+        "dropoff_before_pickup": 0.2995,
+        "exact_duplicate": 0.0,
+        "fare_over_cap": 0.0,
+        "fare_x10": 0.0028,
+        "invalid_payment_type": 0.0,
+        "negative_fare": 0.0,
+        "null_mandatory": 0.0,
+        "passenger_overflow": 0.0,
+        "stale_timestamp": 0.0055,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.0028
+      },
+      "precision_ci95": [
+        0.5683,
+        0.6272
+      ],
+      "recall_ci95": [
+        0.1264,
+        0.1474
+      ]
+    },
+    "rules_critical+distance_model": {
+      "tp": 3034,
+      "fp": 399,
+      "fn": 1329,
+      "tn": 195601,
+      "precision": 0.8838,
+      "recall": 0.6954,
+      "false_positive_rate": 0.002036,
+      "flagged": 3433,
+      "recall_by_error_type": {
+        "distance_unit_error": 1.0,
+        "distance_x5": 0.3278,
+        "dropoff_before_pickup": 1.0,
+        "exact_duplicate": 1.0,
+        "fare_over_cap": 1.0,
+        "fare_x10": 0.0028,
+        "invalid_payment_type": 1.0,
+        "negative_fare": 1.0,
+        "null_mandatory": 1.0,
+        "passenger_overflow": 1.0,
+        "stale_timestamp": 1.0,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.0028
+      },
+      "precision_ci95": [
+        0.8721,
+        0.894
+      ],
+      "recall_ci95": [
+        0.6836,
+        0.7072
+      ]
+    },
+    "fare_model+distance_model": {
+      "tp": 1278,
+      "fp": 655,
+      "fn": 3085,
+      "tn": 195345,
+      "precision": 0.6611,
+      "recall": 0.2929,
+      "false_positive_rate": 0.003342,
+      "flagged": 1933,
+      "recall_by_error_type": {
+        "distance_unit_error": 1.0,
+        "distance_x5": 0.3416,
+        "dropoff_before_pickup": 0.3104,
+        "exact_duplicate": 0.0,
+        "fare_over_cap": 1.0,
+        "fare_x10": 1.0,
+        "invalid_payment_type": 0.0027,
+        "negative_fare": 0.8516,
+        "null_mandatory": 0.0,
+        "passenger_overflow": 0.0,
+        "stale_timestamp": 0.0055,
+        "swapped_zones": 0.0,
+        "tip_spike": 0.0028
+      },
+      "precision_ci95": [
+        0.6407,
+        0.6803
+      ],
+      "recall_ci95": [
+        0.2804,
+        0.3077
+      ]
+    },
+    "rules_critical+fare_model+distance_model": {
+      "tp": 3399,
+      "fp": 655,
+      "fn": 964,
+      "tn": 195345,
+      "precision": 0.8384,
+      "recall": 0.7791,
+      "false_positive_rate": 0.003342,
+      "flagged": 4054,
+      "recall_by_error_type": {
+        "distance_unit_error": 1.0,
+        "distance_x5": 0.3416,
         "dropoff_before_pickup": 1.0,
         "exact_duplicate": 1.0,
         "fare_over_cap": 1.0,
@@ -358,25 +812,35 @@
         "passenger_overflow": 1.0,
         "stale_timestamp": 1.0,
         "swapped_zones": 0.0,
-        "tip_spike": 0.1653
-      }
+        "tip_spike": 0.0028
+      },
+      "precision_ci95": [
+        0.8267,
+        0.8487
+      ],
+      "recall_ci95": [
+        0.7671,
+        0.79
+      ]
     }
   },
   "runtime_s": {
-    "rules": 0.174,
-    "iqr": 0.043,
-    "iqr_log": 0.052,
+    "rules": 0.125,
+    "iqr": 0.092,
+    "iqr_log": 0.051,
     "zscore": 0.014,
-    "isolation_forest": 1.691,
-    "fare_model": 0.172
+    "isolation_forest": 1.768,
+    "fare_model": 0.186,
+    "distance_model": 0.362
   },
   "rows_per_sec": {
-    "rules": 1154809,
-    "iqr": 4695905,
-    "iqr_log": 3824422,
-    "zscore": 13857800,
-    "isolation_forest": 118518,
-    "fare_model": 1166647
+    "rules": 1605981,
+    "iqr": 2172868,
+    "iqr_log": 3961724,
+    "zscore": 14372521,
+    "isolation_forest": 113309,
+    "fare_model": 1079797,
+    "distance_model": 554118
   },
   "seed": 42
 }

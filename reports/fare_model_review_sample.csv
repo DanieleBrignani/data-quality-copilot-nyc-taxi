@@ -1,41 +1,41 @@
-record_id,log_ratio,fare_amount,predicted_fare,VendorID,RatecodeID,payment_type,pu_zone,do_zone,trip_distance,trip_duration_min,mph,tip_amount,total_amount
-yellow_2025-01:262795,1.156,10.5,44.24,2,5,1,Upper West Side North,N/A,0.0,0.0,0.0,1.5,13.0
-yellow_2025-01:1023888,1.315,12.5,60.15,2,5,1,East Concourse/Concourse Village,East Concourse/Concourse Village,0.0,0.1,0.0,2.0,15.5
-yellow_2025-01:2948731,0.973,6.15,24.49,2,,0,World Trade Center,Times Sq/Theatre District,3.53,26.4,8.0,0.0,14.52
-yellow_2025-01:2644978,2.545,0.01,58.82,1,5,2,Clinton East,Clinton East,0.0,0.3,0.0,0.0,1.76
-yellow_2025-01:3174708,1.188,5.03,27.92,2,,0,Midtown Center,Midtown Center,0.01,0.2,2.8,0.0,9.78
-yellow_2025-01:2884534,2.708,0.0,70.01,2,2,2,JFK Airport,Lincoln Square East,19.28,68.6,16.9,0.0,6.5
-yellow_2025-01:2948950,0.959,6.35,24.61,2,,0,Financial District South,Midtown South,5.24,19.2,16.4,0.0,10.35
-yellow_2025-01:1997320,1.359,15.0,72.81,2,5,1,UN/Turtle Bay South,UN/Turtle Bay South,0.09,1.4,4.0,1.0,20.25
-yellow_2025-01:3326035,1.091,6.27,28.54,2,,0,East Chelsea,East Chelsea,0.0,0.2,0.0,0.0,8.52
-yellow_2025-01:373615,1.28,24.0,99.28,2,5,1,Times Sq/Theatre District,Times Sq/Theatre District,0.02,1.9,0.6,0.0,28.25
-yellow_2025-01:679527,1.746,10.0,80.98,2,5,1,Midtown South,Midtown South,0.0,0.1,0.0,2.85,17.1
-yellow_2025-01:1023975,1.221,0.0,11.96,1,1,3,Garment District,Hudson Sq,2.0,10.8,11.1,0.0,0.0
-yellow_2025-01:2949262,1.005,8.31,31.38,2,,0,Lower East Side,Midtown Center,5.76,30.0,11.5,0.0,17.47
-yellow_2025-01:673099,1.023,23.75,74.97,2,5,1,Baisley Park,Baisley Park,0.0,0.0,0.0,4.95,29.7
-yellow_2025-01:2936369,1.056,0.36,10.41,2,,0,East Chelsea,East Chelsea,0.54,7.1,4.6,0.0,4.36
-yellow_2025-01:544540,1.007,3.0,16.89,2,1,2,East Chelsea,Times Sq/Theatre District,0.0,20.1,0.0,0.0,7.0
-yellow_2025-01:984435,1.189,15.0,60.71,2,5,3,Upper West Side South,Upper West Side South,0.0,1.3,0.0,0.0,19.0
-yellow_2025-01:1091331,1.4,3.0,27.46,1,1,1,Midtown North,Meatpacking/West Village West,3.7,32.2,6.9,10.0,17.75
-yellow_2025-01:654541,0.971,23.0,68.97,2,5,2,Yorkville East,Yorkville East,0.0,0.2,0.0,0.0,26.5
-yellow_2025-01:2950986,1.523,1.42,24.45,2,,0,Ocean Hill,Starrett City,4.11,24.4,10.1,0.0,7.92
-yellow_2025-01:2947098,0.943,1.71,12.23,2,,0,Lenox Hill West,Central Park,0.68,10.7,3.8,0.0,5.71
-yellow_2025-01:2568220,1.483,9.3,57.99,2,5,1,Upper East Side North,Upper East Side North,0.0,0.1,0.0,2.81,16.86
-yellow_2025-01:2951046,1.105,4.53,23.76,2,,0,Greenwich Village South,Yorkville East,5.16,18.0,17.2,0.0,8.53
-yellow_2025-01:2939720,1.905,1.52,38.83,2,,0,East Village,Washington Heights North,10.91,27.0,24.2,0.0,17.98
-yellow_2025-01:2953382,1.571,90.12,14.77,2,,0,Midtown Center,Times Sq/Theatre District,0.0,2.0,0.0,0.0,94.12
-yellow_2025-01:20212,0.944,9.0,30.99,1,5,1,UN/Turtle Bay South,UN/Turtle Bay South,0.0,0.6,0.0,3.0,13.0
-yellow_2025-01:18144,1.688,0.0,22.05,2,5,2,Greenwich Village North,Outside of NYC,0.23,22.9,0.6,0.0,3.5
-yellow_2025-01:716921,1.432,0.0,15.94,2,1,2,Lower East Side,Flatiron,1.74,17.2,6.1,0.0,4.75
-yellow_2025-01:2363734,1.542,140.0,26.02,2,5,1,Lincoln Square West,Lincoln Square West,0.0,0.1,0.0,0.0,143.5
-yellow_2025-01:1746353,1.695,7.0,60.34,2,5,1,Midtown South,N/A,0.0,0.0,0.0,2.12,10.62
-yellow_2025-01:2951530,1.373,3.74,29.5,2,,0,South Jamaica,Bellerose,6.99,26.0,16.1,0.0,5.24
-yellow_2025-01:436349,1.156,300.0,91.01,2,5,1,Outside of NYC,Outside of NYC,0.0,1.0,0.0,5.0,306.0
-yellow_2025-01:2937619,1.033,2.6,16.35,2,,0,Yorkville East,Lincoln Square East,2.6,14.4,10.8,0.0,10.09
-yellow_2025-01:2953060,1.24,1.57,17.7,2,,0,Times Sq/Theatre District,Midtown Center,0.79,19.1,2.5,0.0,9.6
-yellow_2025-01:2081018,0.924,18.0,52.95,2,5,1,Upper East Side South,Central Park,0.0,0.1,0.0,0.0,21.5
-yellow_2025-01:2944733,1.113,5.31,26.37,2,,0,Rego Park,Jamaica,7.23,17.7,24.5,0.0,6.81
-yellow_2025-01:1548026,0.981,89.9,30.59,1,5,1,East Village,East Village,0.0,1.2,0.0,5.0,96.65
-yellow_2025-01:2943364,1.168,0.86,13.85,2,,0,East Village,East Chelsea,2.29,11.1,12.4,0.0,7.23
-yellow_2025-01:2953259,1.483,0.3,18.36,2,,0,West Village,Midtown South,0.0,16.9,0.0,0.0,4.3
-yellow_2025-01:2949530,1.048,6.92,29.0,2,,0,TriBeCa/Civic Center,Midtown Center,5.68,25.6,13.3,0.0,10.92
+record_id,log_ratio,actual,predicted,VendorID,RatecodeID,payment_type,pu_zone,do_zone,trip_distance,trip_duration_min,mph,fare_amount,tip_amount,total_amount
+yellow_2025-01:266342,1.979,6.5,78.23,2,5,2,LaGuardia Airport,Saint Michaels Cemetery/Woodside,0.17,0.3,34.0,6.5,0.0,14.25
+yellow_2025-01:3452674,1.744,2.9,40.19,6,,0,Melrose South,East Concourse/Concourse Village,1.03,59.5,1.0,2.9,0.0,16.0
+yellow_2025-01:2949251,1.495,0.71,20.46,2,,0,Clinton East,Greenwich Village South,2.98,18.5,9.7,0.71,0.0,4.71
+yellow_2025-01:2709407,1.829,6.5,66.62,2,5,1,Gramercy,Gramercy,0.01,0.1,6.0,6.5,1.0,13.25
+yellow_2025-01:3223296,0.933,32.83,9.88,1,,0,Mott Haven/Port Morris,East Harlem North,1.7,6.1,16.6,32.83,0.0,34.33
+yellow_2025-01:2935425,1.487,1.72,24.73,2,,0,Central Park,Washington Heights North,6.65,17.4,22.9,1.72,0.0,5.72
+yellow_2025-01:2949441,0.933,9.55,31.98,2,,0,Financial District South,Times Sq/Theatre District,5.51,32.0,10.3,9.55,0.0,13.55
+yellow_2025-01:2058355,0.94,0.0,7.8,1,1,4,Gramercy,Union Sq,0.9,7.2,7.5,0.0,0.0,0.0
+yellow_2025-01:3370935,0.956,7.88,28.49,2,,0,Upper East Side North,Upper East Side North,0.0,0.2,0.0,7.88,0.0,11.88
+yellow_2025-01:383857,1.996,0.0,31.8,1,5,4,LaGuardia Airport,LaGuardia Airport,0.0,0.6,0.0,0.0,0.0,0.0
+yellow_2025-01:681113,1.451,0.0,16.34,1,99,1,Midtown East,Midtown East,0.0,0.1,0.0,0.0,0.0,0.0
+yellow_2025-01:1042493,1.029,27.0,84.51,2,5,1,N/A,N/A,0.03,0.2,10.8,27.0,5.7,34.2
+yellow_2025-01:2949762,1.168,3.9,23.62,2,,0,Upper East Side South,East Village,4.42,19.9,13.3,3.9,0.0,7.9
+yellow_2025-01:677198,0.931,8.6,29.49,1,1,2,Murray Hill,Gramercy,5.6,28.8,11.7,8.6,0.0,13.6
+yellow_2025-01:2937714,1.441,2.97,28.67,2,,0,Astoria,Upper West Side North,6.97,23.4,17.9,2.97,0.0,11.41
+yellow_2025-01:551947,1.125,88.5,25.37,1,5,4,Stuy Town/Peter Cooper Village,Stuy Town/Peter Cooper Village,0.0,1.3,0.0,88.5,0.0,90.25
+yellow_2025-01:992698,1.021,83.0,26.7,2,5,1,Upper West Side North,Upper West Side North,0.0,0.1,0.0,83.0,0.0,86.5
+yellow_2025-01:1106684,1.843,6.5,67.65,2,5,1,Midtown North,Midtown North,0.0,0.2,0.0,6.5,2.25,13.5
+yellow_2025-01:659179,1.907,3.7,53.58,2,5,1,Union Sq,Union Sq,0.0,0.2,0.0,3.7,1.0,8.95
+yellow_2025-01:2951657,0.978,7.41,27.98,2,,0,Clinton West,World Trade Center,5.39,22.6,14.3,7.41,0.0,11.41
+yellow_2025-01:2947865,1.168,3.87,23.52,2,,0,Bushwick North,Boerum Hill,3.92,22.7,10.4,3.87,0.0,5.37
+yellow_2025-01:2645532,2.056,0.01,34.16,2,5,2,Arrochar/Fort Wadsworth,Red Hook,8.08,16.1,30.0,0.01,0.0,21.83
+yellow_2025-01:2951802,1.018,0.59,10.46,2,,0,Morningside Heights,Morningside Heights,0.93,5.7,9.8,0.59,0.0,2.09
+yellow_2025-01:2940912,1.082,3.69,20.64,2,,0,UN/Turtle Bay South,Clinton West,2.51,23.4,6.4,3.69,0.0,7.69
+yellow_2025-01:2953909,1.237,0.32,13.33,2,,0,Alphabet City,SoHo,1.29,11.2,6.9,0.32,0.0,4.32
+yellow_2025-01:17869,2.066,0.01,34.55,1,5,2,Kips Bay,Kips Bay,0.0,0.3,0.0,0.01,0.0,1.01
+yellow_2025-01:17086,1.019,10.7,38.51,2,5,2,Greenwich Village North,Greenwich Village North,0.0,0.4,0.0,10.7,0.0,14.2
+yellow_2025-01:719737,2.79,3.0,125.2,2,5,2,JFK Airport,JFK Airport,0.0,0.2,0.0,3.0,0.0,6.25
+yellow_2025-01:2412294,1.826,0.0,26.05,2,1,2,JFK Airport,Briarwood/Jamaica Hills,6.21,16.0,23.2,0.0,0.0,3.25
+yellow_2025-01:1764806,1.169,10.0,43.26,2,5,1,West Village,West Village,0.0,0.2,0.0,10.0,4.28,18.53
+yellow_2025-01:2952308,1.072,0.72,11.71,2,,0,Central Harlem North,Central Harlem North,1.39,8.2,10.2,0.72,0.0,2.22
+yellow_2025-01:444981,1.024,397.8,139.72,2,4,1,Upper East Side South,Clinton East,49.28,205.3,14.4,397.8,81.9,491.39
+yellow_2025-01:2938984,1.257,50.8,10.87,2,,0,Outside of NYC,Bellerose,0.55,1.1,30.5,50.8,10.46,62.76
+yellow_2025-01:2953608,1.066,8.42,33.98,2,,0,Financial District North,Clinton East,0.0,34.3,0.0,8.42,0.0,12.42
+yellow_2025-01:2144597,2.309,0.15,46.82,2,5,1,Flatiron,Flatiron,0.0,0.2,0.0,0.15,10.0,14.4
+yellow_2025-01:2945523,0.911,1.47,11.09,2,,0,Brownsville,Prospect-Lefferts Gardens,1.88,7.4,15.2,1.47,0.0,2.97
+yellow_2025-01:1592157,0.986,100.0,34.18,2,5,1,West Village,East Chelsea,0.0,0.3,0.0,100.0,0.0,104.25
+yellow_2025-01:2944182,1.475,1.45,23.19,2,,0,Clinton East,Chinatown,4.93,18.2,16.2,1.45,0.0,5.45
+yellow_2025-01:2953750,1.39,0.57,17.37,2,,0,Central Harlem North,Sutton Place/Turtle Bay North,0.03,14.5,0.1,0.57,0.0,4.57
+yellow_2025-01:2950038,1.001,2.43,15.21,2,,0,Midtown North,Times Sq/Theatre District,0.8,14.0,3.4,2.43,0.0,6.43

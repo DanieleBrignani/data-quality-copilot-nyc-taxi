@@ -1,4 +1,4 @@
-# Results (generated 2026-10-02T21:28:41+00:00)
+# Results (generated 2026-10-02T22:20:46+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
@@ -103,39 +103,42 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 ## Benchmark on injected errors (yellow_2025-01, 200,000 real rule-clean records + 4,363 labelled errors, seed 42)
 
-| detector | precision | recall | FPR | flagged | runtime s |
-|---|---:|---:|---:|---:|---:|
-| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.174 |
-| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.174 |
-| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.043 |
-| rules_critical+iqr | 0.1657 | 0.8746 | 0.098046 | 23,033 |  |
-| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.052 |
-| rules_critical+iqr_log | 0.8777 | 0.7222 | 0.00224 | 3,590 |  |
-| zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.014 |
-| rules_critical+zscore | 0.6748 | 0.7889 | 0.008464 | 5,101 |  |
-| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 1.691 |
-| rules_critical+isolation_forest | 0.628 | 0.6981 | 0.009204 | 4,850 |  |
-| fare_model | 0.776 | 0.2152 | 0.001383 | 1,210 | 0.172 |
-| rules_critical+fare_model | 0.924 | 0.7552 | 0.001383 | 3,566 |  |
-| rules_critical+iqr_log+fare_model | 0.8453 | 0.7788 | 0.003173 | 4,020 |  |
+| detector | precision | 95% CI | recall | 95% CI | FPR | flagged | runtime s |
+|---|---:|---|---:|---|---:|---:|---:|
+| rules_critical | 1.0 | [1.0, 1.0] | 0.6677 | [0.6557, 0.6809] | 0.0 | 2,913 | 0.125 |
+| rules_critical_plus_warning | 1.0 | [1.0, 1.0] | 0.6773 | [0.6658, 0.6916] | 0.0 | 2,955 | 0.125 |
+| iqr | 0.0753 | [0.0719, 0.0794] | 0.3585 | [0.3454, 0.3734] | 0.098046 | 20,781 | 0.092 |
+| rules_critical+iqr | 0.1657 | [0.1612, 0.1705] | 0.8746 | [0.8655, 0.884] | 0.098046 | 23,033 |  |
+| iqr_log | 0.7528 | [0.7311, 0.773] | 0.3064 | [0.2926, 0.3197] | 0.00224 | 1,776 | 0.051 |
+| rules_critical+iqr_log | 0.8777 | [0.8669, 0.8882] | 0.7222 | [0.7092, 0.7346] | 0.00224 | 3,590 |  |
+| zscore | 0.3476 | [0.3316, 0.3672] | 0.2026 | [0.1921, 0.2143] | 0.008464 | 2,543 | 0.014 |
+| rules_critical+zscore | 0.6748 | [0.6624, 0.6878] | 0.7889 | [0.7788, 0.8006] | 0.008464 | 5,101 |  |
+| isolation_forest | 0.0994 | [0.0866, 0.1136] | 0.0456 | [0.0393, 0.0524] | 0.009204 | 2,003 | 1.768 |
+| rules_critical+isolation_forest | 0.628 | [0.6149, 0.6403] | 0.6981 | [0.6852, 0.7114] | 0.009204 | 4,850 |  |
+| fare_model | 0.7807 | [0.7622, 0.8017] | 0.2228 | [0.211, 0.2361] | 0.001393 | 1,245 | 0.186 |
+| rules_critical+fare_model | 0.9232 | [0.9148, 0.9318] | 0.7522 | [0.7408, 0.7644] | 0.001393 | 3,555 |  |
+| distance_model | 0.599 | [0.5683, 0.6272] | 0.1366 | [0.1264, 0.1474] | 0.002036 | 995 | 0.362 |
+| rules_critical+distance_model | 0.8838 | [0.8721, 0.894] | 0.6954 | [0.6836, 0.7072] | 0.002036 | 3,433 |  |
+| fare_model+distance_model | 0.6611 | [0.6407, 0.6803] | 0.2929 | [0.2804, 0.3077] | 0.003342 | 1,933 |  |
+| rules_critical+fare_model+distance_model | 0.8384 | [0.8267, 0.8487] | 0.7791 | [0.7671, 0.79] | 0.003342 | 4,054 |  |
 
 ### Recall by error type
 
-| error type | family | rules_critical | rules_critical_plus_warning | iqr | iqr_log | zscore | isolation_forest | fare_model |
-|---|---|---:|---:|---:|---:|---:|---:|---:|
-| distance_unit_error | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 0.8736 | 0.1209 | 0.5824 |
-| distance_x5 | plausible | 0.0 | 0.1157 | 0.4656 | 0.1212 | 0.011 | 0.0303 | 0.0579 |
-| dropoff_before_pickup | rule_detectable | 1.0 | 1.0 | 0.0962 | 1.0 | 0.0027 | 0.011 | 0.1071 |
-| exact_duplicate | rule_detectable | 1.0 | 1.0 | 0.1019 | 0.0028 | 0.011 | 0.0083 | 0.0 |
-| fare_over_cap | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 |
-| fare_x10 | plausible | 0.0 | 0.0 | 0.9612 | 0.3712 | 0.6842 | 0.1773 | 1.0 |
-| invalid_payment_type | rule_detectable | 1.0 | 1.0 | 0.1264 | 0.0027 | 0.0055 | 0.0082 | 0.0027 |
-| negative_fare | rule_detectable | 1.0 | 1.0 | 0.1813 | 1.0 | 0.0577 | 0.0055 | 0.8269 |
-| null_mandatory | rule_detectable | 1.0 | 1.0 | 0.1044 | 0.0 | 0.0 | 0.0055 | 0.0027 |
-| passenger_overflow | rule_detectable | 1.0 | 1.0 | 0.0824 | 0.0 | 0.0055 | 0.0027 | 0.0 |
-| stale_timestamp | rule_detectable | 1.0 | 1.0 | 0.1181 | 0.0082 | 0.0137 | 0.0137 | 0.0027 |
-| swapped_zones | plausible | 0.0 | 0.0 | 0.0826 | 0.0 | 0.0055 | 0.0055 | 0.0 |
-| tip_spike | plausible | 0.0 | 0.0 | 0.9835 | 0.1653 | 0.7603 | 0.1543 | 0.0 |
+| error type | family | rules_critical | rules_critical_plus_warning | iqr | iqr_log | zscore | isolation_forest | fare_model | distance_model |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| distance_unit_error | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 0.8736 | 0.1209 | 0.7198 | 1.0 |
+| distance_x5 | plausible | 0.0 | 0.1157 | 0.4656 | 0.1212 | 0.011 | 0.0303 | 0.022 | 0.3278 |
+| dropoff_before_pickup | rule_detectable | 1.0 | 1.0 | 0.0962 | 1.0 | 0.0027 | 0.011 | 0.0742 | 0.2995 |
+| exact_duplicate | rule_detectable | 1.0 | 1.0 | 0.1019 | 0.0028 | 0.011 | 0.0083 | 0.0 | 0.0 |
+| fare_over_cap | rule_detectable | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 0.0 |
+| fare_x10 | plausible | 0.0 | 0.0 | 0.9612 | 0.3712 | 0.6842 | 0.1773 | 1.0 | 0.0028 |
+| invalid_payment_type | rule_detectable | 1.0 | 1.0 | 0.1264 | 0.0027 | 0.0055 | 0.0082 | 0.0027 | 0.0 |
+| negative_fare | rule_detectable | 1.0 | 1.0 | 0.1813 | 1.0 | 0.0577 | 0.0055 | 0.8516 | 0.0 |
+| null_mandatory | rule_detectable | 1.0 | 1.0 | 0.1044 | 0.0 | 0.0 | 0.0055 | 0.0 | 0.0 |
+| passenger_overflow | rule_detectable | 1.0 | 1.0 | 0.0824 | 0.0 | 0.0055 | 0.0027 | 0.0 | 0.0 |
+| stale_timestamp | rule_detectable | 1.0 | 1.0 | 0.1181 | 0.0082 | 0.0137 | 0.0137 | 0.0027 | 0.0055 |
+| swapped_zones | plausible | 0.0 | 0.0 | 0.0826 | 0.0 | 0.0055 | 0.0055 | 0.0 | 0.0 |
+| tip_spike | plausible | 0.0 | 0.0 | 0.9835 | 0.1653 | 0.7603 | 0.1543 | 0.0 | 0.0028 |
 
 ## Failure demo
 
@@ -159,61 +162,173 @@ identical quality results: True · raw rows not duplicated: True
 | yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 178.5 | 95.4 | 5.3 |
 | yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 221.5 | 107.3 | 3.1 |
 
-## Fare model v1 (hgb_large (HistGradientBoostingRegressor))
+## fare_model v2 — target `fare_amount` ($), hgb_search_05 (HistGradientBoostingRegressor)
 
-trained on yellow_2024-11 (500,000 sampled rule-valid rows), selected and calibrated on yellow_2024-12; flag threshold (log-ratio) 0.9195 = validation quantile 0.995
+trained on yellow_2024-11 (500,000 sampled rule-valid rows), selected and calibrated on yellow_2024-12; flag threshold (log-ratio) 0.9078 = validation quantile 0.995
 
-### Model selection on the validation month
+selection rule: smallest artifact among candidates within 1% of the best validation MAE
 
-| candidate | MAE $ | RMSE $ | median AE $ | R2 | fit s |
-|---|---:|---:|---:|---:|---:|
-| hgb_large | 1.303 | 5.005 | 0.393 | 0.9268 | 1.65 |
-| hgb_small | 1.358 | 5.030 | 0.418 | 0.9260 | 1.85 |
-| hgb_large_l1 | 1.385 | 6.743 | 0.342 | 0.8671 | 13.91 |
-| baseline_median | 11.081 | 19.562 | 6.300 | -0.1187 | 0.45 |
-| baseline_linear_distance_duration | 4.513 | 9.141 | 3.006 | 0.7557 | 1.34 |
+### Candidates on the validation month
 
-### Performance per partition (all rule-valid records)
+| candidate | MAE $ | RMSE | median AE | R2 | fit s | size MB | within tolerance | selected |
+|---|---:|---:|---:|---:|---:|---:|---|---|
+| random_forest | 1.2645 | 4.911 | 0.354 | 0.9295 | 7.2 | 47.59 | yes |  |
+| hgb_search_05 | 1.2666 | 4.980 | 0.364 | 0.9275 | 2.43 | 0.81 | yes | **yes** |
+| hgb_search_07 | 1.2751 | 5.026 | 0.374 | 0.9262 | 3.37 | 1.28 | yes |  |
+| hgb_search_08 | 1.2760 | 4.983 | 0.372 | 0.9274 | 3.64 | 1.04 | yes |  |
+| hgb_search_00 | 1.2763 | 4.982 | 0.372 | 0.9274 | 4.45 | 1.07 | yes |  |
+| hgb_search_02 | 1.2789 | 4.968 | 0.370 | 0.9279 | 4.04 | 0.79 |  |  |
+| hgb_search_09 | 1.3007 | 4.982 | 0.375 | 0.9275 | 4.14 | 1.52 |  |  |
+| hgb_default | 1.3028 | 5.005 | 0.393 | 0.9268 | 1.83 | 0.29 |  |  |
+| hgb_search_01 | 1.3155 | 5.052 | 0.400 | 0.9254 | 0.92 | 0.18 |  |  |
+| hgb_search_04 | 1.3378 | 5.009 | 0.405 | 0.9266 | 1.63 | 0.18 |  |  |
+| hgb_search_06 | 1.3387 | 4.995 | 0.413 | 0.9271 | 1.64 | 0.19 |  |  |
+| hgb_search_03 | 1.3535 | 5.003 | 0.429 | 0.9268 | 1.57 | 0.18 |  |  |
+| baseline_linear | 4.5126 | 9.141 | 3.006 | 0.7557 | 0.04 | 0.00 |  |  |
+| baseline_median | 11.0810 | 19.562 | 6.300 | -0.1187 | 0.0 | 0.00 |  |  |
 
-| partition | split | n | MAE $ | RMSE $ | median AE $ | R2 | flagged | flag % | MAE / validation | status |
-|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| yellow_2024-11 | train | 3,572,569 | 1.148 | 4.655 | 0.392 | 0.9321 | 16,507 | 0.462 | 0.881 | ok |
-| yellow_2024-12 | validation | 3,587,974 | 1.299 | 5.297 | 0.395 | 0.9177 | 17,460 | 0.487 | 0.997 | ok |
-| yellow_2025-01 | test | 3,328,587 | 1.128 | 4.700 | 0.398 | 0.9215 | 8,867 | 0.266 | 0.866 | ok |
-| yellow_2025-02 | test | 3,389,155 | 1.232 | 4.362 | 0.440 | 0.9240 | 4,619 | 0.136 | 0.946 | ok |
+### Performance per partition (all rule-valid records; MAE with 95% bootstrap interval)
 
-### Permutation importance (increase in validation MAE, $)
+| partition | split | n | MAE | 95% CI | RMSE | median AE | R2 | flagged | flag % | MAE / validation | status |
+|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|---|
+| yellow_2024-11 | train | 3,572,569 | 1.110 | [1.105, 1.114] | 4.654 | 0.363 | 0.9321 | 16,756 | 0.469 | 0.876 | ok |
+| yellow_2024-12 | validation | 3,587,974 | 1.263 | [1.258, 1.269] | 5.280 | 0.366 | 0.9183 | 17,727 | 0.494 | 0.997 | ok |
+| yellow_2025-01 | test | 3,328,587 | 1.100 | [1.095, 1.105] | 4.685 | 0.371 | 0.9220 | 9,178 | 0.276 | 0.868 | ok |
+| yellow_2025-02 | test | 3,389,155 | 1.204 | [1.200, 1.208] | 4.339 | 0.412 | 0.9248 | 4,823 | 0.142 | 0.951 | ok |
+
+### Rolling-origin backtest (selected configuration refit on month t, evaluated on t+1)
+
+| train | evaluate | MAE | 95% CI | R2 |
+|---|---|---:|---|---:|
+| yellow_2024-11 | yellow_2024-12 | 1.292 | [1.274, 1.309] | 0.9245 |
+| yellow_2024-12 | yellow_2025-01 | 1.225 | [1.209, 1.241] | 0.9245 |
+| yellow_2025-01 | yellow_2025-02 | 1.203 | [1.188, 1.218] | 0.9242 |
+
+### Permutation importance (increase in validation MAE)
 
 | feature | ΔMAE |
 |---|---:|
-| trip_duration_min | 7.348 |
-| trip_distance | 5.547 |
-| RatecodeID | 2.511 |
-| DOLocationID | 0.125 |
-| VendorID | 0.096 |
-| PULocationID | 0.054 |
-| pickup_hour | 0.033 |
-| payment_type | 0.013 |
+| trip_duration_min | 7.471 |
+| trip_distance | 5.585 |
+| RatecodeID | 2.580 |
+| DOLocationID | 0.191 |
+| PULocationID | 0.089 |
+| VendorID | 0.078 |
+| pickup_hour | 0.042 |
 | passenger_count | 0.011 |
-| pickup_dow | 0.004 |
+| payment_type | 0.011 |
+| pickup_dow | 0.007 |
 
-### MAE by payment type ($)
+### MAE by payment type
 
 | partition | type 0 | type 1 | type 2 | type 3 | type 4 |
 |---|---:|---:|---:|---:|---:|
-| yellow_2024-11 | 3.61 | 0.83 | 0.94 | 2.31 | 1.90 |
-| yellow_2024-12 | 4.98 | 0.90 | 1.03 | 2.85 | 2.02 |
-| yellow_2025-01 | 3.06 | 0.77 | 0.96 | 2.43 | 1.93 |
-| yellow_2025-02 | 2.94 | 0.77 | 0.93 | 1.97 | 1.70 |
+| yellow_2024-11 | 3.56 | 0.80 | 0.91 | 2.34 | 1.86 |
+| yellow_2024-12 | 4.96 | 0.85 | 1.01 | 2.85 | 2.00 |
+| yellow_2025-01 | 3.08 | 0.74 | 0.92 | 2.39 | 1.86 |
+| yellow_2025-02 | 2.93 | 0.73 | 0.89 | 2.00 | 1.63 |
 
-## Manual review of real fare-model flags
+## distance_model v1 — target `trip_distance` (mi), hgb_search_09 (HistGradientBoostingRegressor)
+
+trained on yellow_2024-11 (500,000 sampled rule-valid rows), selected and calibrated on yellow_2024-12; flag threshold (log-ratio) 1.5932 = validation quantile 0.995
+
+selection rule: smallest artifact among candidates within 1% of the best validation MAE
+
+### Candidates on the validation month
+
+| candidate | MAE mi | RMSE | median AE | R2 | fit s | size MB | within tolerance | selected |
+|---|---:|---:|---:|---:|---:|---:|---|---|
+| hgb_search_00 | 0.7318 | 1.449 | 0.392 | 0.8919 | 6.79 | 2.36 | yes |  |
+| hgb_search_07 | 0.7332 | 1.460 | 0.390 | 0.8903 | 8.54 | 3.86 | yes |  |
+| hgb_search_05 | 0.7338 | 1.457 | 0.390 | 0.8907 | 5.0 | 2.01 | yes |  |
+| hgb_search_02 | 0.7343 | 1.450 | 0.391 | 0.8917 | 6.42 | 2.04 | yes |  |
+| hgb_search_08 | 0.7348 | 1.453 | 0.394 | 0.8913 | 8.81 | 2.95 | yes |  |
+| hgb_search_09 | 0.7356 | 1.453 | 0.391 | 0.8913 | 3.43 | 1.48 | yes | **yes** |
+| hgb_default | 0.7394 | 1.458 | 0.397 | 0.8905 | 4.35 | 1.08 |  |  |
+| hgb_search_04 | 0.7396 | 1.453 | 0.397 | 0.8912 | 6.87 | 0.93 |  |  |
+| hgb_search_03 | 0.7409 | 1.455 | 0.398 | 0.8910 | 4.85 | 0.68 |  |  |
+| hgb_search_01 | 0.7425 | 1.482 | 0.392 | 0.8870 | 3.43 | 1.28 |  |  |
+| hgb_search_06 | 0.7497 | 1.467 | 0.403 | 0.8892 | 3.09 | 0.42 |  |  |
+| random_forest | 0.7894 | 1.610 | 0.379 | 0.8664 | 6.55 | 47.37 |  |  |
+| baseline_median | 2.3157 | 4.671 | 0.910 | -0.1235 | 0.01 | 0.00 |  |  |
+| baseline_linear | 2.5138 | 4.132 | 1.805 | 0.1209 | 0.02 | 0.00 |  |  |
+
+### Performance per partition (all rule-valid records; MAE with 95% bootstrap interval)
+
+| partition | split | n | MAE | 95% CI | RMSE | median AE | R2 | flagged | flag % | MAE / validation | status |
+|---|---|---:|---:|---|---:|---:|---:|---:|---:|---:|---|
+| yellow_2024-11 | train | 3,572,569 | 0.680 | [0.679, 0.681] | 1.339 | 0.357 | 0.9048 | 15,123 | 0.423 | 0.924 | ok |
+| yellow_2024-12 | validation | 3,587,974 | 0.739 | [0.738, 0.740] | 1.444 | 0.392 | 0.8910 | 17,924 | 0.500 | 1.004 | ok |
+| yellow_2025-01 | test | 3,328,587 | 0.665 | [0.664, 0.667] | 1.355 | 0.332 | 0.8934 | 16,233 | 0.488 | 0.904 | ok |
+| yellow_2025-02 | test | 3,389,155 | 0.671 | [0.669, 0.672] | 1.311 | 0.338 | 0.8890 | 20,247 | 0.597 | 0.912 | ok |
+
+### Rolling-origin backtest (selected configuration refit on month t, evaluated on t+1)
+
+| train | evaluate | MAE | 95% CI | R2 |
+|---|---|---:|---|---:|
+| yellow_2024-11 | yellow_2024-12 | 0.746 | [0.742, 0.751] | 0.8881 |
+| yellow_2024-12 | yellow_2025-01 | 0.670 | [0.665, 0.674] | 0.8893 |
+| yellow_2025-01 | yellow_2025-02 | 0.686 | [0.681, 0.690] | 0.8823 |
+
+### Permutation importance (increase in validation MAE)
+
+| feature | ΔMAE |
+|---|---:|
+| trip_duration_min | 1.451 |
+| PULocationID | 0.758 |
+| DOLocationID | 0.587 |
+| pickup_hour | 0.198 |
+| RatecodeID | 0.082 |
+| pickup_dow | 0.051 |
+| VendorID | 0.008 |
+
+### MAE by payment type
+
+| partition | type 0 | type 1 | type 2 | type 3 | type 4 |
+|---|---:|---:|---:|---:|---:|
+| yellow_2024-11 | 1.01 | 0.64 | 0.66 | 0.70 | 0.74 |
+| yellow_2024-12 | 1.07 | 0.70 | 0.74 | 0.75 | 0.84 |
+| yellow_2025-01 | 0.92 | 0.62 | 0.66 | 0.66 | 0.77 |
+| yellow_2025-02 | 0.94 | 0.60 | 0.63 | 0.60 | 0.71 |
+
+## fare_model: operating points on the benchmark (thresholds from the validation month)
+
+| review budget (alpha) | precision | recall | FPR | flagged | recall distance_x5 | recall fare_x10 |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.001 | 0.8361 | 0.1041 | 0.000454 | 543 | 0.0 | 0.9834 |
+| 0.002 | 0.8049 | 0.1286 | 0.000694 | 697 | 0.0 | 1.0 |
+| 0.005 | 0.7807 | 0.2228 | 0.001393 | 1,245 | 0.022 | 1.0 |
+| 0.01 | 0.6837 | 0.3394 | 0.003495 | 2,166 | 0.7052 | 1.0 |
+| 0.02 | 0.5825 | 0.3786 | 0.006041 | 2,836 | 0.8595 | 1.0 |
+
+## distance_model: operating points on the benchmark (thresholds from the validation month)
+
+| review budget (alpha) | precision | recall | FPR | flagged | recall distance_x5 | recall fare_x10 |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.001 | 0.7344 | 0.0862 | 0.000694 | 512 | 0.0028 | 0.0 |
+| 0.002 | 0.6472 | 0.0942 | 0.001143 | 635 | 0.011 | 0.0 |
+| 0.005 | 0.599 | 0.1366 | 0.002036 | 995 | 0.3278 | 0.0028 |
+| 0.01 | 0.5421 | 0.1962 | 0.003689 | 1,579 | 0.7934 | 0.0028 |
+| 0.02 | 0.4161 | 0.2269 | 0.007087 | 2,379 | 0.9366 | 0.0028 |
+
+## Manual review of real fare_model flags
 
 partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
 
 | verdict | count |
 |---|---:|
-| likely_data_error | 23 |
-| flex_fare_semantics | 15 |
+| likely_data_error | 22 |
+| flex_fare_semantics | 16 |
+| undetermined | 1 |
+| plausible_legitimate | 1 |
+
+## Manual review of real distance_model flags
+
+partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
+
+| verdict | count |
+|---|---:|
+| likely_data_error | 38 |
 | undetermined | 1 |
 | plausible_legitimate | 1 |
 

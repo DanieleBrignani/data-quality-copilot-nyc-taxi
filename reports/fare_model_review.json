@@ -1,12 +1,12 @@
 {
   "method": "fare_model",
-  "model_version": 1,
+  "model_version": 2,
   "partition": "yellow_2025-01",
   "sample_size": 40,
   "seed": 7,
   "verdict_counts": {
-    "likely_data_error": 23,
-    "flex_fare_semantics": 15,
+    "likely_data_error": 22,
+    "flex_fare_semantics": 16,
     "undetermined": 1,
     "plausible_legitimate": 1
   },
