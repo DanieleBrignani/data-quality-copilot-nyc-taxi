@@ -1,8 +1,8 @@
 # Data Quality Copilot — NYC Taxi
 
-**14,367,509 real NYC TLC trips · 4 monthly partitions · 21 versioned rules · 489,224 records quarantined (3.41%), 0 silently lost · 1 real schema change and 9 drift alerts detected · two supervised models used as detectors (expected fare: R² 0.92, MAE $1.10–1.20 out-of-time; expected distance: R² 0.89): rules + fare model reach precision 0.92 / recall 0.75 on labelled errors, rules + both models recall 0.78, and 38 of 40 manually reviewed real flags of each model are genuine issues (Isolation Forest: 6 of 40) · the Feb-2025 partition breaches the 95% valid-record SLO, and the system says so.**
+**14,367,509 real NYC TLC trips · 4 monthly partitions · 23 versioned rules · 489,224 records quarantined (3.41%), 0 silently lost · 1 real schema change and 9 drift alerts detected · two supervised models used as detectors (expected fare: R² 0.92, MAE $1.10–1.20 out-of-time; expected distance: R² 0.89): rules + fare model reach precision 0.96 / recall 0.75 on labelled errors, rules + both models recall 0.78, and 38 of 40 manually reviewed real flags of each model are genuine issues (Isolation Forest: 6 of 40) · two new rules were discovered by reviewing those flags · the 2025-01 and 2025-02 partitions breach their SLOs, and the system says so.**
 
-All numbers in this README are read from `reports/results.md`, which `scripts/reproduce.sh` regenerates from scratch (raw files → wiped warehouse → pipeline → rerun → dbt → Soda → failure demo → benchmark → report). End-to-end processing of the 14.4M rows: 659 s (21,812 rows/s) on a 16-logical-core / 16 GB Windows machine (Docker Desktop).
+All numbers in this README are read from `reports/results.md`, which `scripts/reproduce.sh` regenerates from scratch (raw files → wiped warehouse → pipeline → rerun → dbt → Soda → failure demo → benchmark → report). End-to-end processing of the 14.4M rows: 493 s (29,154 rows/s) on a 16-logical-core / 16 GB Windows machine (Docker Desktop).
 
 ---
 
@@ -105,7 +105,7 @@ Full hashes and per-column source schemas: `data/raw/manifest.json`. Zone refere
 
 ## Deterministic Rules
 
-`config/rules.yaml` — ruleset `1.3.0`, 21 rules, each with `rule_id`, `rule_version`, `severity`, `dimension`, `description`. Results per run are stored with `rule_id, rule_version, severity, records_checked, failed_rows, failure_rate, run_id, partition_id` (`dq.rule_results`); definitions are versioned in `dq.rule_definitions`. **Every threshold was checked against the TLC data dictionary or measured on the data before being written:**
+`config/rules.yaml` — ruleset `1.4.0`, 23 rules, each with `rule_id`, `rule_version`, `severity`, `dimension`, `description`. Results per run are stored with `rule_id, rule_version, severity, records_checked, failed_rows, failure_rate, run_id, partition_id` (`dq.rule_results`); definitions are versioned in `dq.rule_definitions`. **Every threshold was checked against the TLC data dictionary or measured on the data before being written:**
 
 | rule | severity | grounded in |
 |---|---|---|
@@ -121,6 +121,8 @@ Full hashes and per-column source schemas: `data/raw/manifest.json`. Zone refere
 | DQ024 passenger_count ≤ 6 | critical | TLC rule: 4 (or 5) passengers + one child under 7 |
 | DQ025 passenger_count = 0 | warning | driver-entered; trip otherwise usable |
 | DQ026 implied speed ≤ 90 mph | warning | distance/clock inconsistency |
+| DQ027 distance 0 on a ≥ 1 min trip between different zones | warning | **discovered by the distance model's manual review**, then measured: 0.93% → 1.00% → 1.69% → 1.95% of records per month, mostly Flex Fare; warning because the fare is real — quarantining would remove a further ~2% of trips, a data-owner decision |
+| DQ028 fare charged with distance 0 and duration < 1 min | warning | **discovered by the fare model's manual review**, then measured: 0.57–0.74% per month, ~45% negotiated-rate |
 | DQ030 VendorID ∈ {1,2,6,7} | critical | data dictionary (6 = Myle, 7 = Helix) |
 | DQ031 payment_type ∈ {0..6} | critical | data dictionary (0 = Flex Fare) |
 | DQ032 RatecodeID ∈ {1..6, 99} | critical | data dictionary (99 = unknown) |
@@ -147,7 +149,7 @@ Runs **after** the rules, **only on rule-valid records**, and never quarantines 
 ### Why anomaly detection is not a substitute for business rules
 
 1. **It has no notion of "wrong", only of "rare".** On real rule-valid data plain IQR flags 7.9–8.9% of trips (mostly legitimate airport runs); Isolation Forest flags ~1% of *any* dataset by construction (`contamination=0.01`) — including perfectly clean data (unit-tested).
-2. **It misses errors that are common or plausible-looking.** Benchmark below: Isolation Forest caught 0.3% of injected `passenger_count=9`, 0.8% of `payment_type=9`, 0.6% of `NULL` zones and 1.1% of `dropoff < pickup` — every one of these is caught at 100% by a one-line rule.
+2. **It misses errors that are common or plausible-looking.** Benchmark below: Isolation Forest caught 1.4% of injected `passenger_count=9`, 1.1% of `payment_type=9`, 1.1% of `NULL` zones and 2.2% of `dropoff < pickup` — every one of these is caught at 100% by a one-line rule.
 3. **It is not explainable or stable enough to quarantine on.** A record's IF score changes when the rest of the month changes; a rule verdict does not. Quarantine decisions must be reproducible and reviewable.
 4. **Where it helps:** errors with *valid* values but *unusual magnitude* (fare ×10, tip spikes) that no rule can express without false positives — that is where a statistical second line earns its place.
 
@@ -185,7 +187,7 @@ Fare model (validation month; search configurations outside the tolerance are om
 | linear regression baseline | 4.5126 | 0.756 | 0.00 |  |
 | median baseline | 11.0810 | -0.119 | 0.00 |  |
 
-The random forest is the most accurate by $0.002 but weighs 48 MB; the rule picks a 0.8 MB gradient boosting that is within the 1% tolerance. **The whole search moved MAE from 1.30 to 1.27 (−3%): the model is limited by the data (negotiated and Flex fares), not by the algorithm.**
+The random forest is the most accurate by $0.002 but weighs 48 MB; the rule picks a 0.8 MB gradient boosting that is statistically indistinguishable from it. **The whole search moved MAE from 1.30 to 1.27 (−3%): the model is limited by the data (negotiated and Flex fares), not by the algorithm.**
 
 Distance model: selected MAE 0.736 mi (R² 0.891) against 2.32 mi for the median baseline and 0.789 mi for the random forest.
 
@@ -231,33 +233,33 @@ Distance model:
 
 | detector | precision [95% CI] | recall [95% CI] | false-positive rate |
 |---|---|---|---:|
-| fare model | 0.78 [0.76–0.80] | 0.22 [0.21–0.24] | 0.14% |
-| distance model | 0.60 [0.57–0.63] | 0.14 [0.13–0.15] | 0.20% |
-| rules + fare model | 0.92 [0.91–0.93] | 0.75 [0.74–0.76] | 0.14% |
-| rules + both models | 0.84 [0.83–0.85] | 0.78 [0.77–0.79] | 0.33% |
-| rules + log-IQR | 0.88 [0.87–0.89] | 0.72 [0.71–0.73] | 0.22% |
-| Isolation Forest | 0.10 [0.09–0.11] | 0.05 [0.04–0.05] | 0.92% |
+| fare model | 0.88 [0.86–0.89] | 0.22 [0.21–0.23] | 0.07% |
+| distance model | 0.90 [0.87–0.92] | 0.13 [0.12–0.14] | 0.03% |
+| rules + fare model | 0.96 [0.95–0.97] | 0.75 [0.74–0.76] | 0.07% |
+| rules + both models | 0.95 [0.94–0.95] | 0.78 [0.77–0.79] | 0.10% |
+| rules + log-IQR | 0.88 [0.87–0.89] | 0.73 [0.72–0.75] | 0.22% |
+| Isolation Forest | 0.10 [0.09–0.12] | 0.05 [0.04–0.05] | 0.92% |
 
-- The fare model catches **100% of `fare ×10`** (log-IQR 37%, Isolation Forest 18%); the distance model catches **100% of distance unit errors** and 33% of `distance ×5`.
+- The fare model catches **100% of `fare ×10`** (log-IQR 43%, Isolation Forest 17%); the distance model catches **100% of distance unit errors** and 31% of `distance ×5`.
 - **The review budget is a dial, not a constant.** Thresholds come from the validation month only; the benchmark shows what each budget buys:
 
 | budget | fare model: precision | recall | FPR | `fare ×10` | `distance ×5` |
 |---:|---:|---:|---:|---:|---:|
-| 0.1% | 0.84 | 0.10 | 0.05% | 0.98 | 0.00 |
-| 0.2% | 0.80 | 0.13 | 0.07% | 1.00 | 0.00 |
-| 0.5% | 0.78 | 0.22 | 0.14% | 1.00 | 0.02 |
-| 1.0% | 0.68 | 0.34 | 0.35% | 1.00 | 0.71 |
-| 2.0% | 0.58 | 0.38 | 0.60% | 1.00 | 0.86 |
+| 0.1% | 0.90 | 0.10 | 0.03% | 0.99 | 0.00 |
+| 0.2% | 0.89 | 0.13 | 0.04% | 1.00 | 0.00 |
+| 0.5% | 0.88 | 0.22 | 0.07% | 1.00 | 0.01 |
+| 1.0% | 0.81 | 0.34 | 0.18% | 1.00 | 0.69 |
+| 2.0% | 0.70 | 0.38 | 0.36% | 1.00 | 0.86 |
 
 | budget | distance model: precision | recall | FPR | `fare ×10` | `distance ×5` |
 |---:|---:|---:|---:|---:|---:|
-| 0.1% | 0.73 | 0.09 | 0.07% | 0.00 | 0.00 |
-| 0.2% | 0.65 | 0.09 | 0.11% | 0.00 | 0.01 |
-| 0.5% | 0.60 | 0.14 | 0.20% | 0.00 | 0.33 |
-| 1.0% | 0.54 | 0.20 | 0.37% | 0.00 | 0.79 |
-| 2.0% | 0.42 | 0.23 | 0.71% | 0.00 | 0.94 |
+| 0.1% | 0.97 | 0.09 | 0.01% | 0.00 | 0.00 |
+| 0.2% | 0.95 | 0.09 | 0.01% | 0.00 | 0.02 |
+| 0.5% | 0.90 | 0.13 | 0.03% | 0.00 | 0.31 |
+| 1.0% | 0.78 | 0.19 | 0.12% | 0.00 | 0.80 |
+| 2.0% | 0.55 | 0.23 | 0.41% | 0.01 | 0.95 |
 
-  Doubling the budget from 0.5% to 1% takes `distance ×5` recall from 33% to 79% for the distance model. The budget was **not** moved after seeing this table: choosing it on the benchmark would be tuning on the test set.
+  Doubling the budget from 0.5% to 1% takes `distance ×5` recall from 31% to 80% for the distance model. The budget was **not** moved after seeing this table: choosing it on the benchmark would be tuning on the test set.
 - Both models are **blind** to errors that leave their relationship intact: tip spikes 0%, swapped pickup/drop-off zones 0% (the swap changes neither the expected fare nor the expected distance — it is not identifiable from a single record).
 
 **ML engineering.** `python -m dqc ml train` writes a versioned artifact and metadata (sha256 of the raw training file, every candidate's metrics and size, the selection rule, thresholds for five budgets, backtest, library versions, artifact sha256) to `models/` and `dq.model_registry`. Training is deterministic and **idempotent**: retraining on the same raw file reproduces the artifact byte for byte and therefore does not create a new version. The registry keeps history — `fare_model` v1 (default configuration) and v2 (after the search) are both there. Loading refuses an artifact whose hash does not match. `python -m dqc ml score` writes per-partition performance to `dq.model_metrics` and the top flags to `dq.model_flags`. Serving: `POST /predict/fare`, `GET /model`.
@@ -310,15 +312,15 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 
 | partition | rows | quarantined | % | warning-only (kept) | valid % | quality score | schema vs contract | duration s | rows/s |
 |---|---:|---:|---:|---:|---:|---:|---|---:|---:|
-| yellow_2024-11 | 3,646,369 | 73,800 | 2.02 | 411,958 | 97.98 | 95.15 | ok | 129 | 28,354 |
-| yellow_2024-12 | 3,668,371 | 80,397 | 2.19 | 369,614 | 97.81 | 95.29 | ok | 130 | 28,202 |
-| yellow_2025-01 | 3,475,226 | 146,639 | 4.22 | 497,833 | 95.78 | 92.20 | additive_change | 179 | 19,465 |
-| yellow_2025-02 | 3,577,543 | 188,388 | 5.27 | 716,019 | 94.73 | 89.73 | additive_change | 221 | 16,153 |
-| **total** | **14,367,509** | **489,224** | **3.41** | 1,995,424 | | | | **659** | **21,812** |
+| yellow_2024-11 | 3,646,369 | 73,800 | 2.02 | 442,354 | 97.98 | 94.94 | ok | 95 | 38,202 |
+| yellow_2024-12 | 3,668,371 | 80,397 | 2.19 | 404,585 | 97.81 | 95.05 | ok | 86 | 42,630 |
+| yellow_2025-01 | 3,475,226 | 146,639 | 4.22 | 526,416 | 95.78 | 91.99 | additive_change | 108 | 32,088 |
+| yellow_2025-02 | 3,577,543 | 188,388 | 5.27 | 743,422 | 94.73 | 89.54 | additive_change | 203 | 17,622 |
+| **total** | **14,367,509** | **489,224** | **3.41** | 2,116,777 | | | | **493** | **29,154** |
 
 - Schema changes detected between consecutive partitions: **1** (unexpected / breaking: 0). Drift: **9 alerts**, 2 warnings.
-- Stage times (s, reference run): raw landing 73–154 · rules 7–9 · persisting quality results 16–35 · anomaly detection 18–22 · profiling 2 · drift 3–4. Wall-clock times on this shared Docker Desktop host vary by up to ~2× between runs (three full reproductions took 780 s, 508 s and 659 s for the same reference run); the counts and scores are bit-for-bit identical.
-- **Rerun on identical inputs**: identical scores and quarantine counts for all four partitions, raw landing skipped by sha256 (3–5 s instead of 73–154 s), 0 duplicated raw rows, 0 new quarantine rows (`reports/results.md` → *Rerun check*).
+- Stage times (s, reference run): raw landing 41–122 · rules 7–9 · persisting quality results 12–42 · anomaly detection 19–23 · profiling 2–3 · drift 3–7. Wall-clock times on this shared Docker Desktop host vary by up to ~2× between runs (four full reproductions took 780 s, 508 s, 659 s and 493 s for the same reference run); the counts and scores are bit-for-bit identical.
+- **Rerun on identical inputs**: identical scores and quarantine counts for all four partitions, raw landing skipped by sha256 (4–10 s instead of 41–122 s), 0 duplicated raw rows, 0 new quarantine rows (`reports/results.md` → *Rerun check*).
 - Quarantine table: 737,524 (record, rule) rows for 489,224 records, 1.08 GB including indexes and the JSONB original records.
 
 **Reading the numbers**
@@ -328,6 +330,7 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 - **Drift (9 alerts, 2 warnings)**: Jan-2025 mean trip duration −19.7% vs Dec (median −15.1%, KS D = 0.108) — consistent with the congestion-pricing launch on 5 Jan 2025; `passenger_count`/`RatecodeID`/`store_and_fwd_flag` null rates +6.6 pp (Jan) and +7.0 pp (Feb) — the growing Flex Fare share. Warnings only: VendorID cardinality 3 → 4 in Dec (vendor 7 appears, < 0.1% of rows) and one `payment_type=5` record in Jan.
 - **Duplicates**: 0 exact duplicates and 0 non-reversal business-key duplicates in 14.4M real rows. Both rules still fire correctly on the controlled fixtures.
 - **Reconciliation (DQ040, warning)**: 0.15–1.07% after v3 — the 1.07% spike in Jan-2025 is VendorID 2 reporting a `cbd_congestion_fee` that is not included in `total_amount` in the fee's launch month.
+- **Distance not captured (DQ027, warning, new)**: 33,832 → 36,728 → 58,735 → 69,752 trips per month (0.93% → 1.95%) between different zones with a recorded distance of 0 — it doubles in four months, the same trajectory as the Flex Fare issue. The rule exists because the distance model surfaced the pattern in its manual review. Adding it (and DQ028) lowered every quality score by ~0.2 points and moved 2025-01 below its score SLO (92.20 → 91.99): a check that sees a previously invisible problem *should* lower the score, so the threshold was not touched.
 
 ## False Positive Analysis
 
@@ -335,22 +338,22 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 
 | detector | precision [95% CI] | recall [95% CI] | false-positive rate | flagged | runtime s (204k rows) |
 |---|---|---|---:|---:|---:|
-| rules_critical | 1.00 [1.00–1.00] | 0.67 [0.66–0.68] | 0.00% | 2,913 | 0.125 |
-| rules_critical_plus_warning | 1.00 [1.00–1.00] | 0.68 [0.67–0.69] | 0.00% | 2,955 | 0.125 |
-| iqr | 0.08 [0.07–0.08] | 0.36 [0.35–0.37] | 9.80% | 20,781 | 0.092 |
-| rules_critical+iqr | 0.17 [0.16–0.17] | 0.87 [0.87–0.88] | 9.80% | 23,033 |  |
-| iqr_log | 0.75 [0.73–0.77] | 0.31 [0.29–0.32] | 0.22% | 1,776 | 0.051 |
-| rules_critical+iqr_log | 0.88 [0.87–0.89] | 0.72 [0.71–0.73] | 0.22% | 3,590 |  |
-| zscore | 0.35 [0.33–0.37] | 0.20 [0.19–0.21] | 0.85% | 2,543 | 0.014 |
-| rules_critical+zscore | 0.67 [0.66–0.69] | 0.79 [0.78–0.80] | 0.85% | 5,101 |  |
-| isolation_forest | 0.10 [0.09–0.11] | 0.05 [0.04–0.05] | 0.92% | 2,003 | 1.768 |
-| rules_critical+isolation_forest | 0.63 [0.61–0.64] | 0.70 [0.69–0.71] | 0.92% | 4,850 |  |
-| fare_model | 0.78 [0.76–0.80] | 0.22 [0.21–0.24] | 0.14% | 1,245 | 0.186 |
-| rules_critical+fare_model | 0.92 [0.91–0.93] | 0.75 [0.74–0.76] | 0.14% | 3,555 |  |
-| distance_model | 0.60 [0.57–0.63] | 0.14 [0.13–0.15] | 0.20% | 995 | 0.362 |
-| rules_critical+distance_model | 0.88 [0.87–0.89] | 0.70 [0.68–0.71] | 0.20% | 3,433 |  |
-| fare_model+distance_model | 0.66 [0.64–0.68] | 0.29 [0.28–0.31] | 0.33% | 1,933 |  |
-| rules_critical+fare_model+distance_model | 0.84 [0.83–0.85] | 0.78 [0.77–0.79] | 0.33% | 4,054 |  |
+| rules_critical | 1.00 [1.00–1.00] | 0.67 [0.66–0.68] | 0.00% | 2,914 | 0.705 |
+| rules_critical_plus_warning | 1.00 [1.00–1.00] | 0.68 [0.66–0.69] | 0.00% | 2,952 | 0.705 |
+| iqr | 0.08 [0.07–0.08] | 0.35 [0.34–0.37] | 9.65% | 20,455 | 0.134 |
+| rules_critical+iqr | 0.17 [0.16–0.17] | 0.87 [0.87–0.88] | 9.65% | 22,729 |  |
+| iqr_log | 0.76 [0.74–0.78] | 0.32 [0.30–0.33] | 0.22% | 1,821 | 0.147 |
+| rules_critical+iqr_log | 0.88 [0.87–0.89] | 0.73 [0.72–0.75] | 0.22% | 3,636 |  |
+| zscore | 0.36 [0.34–0.38] | 0.20 [0.19–0.21] | 0.80% | 2,453 | 0.014 |
+| rules_critical+zscore | 0.69 [0.67–0.70] | 0.79 [0.78–0.80] | 0.80% | 4,998 |  |
+| isolation_forest | 0.10 [0.09–0.12] | 0.05 [0.04–0.05] | 0.92% | 2,003 | 1.745 |
+| rules_critical+isolation_forest | 0.63 [0.61–0.64] | 0.70 [0.68–0.71] | 0.92% | 4,838 |  |
+| fare_model | 0.88 [0.86–0.89] | 0.22 [0.21–0.23] | 0.07% | 1,094 | 0.179 |
+| rules_critical+fare_model | 0.96 [0.95–0.97] | 0.75 [0.74–0.76] | 0.07% | 3,411 |  |
+| distance_model | 0.90 [0.87–0.92] | 0.13 [0.12–0.14] | 0.03% | 640 | 0.372 |
+| rules_critical+distance_model | 0.98 [0.97–0.98] | 0.69 [0.68–0.71] | 0.03% | 3,094 |  |
+| fare_model+distance_model | 0.87 [0.85–0.88] | 0.29 [0.27–0.30] | 0.10% | 1,442 |  |
+| rules_critical+fare_model+distance_model | 0.95 [0.94–0.95] | 0.78 [0.77–0.79] | 0.10% | 3,582 |  |
 
 Intervals: percentile bootstrap over benchmark rows (300 resamples).
 
@@ -358,26 +361,27 @@ Recall by error type:
 
 | error type | family | rules (critical) | rules (+warning) | IQR | log-IQR | z-score | Isolation Forest | fare model | distance model |
 |---|---|---:|---:|---:|---:|---:|---:|---:|---:|
-| distance_unit_error | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 0.87 | 0.12 | 0.72 | 1.00 |
-| distance_x5 | plausible | 0.00 | 0.12 | 0.47 | 0.12 | 0.01 | 0.03 | 0.02 | 0.33 |
-| dropoff_before_pickup | rule_detectable | 1.00 | 1.00 | 0.10 | 1.00 | 0.00 | 0.01 | 0.07 | 0.30 |
-| exact_duplicate | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
+| distance_unit_error | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 0.91 | 0.12 | 0.73 | 1.00 |
+| distance_x5 | plausible | 0.00 | 0.10 | 0.43 | 0.12 | 0.01 | 0.04 | 0.01 | 0.31 |
+| dropoff_before_pickup | rule_detectable | 1.00 | 1.00 | 0.09 | 1.00 | 0.01 | 0.02 | 0.06 | 0.26 |
+| exact_duplicate | rule_detectable | 1.00 | 1.00 | 0.09 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
 | fare_over_cap | rule_detectable | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 1.00 | 0.00 |
-| fare_x10 | plausible | 0.00 | 0.00 | 0.96 | 0.37 | 0.68 | 0.18 | 1.00 | 0.00 |
-| invalid_payment_type | rule_detectable | 1.00 | 1.00 | 0.13 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
-| negative_fare | rule_detectable | 1.00 | 1.00 | 0.18 | 1.00 | 0.06 | 0.01 | 0.85 | 0.00 |
-| null_mandatory | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.00 | 0.01 | 0.00 | 0.00 |
-| passenger_overflow | rule_detectable | 1.00 | 1.00 | 0.08 | 0.00 | 0.01 | 0.00 | 0.00 | 0.00 |
-| stale_timestamp | rule_detectable | 1.00 | 1.00 | 0.12 | 0.01 | 0.01 | 0.01 | 0.00 | 0.01 |
-| swapped_zones | plausible | 0.00 | 0.00 | 0.08 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
-| tip_spike | plausible | 0.00 | 0.00 | 0.98 | 0.17 | 0.76 | 0.15 | 0.00 | 0.00 |
+| fare_x10 | plausible | 0.00 | 0.00 | 0.97 | 0.43 | 0.61 | 0.17 | 1.00 | 0.00 |
+| invalid_payment_type | rule_detectable | 1.00 | 1.00 | 0.10 | 0.01 | 0.01 | 0.01 | 0.00 | 0.00 |
+| negative_fare | rule_detectable | 1.00 | 1.00 | 0.18 | 1.00 | 0.05 | 0.01 | 0.85 | 0.00 |
+| null_mandatory | rule_detectable | 1.00 | 1.00 | 0.12 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
+| passenger_overflow | rule_detectable | 1.00 | 1.00 | 0.08 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
+| stale_timestamp | rule_detectable | 1.00 | 1.00 | 0.10 | 0.00 | 0.01 | 0.01 | 0.00 | 0.00 |
+| swapped_zones | plausible | 0.00 | 0.00 | 0.09 | 0.00 | 0.00 | 0.01 | 0.00 | 0.00 |
+| tip_spike | plausible | 0.00 | 0.00 | 0.99 | 0.23 | 0.81 | 0.12 | 0.00 | 0.00 |
 
 - Rules: **precision 1.00, recall 1.00 on every rule-detectable type**, 0.00 on every plausible type → overall recall 0.67. FPR is 0 **by construction** here (negatives were selected as rule-clean) — an upper bound, not a claim that rules never misfire; the real-data false positives of the rules are the ambiguous Flex Fare cases discussed above.
-- Plain IQR has the highest standalone recall (0.36) at a useless **9.8% FPR** (19,217 false alarms on 196,000 clean rows).
-- **log-IQR is the best complement**: FPR 0.22%; *rules + log-IQR* = precision 0.88, recall 0.72.
-- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~33× slower than log-IQR (1.69 s vs 0.052 s on 204k rows).
-- **The supervised fare model is the best statistical detector**: precision 0.78 at a 0.14% false-positive rate; with the rules, precision 0.92 and recall 0.75. Adding the distance model raises recall to 0.78 (the highest measured at a usable precision, 0.84); the intervals of the two combinations do not overlap on either metric.
-- Nothing catches **swapped PU/DO zones** (≤ 8%) or **tip spikes** beyond plain IQR's noisy 98%: a swap changes neither the expected fare nor the expected distance, so it is not identifiable from a single record.
+- **Why the models' precision rose with ruleset 1.4.0** (fare model 0.78 → 0.88, distance model 0.60 → 0.90): the benchmark's negatives are records that pass every rule. DQ027/DQ028 now exclude zero-distance records from that pool — records the models had been flagging and the benchmark had been counting as false positives. The models did not change (same artifacts, byte for byte); the definition of "clean" did. It is also the clearest evidence of the limitation stated above: rule-clean is not the same as correct.
+- Plain IQR has the highest standalone recall (0.35) at a useless **9.7% FPR** (18,915 false alarms on 196,000 clean rows).
+- **log-IQR is the best complement**: FPR 0.22%; *rules + log-IQR* = precision 0.88, recall 0.73.
+- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~35× slower than log-IQR (2.08 s vs 0.059 s on 204k rows).
+- **The supervised fare model is the best statistical detector**: precision 0.88 at a 0.07% false-positive rate; with the rules, precision 0.96 and recall 0.75. Adding the distance model raises recall to 0.78 (the highest measured at a usable precision, 0.95); the intervals of the two combinations do not overlap on either metric.
+- Nothing catches **swapped PU/DO zones** (≤ 9%) or **tip spikes** beyond plain IQR's noisy 99%: a swap changes neither the expected fare nor the expected distance, so it is not identifiable from a single record.
 
 **2. Manual inspection of real anomalies.** 40 randomly sampled (seed 11) Isolation-Forest flags on rule-valid Jan-2025 data, inspected record by record against explicit criteria — $/mile, implied speed, RatecodeID vs zones (JFK flat fare $70, Newark, Nassau/Westchester), distance/duration vs fare (`reports/anomaly_review_labels.csv`, with a note per record):
 
@@ -413,21 +417,21 @@ Caveats: 40 records per model, labelled by the author. For zero-distance, zero-d
 
 ## Quality SLO
 
-Targets were set after measuring the first two partitions (valid rate ≈ 97.8–98.0%, score ≈ 95.2–95.3), leaving ~3 points of headroom:
+Targets were set after measuring the first two partitions (valid rate ≈ 97.8–98.0%, score ≈ 95.2–95.3 under ruleset 1.3.0), leaving ~3 points of headroom:
 
 | SLO | target | 2024-11 | 2024-12 | 2025-01 | 2025-02 |
 |---|---|---|---|---|---|
 | critical-rule pass rate (valid records) | ≥ 95% | 97.98 ✅ | 97.81 ✅ | 95.78 ✅ | **94.73 ❌** |
-| quality score | ≥ 92 | 95.15 ✅ | 95.29 ✅ | 92.20 ✅ | **89.73 ❌** |
+| quality score | ≥ 92 | 94.94 ✅ | 95.05 ✅ | **91.99 ❌** | **89.54 ❌** |
 | unexpected schema changes | 0 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
 | source freshness (TLC publication lag) | ≤ 75 days | 47.8 ✅ | 51.9 ✅ | **81.7 ❌** | 53.7 ✅ |
-| run duration per partition | ≤ 900 s | 129 s ✅ | 130 s ✅ | 179 s ✅ | 221 s ✅ |
+| run duration per partition | ≤ 900 s | 95 s ✅ | 86 s ✅ | 108 s ✅ | 203 s ✅ |
 
-Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --slo` both fail on 2025-02 (logs in `reports/`). The 2025-01 freshness breach reflects the current `Last-Modified` of the TLC file (the file was re-published in April 2025), not necessarily the original publication date — a limitation of using HTTP metadata as the freshness signal. *Data age* at run time (≈ 590 days) is not an SLO: this is a deliberate historical backfill.
+Breaches are reported, not hidden: Soda's valid-rate check fails on 2025-02 and `python -m dqc gate --slo` reports four breaches — 2025-01 score 91.99, 2025-01 source lag, 2025-02 valid rate and score (logs in `reports/`). The 2025-01 freshness breach reflects the current `Last-Modified` of the TLC file (the file was re-published in April 2025), not necessarily the original publication date — a limitation of using HTTP metadata as the freshness signal. *Data age* at run time (≈ 590 days) is not an SLO: this is a deliberate historical backfill.
 
 ## Testing
 
-`pytest` — 56 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
+`pytest` — 58 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
 
 | requirement | test |
 |---|---|
@@ -435,6 +439,7 @@ Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --sl
 | duplicates | `test_exact_duplicates_keep_first_occurrence`, `test_business_key_duplicate_excludes_reversal_pairs` |
 | negative / impossible values | `test_negative_and_implausible_fare`, `test_negative_tip`, `test_accepted_values` |
 | impossible trip duration / temporal | `test_impossible_trip_duration`, `test_pickup_outside_partition_month` |
+| zero distance / charge without trip | `test_zero_distance_between_different_zones_is_flagged_only_for_real_trips`, `test_charge_without_a_recorded_trip` |
 | invalid passenger count | `test_invalid_passenger_count` (0 → warning, 7 → critical) |
 | schema drift / mismatch | `test_schema.py` (missing column, type change, unexpected column, alias, diff vs previous) |
 | quarantine behaviour | `test_quarantine_rows_keep_original_values_and_never_drop_input`, `test_warning_does_not_quarantine`, `test_quarantine_keeps_original_values_and_is_resolved_not_deleted` |
@@ -475,7 +480,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Warnings don't quarantine.** Quarantining `passenger_count IS NULL` would remove 10–23% of trips whose fares are fine.
 - **Drift on the input (pre-rules) distribution.** Rule failures that surge (e.g. negative fares) show up in drift too — intentional: drift is about what upstream sends.
 - **Record-level quality score** (sensitive, interpretable) over mean rule pass rate (always ≈ 99.9).
-- **Raw landing in Postgres** (73–154 s/partition, the slowest stage) buys SQL lineage from any curated row back to the source row; a lakehouse (DuckDB/Iceberg) would be faster.
+- **Raw landing in Postgres** (41–122 s/partition, the slowest stage) buys SQL lineage from any curated row back to the source row; a lakehouse (DuckDB/Iceberg) would be faster.
 - **Isolation Forest kept** in the pipeline despite poor results — as a measured baseline that justifies the choice of log-IQR and of the supervised model, not as a control.
 - **Models outside the gating path.** They are trained and scored after the pipeline (`dqc ml …`) and never quarantine: a detector whose flag rate is a quantile cannot be a contract.
 - **Smallest model within 1% of the best** instead of the best: the random forest wins the fare task by $0.002 at 60× the artifact size.
@@ -498,7 +503,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 | "2 schema changes detected" | the same added column counted in two partitions | explicit schema diff vs previous partition → 1 change |
 | Quarantine build | 40–50 s per partition | per-rule assembly on the failing subset → 0.5 s |
 | Record flags | 34 s per partition | filter failing rows before building lists → 4 s |
-| Raw load | 79 s with row-by-row index maintenance | COPY into an index-free table + `ATTACH PARTITION`; still 73–154 s — the remaining bottleneck |
+| Raw load | 79 s with row-by-row index maintenance | COPY into an index-free table + `ATTACH PARTITION`; still 41–122 s — the remaining bottleneck |
 | dbt `fct_clean_trips` | `No space left on device` (Docker `/dev/shm` = 64 MB) | `shm_size: 1g` |
 | Soda Core | `ModuleNotFoundError: distutils` on Python 3.13 | `setuptools` shim pinned in the `soda` extra |
 | Copilot template | suggested querying quarantine for *warning* rules | severity-aware investigation steps |
@@ -510,7 +515,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Semantics of Flex Fare negatives are unresolved** — they drive the SLO breach and may be false positives of DQ021; needs the source owner.
 - **Benchmark negatives are "rule-clean", not "verified correct"**, so rule FPR = 0 is by construction; plausible-error recall numbers depend on the chosen corruption types.
 - **Manual review** covers 40 records, one method, one month, by the author.
-- **Swapped zones and tip spikes** remain undetected by every method; `distance ×5` is caught 33% of the time at the fixed budget.
+- **Swapped zones and tip spikes** remain undetected by every method; `distance ×5` is caught 31% of the time at the fixed budget.
 - **Models**: one validation month for selection (the backtest covers three month pairs but selects nothing); a 10-configuration search; two model families; intervals are for the mean error, not for individual predictions; unreliable on negotiated and Flex fares; no analysis of errors by borough. See the model card.
 - **Freshness** uses HTTP `Last-Modified`, which changes on re-publication.
 - **Single machine** (16 logical cores, 16 GB, Docker Desktop/WSL2). Throughput numbers are for that host; raw landing dominates.

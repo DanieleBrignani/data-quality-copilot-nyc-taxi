@@ -95,26 +95,26 @@ Flex Fare records are 3–6× harder to price than card or cash trips: their `fa
 
 Score: `|ln((actual + floor) / (predicted + floor))|` (floor $5 for the fare, 0.5 mi for the distance) — symmetric, so "10× too high" and "10× too low" score the same. Threshold: the 99.5th percentile of the score on the validation month, i.e. a **0.5% review budget fixed in advance and identical for both models** (fare 0.908, distance 1.593). By construction 0.5% of validation records are flagged; on the test months the fare model flags 0.28% and 0.14%, the distance model 0.49% and 0.60%.
 
-Benchmark: 200,000 real Jan-2025 rule-clean records + 4,363 labelled injected errors; 95% bootstrap intervals over benchmark rows.
+Benchmark: 200,000 real Jan-2025 records that pass every rule of ruleset 1.4.0 + 4,363 labelled injected errors; 95% bootstrap intervals over benchmark rows. Under ruleset 1.3.0 the same models scored precision 0.78 (fare) and 0.60 (distance): the two new rules removed zero-distance records from the "clean" pool — records the models were flagging correctly.
 
 | detector | precision | recall | false-positive rate |
 |---|---|---|---:|
-| fare model | 0.78 [0.76–0.80] | 0.22 [0.21–0.24] | 0.14% |
-| distance model | 0.60 [0.57–0.63] | 0.14 [0.13–0.15] | 0.20% |
-| rules + fare model | 0.92 [0.91–0.93] | 0.75 [0.74–0.76] | 0.14% |
-| rules + both models | 0.84 [0.83–0.85] | 0.78 [0.77–0.79] | 0.33% |
-| rules + log-IQR | 0.88 [0.87–0.89] | 0.72 [0.71–0.73] | 0.22% |
-| Isolation Forest | 0.10 [0.09–0.11] | 0.05 [0.04–0.05] | 0.92% |
+| fare model | 0.88 [0.86–0.89] | 0.22 [0.21–0.23] | 0.07% |
+| distance model | 0.90 [0.87–0.92] | 0.13 [0.12–0.14] | 0.03% |
+| rules + fare model | 0.96 [0.95–0.97] | 0.75 [0.74–0.76] | 0.07% |
+| rules + both models | 0.95 [0.94–0.95] | 0.78 [0.77–0.79] | 0.10% |
+| rules + log-IQR | 0.88 [0.87–0.89] | 0.73 [0.72–0.75] | 0.22% |
+| Isolation Forest | 0.10 [0.09–0.12] | 0.05 [0.04–0.05] | 0.92% |
 
 Operating points (thresholds from the validation month; the budget was not changed after seeing this):
 
 | budget | fare: precision / recall | fare: `fare ×10` | distance: precision / recall | distance: `distance ×5` |
 |---:|---|---:|---|---:|
-| 0.1% | 0.84 / 0.10 | 0.98 | 0.73 / 0.09 | 0.00 |
-| 0.2% | 0.80 / 0.13 | 1.00 | 0.65 / 0.09 | 0.01 |
-| **0.5%** | **0.78 / 0.22** | **1.00** | **0.60 / 0.14** | **0.33** |
-| 1% | 0.68 / 0.34 | 1.00 | 0.54 / 0.20 | 0.79 |
-| 2% | 0.58 / 0.38 | 1.00 | 0.42 / 0.23 | 0.94 |
+| 0.1% | 0.90 / 0.10 | 0.99 | 0.97 / 0.09 | 0.00 |
+| 0.2% | 0.89 / 0.13 | 1.00 | 0.95 / 0.09 | 0.02 |
+| **0.5%** | **0.88 / 0.22** | **1.00** | **0.90 / 0.13** | **0.31** |
+| 1.0% | 0.81 / 0.34 | 1.00 | 0.78 / 0.19 | 0.80 |
+| 2.0% | 0.70 / 0.38 | 1.00 | 0.55 / 0.23 | 0.95 |
 
 Manual review of 40 random real flags per model (Jan 2025, seed 7):
 
@@ -130,9 +130,9 @@ One false positive in 40 for each model, against 29 in 40 for Isolation Forest. 
 ## Limitations
 
 - **Not a fare authority.** Negotiated fares (RatecodeID 5) and Flex Fares are not determined by distance and time; predictions there are averages of unrelated prices.
-- **Zero-distance / zero-duration records**: the fare model flags them partly for the wrong reason — it predicts an average negotiated fare for an input it rarely saw. Both manual reviews point to a missing rule ("a fare is charged but distance is 0"); a rule is the right control for it.
+- **Zero-distance / zero-duration records**: the fare model flags them partly for the wrong reason — it predicts an average negotiated fare for an input it rarely saw. Both manual reviews pointed to a missing rule; it now exists (DQ027 / DQ028, ruleset 1.4.0).
 - **Errors that leave the modelled relationship intact are invisible**: swapped pickup/drop-off zones (0%), tip spikes (0%), wrong passenger counts.
-- **`distance ×5` is only partly caught** at the fixed budget (33%); a larger budget catches more at the cost of precision.
+- **`distance ×5` is only partly caught** at the fixed budget (31%); a larger budget catches more at the cost of precision.
 - **Label noise**: training labels are "passed the rules", not "verified correct" — the reviews show that zero-distance trips are in the training data.
 - **Thresholds are quantiles**, so some share of any month is always flagged; the flag rate is not a measure of data quality by itself.
 - **One validation month for selection**, a 10-configuration search, two model families, no significance test between candidates.

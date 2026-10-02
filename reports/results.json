@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-10-02T22:20:46+00:00",
+  "generated_at": "2026-10-02T23:29:02+00:00",
   "totals": {
     "partitions": 4,
     "records_processed": 14367509,
     "quarantined_records": 489224,
     "quarantined_pct": 3.405071818643023,
-    "warning_only_records": 1995424,
-    "warning_only_pct": 13.88844788612974,
-    "processing_s": 658.7011272000091,
-    "rows_per_sec": 21811.878569379503,
+    "warning_only_records": 2116777,
+    "warning_only_pct": 14.733082819018941,
+    "processing_s": 492.8170675999718,
+    "rows_per_sec": 29153.83809649701,
     "schema_changes_detected": 1,
     "unexpected_schema_changes": 0,
     "drift_alerts": 9,
@@ -16,144 +16,144 @@
   },
   "partitions": [
     {
-      "run_id": "93f7d48b-ba91-4b57-8d58-c660a19c62f3",
+      "run_id": "3f432370-fc99-4bde-94a6-ddd0c9310e0e",
       "partition_id": "yellow_2024-11",
       "rows_total": 3646369,
       "valid_rows": 3572569,
       "quarantined_records": 73800,
-      "warning_only_records": 411958,
+      "warning_only_records": 442354,
       "valid_record_rate": 97.97606879610923,
-      "quality_score": 95.15162892181236,
+      "quality_score": 94.94322982671255,
       "dimension_scores": {
         "validity": 96.771,
         "uniqueness": 100.0,
-        "consistency": 99.7863,
+        "consistency": 98.2017,
         "completeness": 89.7522
       },
       "schema_status": "ok",
       "unexpected_schema_changes": 0,
       "source_lag_days": 47.8358912037037,
-      "data_age_days": 670.8767677917477,
-      "duration_s": 128.60243950001313,
-      "rows_per_sec": 28353.80894932112,
+      "data_age_days": 670.9404570717477,
+      "duration_s": 95.45091549999779,
+      "rows_per_sec": 38201.50892109657,
       "stage_timings": {
         "drift": null,
-        "rules": 6.734,
-        "anomaly": 21.376,
-        "profiling": 2.265,
-        "raw_landing": 81.879,
-        "persist_quality": 15.878,
-        "read_and_schema": 0.471
+        "rules": 7.355,
+        "anomaly": 18.755,
+        "profiling": 2.018,
+        "raw_landing": 52.766,
+        "persist_quality": 14.253,
+        "read_and_schema": 0.305
       },
-      "computed_at": "2026-10-02 21:00:24.134264+00:00",
+      "computed_at": "2026-10-02 22:32:40.038756+00:00",
       "year_month": "2024-11",
-      "ruleset_version": "1.3.0",
-      "code_version": "2c4de7e"
+      "ruleset_version": "1.4.0",
+      "code_version": "5b6eed8"
     },
     {
-      "run_id": "93f7d48b-ba91-4b57-8d58-c660a19c62f3",
+      "run_id": "3f432370-fc99-4bde-94a6-ddd0c9310e0e",
       "partition_id": "yellow_2024-12",
       "rows_total": 3668371,
       "valid_rows": 3587974,
       "quarantined_records": 80397,
-      "warning_only_records": 369614,
+      "warning_only_records": 404585,
       "valid_record_rate": 97.80837325341412,
-      "quality_score": 95.28944864082722,
+      "quality_score": 95.05112078358486,
       "dimension_scores": {
         "validity": 96.5412,
         "uniqueness": 100.0,
-        "consistency": 99.7641,
+        "consistency": 98.044,
         "completeness": 91.1053
       },
       "schema_status": "ok",
       "unexpected_schema_changes": 0,
       "source_lag_days": 51.895266203703706,
-      "data_age_days": 639.8782740590278,
-      "duration_s": 130.07343240000773,
-      "rows_per_sec": 28202.30797568914,
+      "data_age_days": 639.9414540384722,
+      "duration_s": 86.05046809997293,
+      "rows_per_sec": 42630.4595547128,
       "stage_timings": {
-        "drift": 3.118,
-        "rules": 7.588,
-        "anomaly": 18.952,
-        "profiling": 2.247,
-        "raw_landing": 72.58,
-        "persist_quality": 25.201,
-        "read_and_schema": 0.387
+        "drift": 3.525,
+        "rules": 7.185,
+        "anomaly": 19.964,
+        "profiling": 2.021,
+        "raw_landing": 40.625,
+        "persist_quality": 12.37,
+        "read_and_schema": 0.361
       },
-      "computed_at": "2026-10-02 21:02:32.803720+00:00",
+      "computed_at": "2026-10-02 22:34:15.570609+00:00",
       "year_month": "2024-12",
-      "ruleset_version": "1.3.0",
-      "code_version": "2c4de7e"
+      "ruleset_version": "1.4.0",
+      "code_version": "5b6eed8"
     },
     {
-      "run_id": "93f7d48b-ba91-4b57-8d58-c660a19c62f3",
+      "run_id": "3f432370-fc99-4bde-94a6-ddd0c9310e0e",
       "partition_id": "yellow_2025-01",
       "rows_total": 3475226,
       "valid_rows": 3328587,
       "quarantined_records": 146639,
-      "warning_only_records": 497833,
+      "warning_only_records": 526416,
       "valid_record_rate": 95.78044708459248,
-      "quality_score": 92.19914762378045,
+      "quality_score": 91.99352790293351,
       "dimension_scores": {
         "validity": 94.6918,
         "uniqueness": 100.0,
-        "consistency": 99.0303,
+        "consistency": 96.7257,
         "completeness": 84.4572
       },
       "schema_status": "additive_change",
       "unexpected_schema_changes": 0,
       "source_lag_days": 81.68886574074074,
-      "data_age_days": 608.8803415466087,
-      "duration_s": 178.54021239999565,
-      "rows_per_sec": 19464.668229553896,
+      "data_age_days": 608.9427085346528,
+      "duration_s": 108.30380769999465,
+      "rows_per_sec": 32087.754565624306,
       "stage_timings": {
-        "drift": 3.157,
-        "rules": 9.367,
-        "anomaly": 21.748,
-        "profiling": 1.917,
-        "raw_landing": 113.057,
-        "persist_quality": 28.902,
-        "read_and_schema": 0.391
+        "drift": 3.345,
+        "rules": 8.417,
+        "anomaly": 23.179,
+        "profiling": 2.952,
+        "raw_landing": 41.643,
+        "persist_quality": 28.422,
+        "read_and_schema": 0.347
       },
-      "computed_at": "2026-10-02 21:04:42.942577+00:00",
+      "computed_at": "2026-10-02 22:35:41.705826+00:00",
       "year_month": "2025-01",
-      "ruleset_version": "1.3.0",
-      "code_version": "2c4de7e"
+      "ruleset_version": "1.4.0",
+      "code_version": "5b6eed8"
     },
     {
-      "run_id": "93f7d48b-ba91-4b57-8d58-c660a19c62f3",
+      "run_id": "3f432370-fc99-4bde-94a6-ddd0c9310e0e",
       "partition_id": "yellow_2025-02",
       "rows_total": 3577543,
       "valid_rows": 3389155,
       "quarantined_records": 188388,
-      "warning_only_records": 716019,
+      "warning_only_records": 743422,
       "valid_record_rate": 94.73415134353381,
-      "quality_score": 89.73058464985606,
+      "quality_score": 89.53909149379896,
       "dimension_scores": {
         "validity": 93.9034,
         "uniqueness": 100.0,
-        "consistency": 99.7491,
+        "consistency": 97.251,
         "completeness": 77.4444
       },
       "schema_status": "additive_change",
       "unexpected_schema_changes": 0,
       "source_lag_days": 53.678449074074074,
-      "data_age_days": 580.88290563875,
-      "duration_s": 221.48504289999255,
-      "rows_per_sec": 16152.52638804767,
+      "data_age_days": 580.9450595553704,
+      "duration_s": 203.0118763000064,
+      "rows_per_sec": 17622.3335560585,
       "stage_timings": {
-        "drift": 3.505,
-        "rules": 8.835,
-        "anomaly": 18.107,
-        "profiling": 2.044,
-        "raw_landing": 154.02,
-        "persist_quality": 34.67,
-        "read_and_schema": 0.303
+        "drift": 6.569,
+        "rules": 8.673,
+        "anomaly": 21.832,
+        "profiling": 2.113,
+        "raw_landing": 121.769,
+        "persist_quality": 41.531,
+        "read_and_schema": 0.524
       },
-      "computed_at": "2026-10-02 21:07:41.561240+00:00",
+      "computed_at": "2026-10-02 22:37:30.122301+00:00",
       "year_month": "2025-02",
-      "ruleset_version": "1.3.0",
-      "code_version": "2c4de7e"
+      "ruleset_version": "1.4.0",
+      "code_version": "5b6eed8"
     }
   ],
   "rules": [
@@ -252,6 +252,22 @@
       "records_checked": 3646369,
       "failed_rows": 955,
       "failure_rate": 0.0002619043766552425
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ027_zero_distance_between_zones",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 33832,
+      "failure_rate": 0.00927827106911012
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ028_charged_without_trip",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 24685,
+      "failure_rate": 0.006769748207052001
     },
     {
       "partition_id": "yellow_2024-11",
@@ -423,6 +439,22 @@
     },
     {
       "partition_id": "yellow_2024-12",
+      "rule_id": "DQ027_zero_distance_between_zones",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 36728,
+      "failure_rate": 0.010012073478936564
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ028_charged_without_trip",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 27254,
+      "failure_rate": 0.007429455744797895
+    },
+    {
+      "partition_id": "yellow_2024-12",
       "rule_id": "DQ030_vendor_id_accepted",
       "severity": "critical",
       "records_checked": 3668371,
@@ -591,6 +623,22 @@
     },
     {
       "partition_id": "yellow_2025-01",
+      "rule_id": "DQ027_zero_distance_between_zones",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 58735,
+      "failure_rate": 0.01690105909658825
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ028_charged_without_trip",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 22104,
+      "failure_rate": 0.006360449651332029
+    },
+    {
+      "partition_id": "yellow_2025-01",
       "rule_id": "DQ030_vendor_id_accepted",
       "severity": "critical",
       "records_checked": 3475226,
@@ -756,6 +804,22 @@
       "records_checked": 3577543,
       "failed_rows": 798,
       "failure_rate": 0.00022305811558379592
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ027_zero_distance_between_zones",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 69752,
+      "failure_rate": 0.019497180047870842
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ028_charged_without_trip",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 20270,
+      "failure_rate": 0.005665899752986896
     },
     {
       "partition_id": "yellow_2025-02",
@@ -961,7 +1025,7 @@
       "records_scored": 3572569,
       "anomalies": 311070,
       "anomaly_rate": 0.08707179623402655,
-      "runtime_s": 1.598
+      "runtime_s": 1.079
     },
     {
       "partition_id": "yellow_2024-11",
@@ -969,7 +1033,7 @@
       "records_scored": 3572569,
       "anomalies": 4849,
       "anomaly_rate": 0.0013572865912456834,
-      "runtime_s": 1.466
+      "runtime_s": 1.107
     },
     {
       "partition_id": "yellow_2024-11",
@@ -977,7 +1041,7 @@
       "records_scored": 3572569,
       "anomalies": 33683,
       "anomaly_rate": 0.009428229377795083,
-      "runtime_s": 15.267
+      "runtime_s": 14.536
     },
     {
       "partition_id": "yellow_2024-11",
@@ -985,7 +1049,7 @@
       "records_scored": 3572569,
       "anomalies": 62322,
       "anomaly_rate": 0.017444589593650955,
-      "runtime_s": 0.363
+      "runtime_s": 0.334
     },
     {
       "partition_id": "yellow_2024-12",
@@ -993,7 +1057,7 @@
       "records_scored": 3587974,
       "anomalies": 316460,
       "anomaly_rate": 0.08820019320095408,
-      "runtime_s": 0.909
+      "runtime_s": 1.133
     },
     {
       "partition_id": "yellow_2024-12",
@@ -1001,7 +1065,7 @@
       "records_scored": 3587974,
       "anomalies": 4301,
       "anomaly_rate": 0.001198726635142841,
-      "runtime_s": 1.295
+      "runtime_s": 1.134
     },
     {
       "partition_id": "yellow_2024-12",
@@ -1009,7 +1073,7 @@
       "records_scored": 3587974,
       "anomalies": 35614,
       "anomaly_rate": 0.009925935918153253,
-      "runtime_s": 14.677
+      "runtime_s": 15.692
     },
     {
       "partition_id": "yellow_2024-12",
@@ -1017,7 +1081,7 @@
       "records_scored": 3587974,
       "anomalies": 60619,
       "anomaly_rate": 0.016895049964130174,
-      "runtime_s": 0.352
+      "runtime_s": 0.353
     },
     {
       "partition_id": "yellow_2025-01",
@@ -1025,7 +1089,7 @@
       "records_scored": 3328587,
       "anomalies": 295939,
       "anomaly_rate": 0.0889082965234197,
-      "runtime_s": 1.5
+      "runtime_s": 1.275
     },
     {
       "partition_id": "yellow_2025-01",
@@ -1033,7 +1097,7 @@
       "records_scored": 3328587,
       "anomalies": 6828,
       "anomaly_rate": 0.0020513208757950447,
-      "runtime_s": 1.266
+      "runtime_s": 1.228
     },
     {
       "partition_id": "yellow_2025-01",
@@ -1041,7 +1105,7 @@
       "records_scored": 3328587,
       "anomalies": 33251,
       "anomaly_rate": 0.00998952408334227,
-      "runtime_s": 15.99
+      "runtime_s": 18.248
     },
     {
       "partition_id": "yellow_2025-01",
@@ -1049,7 +1113,7 @@
       "records_scored": 3328587,
       "anomalies": 62158,
       "anomaly_rate": 0.018673989894210367,
-      "runtime_s": 0.377
+      "runtime_s": 0.372
     },
     {
       "partition_id": "yellow_2025-02",
@@ -1057,7 +1121,7 @@
       "records_scored": 3389155,
       "anomalies": 267919,
       "anomaly_rate": 0.07905185805901471,
-      "runtime_s": 0.862
+      "runtime_s": 1.285
     },
     {
       "partition_id": "yellow_2025-02",
@@ -1065,7 +1129,7 @@
       "records_scored": 3389155,
       "anomalies": 5974,
       "anomaly_rate": 0.0017626812583077492,
-      "runtime_s": 1.045
+      "runtime_s": 1.029
     },
     {
       "partition_id": "yellow_2025-02",
@@ -1073,7 +1137,7 @@
       "records_scored": 3389155,
       "anomalies": 33890,
       "anomaly_rate": 0.009999542658863344,
-      "runtime_s": 13.79
+      "runtime_s": 16.105
     },
     {
       "partition_id": "yellow_2025-02",
@@ -1081,7 +1145,7 @@
       "records_scored": 3389155,
       "anomalies": 70776,
       "anomaly_rate": 0.020883081476061143,
-      "runtime_s": 0.353
+      "runtime_s": 0.401
     }
   ],
   "quarantine_by_rule": [
@@ -1128,20 +1192,20 @@
   ],
   "runs": [
     {
-      "run_id": "93f7d48b-ba91-4b57-8d58-c660a19c62f3",
+      "run_id": "3f432370-fc99-4bde-94a6-ddd0c9310e0e",
       "status": "success",
       "trigger": "reproduce",
       "rows_processed": 14367509,
-      "duration_s": 659.0878144000017,
-      "started_at": "2026-10-02 21:00:24.117015+00:00"
+      "duration_s": 493.4194336000073,
+      "started_at": "2026-10-02 22:32:40.020667+00:00"
     },
     {
-      "run_id": "2b3bf5d4-0175-4b34-b14f-672e1df1e452",
+      "run_id": "4a7163ef-796f-4bf6-8518-cd0ab0239443",
       "status": "success",
       "trigger": "rerun",
       "rows_processed": 14367509,
-      "duration_s": 378.5548908000055,
-      "started_at": "2026-10-02 21:11:33.365619+00:00"
+      "duration_s": 543.6478731000097,
+      "started_at": "2026-10-02 22:41:05.748601+00:00"
     }
   ],
   "benchmark": {
@@ -1152,23 +1216,23 @@
     "operating_points": {
       "fare_model": {
         "0.001": {
-          "tp": 454,
-          "fp": 89,
-          "fn": 3909,
-          "tn": 195911,
-          "precision": 0.8361,
-          "recall": 0.1041,
-          "false_positive_rate": 0.000454,
-          "flagged": 543,
+          "tp": 453,
+          "fp": 53,
+          "fn": 3910,
+          "tn": 195947,
+          "precision": 0.8953,
+          "recall": 0.1038,
+          "false_positive_rate": 0.00027,
+          "flagged": 506,
           "recall_by_error_type": {
-            "distance_unit_error": 0.022,
+            "distance_unit_error": 0.0275,
             "distance_x5": 0.0,
             "dropoff_before_pickup": 0.0,
             "exact_duplicate": 0.0,
             "fare_over_cap": 1.0,
-            "fare_x10": 0.9834,
-            "invalid_payment_type": 0.0027,
-            "negative_fare": 0.2418,
+            "fare_x10": 0.9917,
+            "invalid_payment_type": 0.0,
+            "negative_fare": 0.228,
             "null_mandatory": 0.0,
             "passenger_overflow": 0.0,
             "stale_timestamp": 0.0,
@@ -1177,23 +1241,23 @@
           }
         },
         "0.002": {
-          "tp": 561,
-          "fp": 136,
-          "fn": 3802,
-          "tn": 195864,
-          "precision": 0.8049,
-          "recall": 0.1286,
-          "false_positive_rate": 0.000694,
-          "flagged": 697,
+          "tp": 562,
+          "fp": 72,
+          "fn": 3801,
+          "tn": 195928,
+          "precision": 0.8864,
+          "recall": 0.1288,
+          "false_positive_rate": 0.000367,
+          "flagged": 634,
           "recall_by_error_type": {
-            "distance_unit_error": 0.1456,
+            "distance_unit_error": 0.1401,
             "distance_x5": 0.0,
             "dropoff_before_pickup": 0.0,
             "exact_duplicate": 0.0,
             "fare_over_cap": 1.0,
             "fare_x10": 1.0,
-            "invalid_payment_type": 0.0027,
-            "negative_fare": 0.3956,
+            "invalid_payment_type": 0.0,
+            "negative_fare": 0.4066,
             "null_mandatory": 0.0,
             "passenger_overflow": 0.0,
             "stale_timestamp": 0.0,
@@ -1202,76 +1266,76 @@
           }
         },
         "0.005": {
-          "tp": 972,
-          "fp": 273,
-          "fn": 3391,
-          "tn": 195727,
-          "precision": 0.7807,
-          "recall": 0.2228,
-          "false_positive_rate": 0.001393,
-          "flagged": 1245,
+          "tp": 959,
+          "fp": 135,
+          "fn": 3404,
+          "tn": 195865,
+          "precision": 0.8766,
+          "recall": 0.2198,
+          "false_positive_rate": 0.000689,
+          "flagged": 1094,
           "recall_by_error_type": {
-            "distance_unit_error": 0.7198,
-            "distance_x5": 0.022,
-            "dropoff_before_pickup": 0.0742,
+            "distance_unit_error": 0.7253,
+            "distance_x5": 0.0055,
+            "dropoff_before_pickup": 0.0577,
             "exact_duplicate": 0.0,
             "fare_over_cap": 1.0,
             "fare_x10": 1.0,
-            "invalid_payment_type": 0.0027,
-            "negative_fare": 0.8516,
+            "invalid_payment_type": 0.0,
+            "negative_fare": 0.8489,
             "null_mandatory": 0.0,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0027,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
             "tip_spike": 0.0
           }
         },
         "0.01": {
-          "tp": 1481,
-          "fp": 685,
-          "fn": 2882,
-          "tn": 195315,
-          "precision": 0.6837,
-          "recall": 0.3394,
-          "false_positive_rate": 0.003495,
-          "flagged": 2166,
+          "tp": 1464,
+          "fp": 352,
+          "fn": 2899,
+          "tn": 195648,
+          "precision": 0.8062,
+          "recall": 0.3355,
+          "false_positive_rate": 0.001796,
+          "flagged": 1816,
           "recall_by_error_type": {
-            "distance_unit_error": 0.8956,
-            "distance_x5": 0.7052,
-            "dropoff_before_pickup": 0.4533,
-            "exact_duplicate": 0.0055,
+            "distance_unit_error": 0.9231,
+            "distance_x5": 0.6887,
+            "dropoff_before_pickup": 0.4038,
+            "exact_duplicate": 0.0,
             "fare_over_cap": 1.0,
             "fare_x10": 1.0,
-            "invalid_payment_type": 0.0055,
-            "negative_fare": 0.9945,
-            "null_mandatory": 0.0027,
-            "passenger_overflow": 0.0027,
-            "stale_timestamp": 0.0055,
+            "invalid_payment_type": 0.0,
+            "negative_fare": 1.0,
+            "null_mandatory": 0.011,
+            "passenger_overflow": 0.0,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
-            "tip_spike": 0.0028
+            "tip_spike": 0.0
           }
         },
         "0.02": {
-          "tp": 1652,
-          "fp": 1184,
-          "fn": 2711,
-          "tn": 194816,
-          "precision": 0.5825,
-          "recall": 0.3786,
-          "false_positive_rate": 0.006041,
-          "flagged": 2836,
+          "tp": 1646,
+          "fp": 711,
+          "fn": 2717,
+          "tn": 195289,
+          "precision": 0.6983,
+          "recall": 0.3773,
+          "false_positive_rate": 0.003628,
+          "flagged": 2357,
           "recall_by_error_type": {
-            "distance_unit_error": 0.9451,
-            "distance_x5": 0.8595,
-            "dropoff_before_pickup": 0.6923,
-            "exact_duplicate": 0.0055,
+            "distance_unit_error": 0.9505,
+            "distance_x5": 0.8623,
+            "dropoff_before_pickup": 0.6896,
+            "exact_duplicate": 0.0,
             "fare_over_cap": 1.0,
             "fare_x10": 1.0,
             "invalid_payment_type": 0.0055,
             "negative_fare": 1.0,
-            "null_mandatory": 0.0082,
-            "passenger_overflow": 0.0055,
-            "stale_timestamp": 0.0165,
+            "null_mandatory": 0.011,
+            "passenger_overflow": 0.0027,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
             "tip_spike": 0.0055
           }
@@ -1279,18 +1343,18 @@
       },
       "distance_model": {
         "0.001": {
-          "tp": 376,
-          "fp": 136,
-          "fn": 3987,
-          "tn": 195864,
-          "precision": 0.7344,
-          "recall": 0.0862,
-          "false_positive_rate": 0.000694,
-          "flagged": 512,
+          "tp": 377,
+          "fp": 10,
+          "fn": 3986,
+          "tn": 195990,
+          "precision": 0.9742,
+          "recall": 0.0864,
+          "false_positive_rate": 5.1e-05,
+          "flagged": 387,
           "recall_by_error_type": {
             "distance_unit_error": 1.0,
-            "distance_x5": 0.0028,
-            "dropoff_before_pickup": 0.0275,
+            "distance_x5": 0.0,
+            "dropoff_before_pickup": 0.0357,
             "exact_duplicate": 0.0,
             "fare_over_cap": 0.0,
             "fare_x10": 0.0,
@@ -1298,24 +1362,24 @@
             "negative_fare": 0.0,
             "null_mandatory": 0.0,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0027,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
             "tip_spike": 0.0
           }
         },
         "0.002": {
-          "tp": 411,
-          "fp": 224,
-          "fn": 3952,
-          "tn": 195776,
-          "precision": 0.6472,
-          "recall": 0.0942,
-          "false_positive_rate": 0.001143,
-          "flagged": 635,
+          "tp": 409,
+          "fp": 22,
+          "fn": 3954,
+          "tn": 195978,
+          "precision": 0.949,
+          "recall": 0.0937,
+          "false_positive_rate": 0.000112,
+          "flagged": 431,
           "recall_by_error_type": {
             "distance_unit_error": 1.0,
-            "distance_x5": 0.011,
-            "dropoff_before_pickup": 0.1154,
+            "distance_x5": 0.0165,
+            "dropoff_before_pickup": 0.1071,
             "exact_duplicate": 0.0,
             "fare_over_cap": 0.0,
             "fare_x10": 0.0,
@@ -1323,84 +1387,84 @@
             "negative_fare": 0.0,
             "null_mandatory": 0.0,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0027,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
             "tip_spike": 0.0
           }
         },
         "0.005": {
-          "tp": 596,
-          "fp": 399,
-          "fn": 3767,
-          "tn": 195601,
-          "precision": 0.599,
-          "recall": 0.1366,
-          "false_positive_rate": 0.002036,
-          "flagged": 995,
+          "tp": 573,
+          "fp": 67,
+          "fn": 3790,
+          "tn": 195933,
+          "precision": 0.8953,
+          "recall": 0.1313,
+          "false_positive_rate": 0.000342,
+          "flagged": 640,
           "recall_by_error_type": {
             "distance_unit_error": 1.0,
-            "distance_x5": 0.3278,
-            "dropoff_before_pickup": 0.2995,
+            "distance_x5": 0.3113,
+            "dropoff_before_pickup": 0.2582,
             "exact_duplicate": 0.0,
             "fare_over_cap": 0.0,
-            "fare_x10": 0.0028,
+            "fare_x10": 0.0,
             "invalid_payment_type": 0.0,
-            "negative_fare": 0.0,
-            "null_mandatory": 0.0,
+            "negative_fare": 0.0027,
+            "null_mandatory": 0.0027,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0055,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
-            "tip_spike": 0.0028
+            "tip_spike": 0.0
           }
         },
         "0.01": {
-          "tp": 856,
-          "fp": 723,
-          "fn": 3507,
-          "tn": 195277,
-          "precision": 0.5421,
-          "recall": 0.1962,
-          "false_positive_rate": 0.003689,
-          "flagged": 1579,
+          "tp": 844,
+          "fp": 240,
+          "fn": 3519,
+          "tn": 195760,
+          "precision": 0.7786,
+          "recall": 0.1934,
+          "false_positive_rate": 0.001224,
+          "flagged": 1084,
           "recall_by_error_type": {
             "distance_unit_error": 1.0,
-            "distance_x5": 0.7934,
-            "dropoff_before_pickup": 0.5385,
+            "distance_x5": 0.7961,
+            "dropoff_before_pickup": 0.5165,
             "exact_duplicate": 0.0,
             "fare_over_cap": 0.0,
             "fare_x10": 0.0028,
             "invalid_payment_type": 0.0,
-            "negative_fare": 0.0,
-            "null_mandatory": 0.0,
+            "negative_fare": 0.0027,
+            "null_mandatory": 0.0027,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0137,
+            "stale_timestamp": 0.0,
             "swapped_zones": 0.0,
-            "tip_spike": 0.0055
+            "tip_spike": 0.0
           }
         },
         "0.02": {
-          "tp": 990,
-          "fp": 1389,
-          "fn": 3373,
-          "tn": 194611,
-          "precision": 0.4161,
-          "recall": 0.2269,
-          "false_positive_rate": 0.007087,
-          "flagged": 2379,
+          "tp": 991,
+          "fp": 807,
+          "fn": 3372,
+          "tn": 195193,
+          "precision": 0.5512,
+          "recall": 0.2271,
+          "false_positive_rate": 0.004117,
+          "flagged": 1798,
           "recall_by_error_type": {
             "distance_unit_error": 1.0,
-            "distance_x5": 0.9366,
-            "dropoff_before_pickup": 0.739,
+            "distance_x5": 0.9532,
+            "dropoff_before_pickup": 0.7335,
             "exact_duplicate": 0.0,
             "fare_over_cap": 0.0,
-            "fare_x10": 0.0028,
-            "invalid_payment_type": 0.0082,
-            "negative_fare": 0.0055,
-            "null_mandatory": 0.011,
+            "fare_x10": 0.0056,
+            "invalid_payment_type": 0.0027,
+            "negative_fare": 0.0082,
+            "null_mandatory": 0.0165,
             "passenger_overflow": 0.0,
-            "stale_timestamp": 0.0137,
-            "swapped_zones": 0.0,
-            "tip_spike": 0.0055
+            "stale_timestamp": 0.0,
+            "swapped_zones": 0.0028,
+            "tip_spike": 0.0028
           }
         }
       }
@@ -1430,8 +1494,8 @@
       "distance_x5": 363,
       "dropoff_before_pickup": 364,
       "exact_duplicate": 363,
-      "fare_over_cap": 2,
-      "fare_x10": 361,
+      "fare_over_cap": 3,
+      "fare_x10": 360,
       "invalid_payment_type": 364,
       "negative_fare": 364,
       "null_mandatory": 364,
@@ -1442,14 +1506,14 @@
     },
     "results": {
       "rules_critical": {
-        "tp": 2913,
+        "tp": 2914,
         "fp": 0,
-        "fn": 1450,
+        "fn": 1449,
         "tn": 196000,
         "precision": 1.0,
-        "recall": 0.6677,
+        "recall": 0.6679,
         "false_positive_rate": 0.0,
-        "flagged": 2913,
+        "flagged": 2914,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
           "distance_x5": 0.0,
@@ -1470,22 +1534,22 @@
           1.0
         ],
         "recall_ci95": [
-          0.6557,
-          0.6809
+          0.6559,
+          0.6815
         ]
       },
       "rules_critical_plus_warning": {
-        "tp": 2955,
+        "tp": 2952,
         "fp": 0,
-        "fn": 1408,
+        "fn": 1411,
         "tn": 196000,
         "precision": 1.0,
-        "recall": 0.6773,
+        "recall": 0.6766,
         "false_positive_rate": 0.0,
-        "flagged": 2955,
+        "flagged": 2952,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.1157,
+          "distance_x5": 0.1047,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
@@ -1503,319 +1567,319 @@
           1.0
         ],
         "recall_ci95": [
-          0.6658,
-          0.6916
+          0.6648,
+          0.6901
         ]
       },
       "iqr": {
-        "tp": 1564,
-        "fp": 19217,
-        "fn": 2799,
-        "tn": 176783,
+        "tp": 1540,
+        "fp": 18915,
+        "fn": 2823,
+        "tn": 177085,
         "precision": 0.0753,
-        "recall": 0.3585,
-        "false_positive_rate": 0.098046,
-        "flagged": 20781,
+        "recall": 0.353,
+        "false_positive_rate": 0.096505,
+        "flagged": 20455,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.4656,
-          "dropoff_before_pickup": 0.0962,
-          "exact_duplicate": 0.1019,
+          "distance_x5": 0.427,
+          "dropoff_before_pickup": 0.0879,
+          "exact_duplicate": 0.0909,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.9612,
-          "invalid_payment_type": 0.1264,
+          "fare_x10": 0.975,
+          "invalid_payment_type": 0.0989,
           "negative_fare": 0.1813,
-          "null_mandatory": 0.1044,
-          "passenger_overflow": 0.0824,
-          "stale_timestamp": 0.1181,
-          "swapped_zones": 0.0826,
-          "tip_spike": 0.9835
+          "null_mandatory": 0.1181,
+          "passenger_overflow": 0.0769,
+          "stale_timestamp": 0.0962,
+          "swapped_zones": 0.0909,
+          "tip_spike": 0.9945
         },
         "precision_ci95": [
-          0.0719,
-          0.0794
+          0.0721,
+          0.0788
         ],
         "recall_ci95": [
-          0.3454,
-          0.3734
+          0.3406,
+          0.3664
         ]
       },
       "rules_critical+iqr": {
-        "tp": 3816,
-        "fp": 19217,
-        "fn": 547,
-        "tn": 176783,
-        "precision": 0.1657,
-        "recall": 0.8746,
-        "false_positive_rate": 0.098046,
-        "flagged": 23033,
+        "tp": 3814,
+        "fp": 18915,
+        "fn": 549,
+        "tn": 177085,
+        "precision": 0.1678,
+        "recall": 0.8742,
+        "false_positive_rate": 0.096505,
+        "flagged": 22729,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.4656,
+          "distance_x5": 0.427,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.9612,
+          "fare_x10": 0.975,
           "invalid_payment_type": 1.0,
           "negative_fare": 1.0,
           "null_mandatory": 1.0,
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
-          "swapped_zones": 0.0826,
-          "tip_spike": 0.9835
+          "swapped_zones": 0.0909,
+          "tip_spike": 0.9945
         },
         "precision_ci95": [
-          0.1612,
-          0.1705
+          0.163,
+          0.1733
         ],
         "recall_ci95": [
-          0.8655,
+          0.8651,
           0.884
         ]
       },
       "iqr_log": {
-        "tp": 1337,
-        "fp": 439,
-        "fn": 3026,
-        "tn": 195561,
-        "precision": 0.7528,
-        "recall": 0.3064,
-        "false_positive_rate": 0.00224,
-        "flagged": 1776,
+        "tp": 1383,
+        "fp": 438,
+        "fn": 2980,
+        "tn": 195562,
+        "precision": 0.7595,
+        "recall": 0.317,
+        "false_positive_rate": 0.002235,
+        "flagged": 1821,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
           "distance_x5": 0.1212,
           "dropoff_before_pickup": 1.0,
-          "exact_duplicate": 0.0028,
+          "exact_duplicate": 0.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.3712,
-          "invalid_payment_type": 0.0027,
+          "fare_x10": 0.4278,
+          "invalid_payment_type": 0.0055,
           "negative_fare": 1.0,
           "null_mandatory": 0.0,
-          "passenger_overflow": 0.0,
-          "stale_timestamp": 0.0082,
-          "swapped_zones": 0.0,
-          "tip_spike": 0.1653
+          "passenger_overflow": 0.0027,
+          "stale_timestamp": 0.0027,
+          "swapped_zones": 0.0028,
+          "tip_spike": 0.2342
         },
         "precision_ci95": [
-          0.7311,
-          0.773
+          0.7421,
+          0.778
         ],
         "recall_ci95": [
-          0.2926,
-          0.3197
+          0.3047,
+          0.331
         ]
       },
       "rules_critical+iqr_log": {
-        "tp": 3151,
-        "fp": 439,
-        "fn": 1212,
-        "tn": 195561,
-        "precision": 0.8777,
-        "recall": 0.7222,
-        "false_positive_rate": 0.00224,
-        "flagged": 3590,
+        "tp": 3198,
+        "fp": 438,
+        "fn": 1165,
+        "tn": 195562,
+        "precision": 0.8795,
+        "recall": 0.733,
+        "false_positive_rate": 0.002235,
+        "flagged": 3636,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
           "distance_x5": 0.1212,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.3712,
+          "fare_x10": 0.4278,
           "invalid_payment_type": 1.0,
           "negative_fare": 1.0,
           "null_mandatory": 1.0,
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
-          "swapped_zones": 0.0,
-          "tip_spike": 0.1653
+          "swapped_zones": 0.0028,
+          "tip_spike": 0.2342
         },
         "precision_ci95": [
-          0.8669,
-          0.8882
+          0.8684,
+          0.8892
         ],
         "recall_ci95": [
-          0.7092,
-          0.7346
+          0.7207,
+          0.7463
         ]
       },
       "zscore": {
-        "tp": 884,
-        "fp": 1659,
-        "fn": 3479,
-        "tn": 194341,
-        "precision": 0.3476,
-        "recall": 0.2026,
-        "false_positive_rate": 0.008464,
-        "flagged": 2543,
+        "tp": 886,
+        "fp": 1567,
+        "fn": 3477,
+        "tn": 194433,
+        "precision": 0.3612,
+        "recall": 0.2031,
+        "false_positive_rate": 0.007995,
+        "flagged": 2453,
         "recall_by_error_type": {
-          "distance_unit_error": 0.8736,
-          "distance_x5": 0.011,
-          "dropoff_before_pickup": 0.0027,
-          "exact_duplicate": 0.011,
+          "distance_unit_error": 0.9066,
+          "distance_x5": 0.0083,
+          "dropoff_before_pickup": 0.0082,
+          "exact_duplicate": 0.0055,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.6842,
-          "invalid_payment_type": 0.0055,
-          "negative_fare": 0.0577,
-          "null_mandatory": 0.0,
+          "fare_x10": 0.6056,
+          "invalid_payment_type": 0.011,
+          "negative_fare": 0.0495,
+          "null_mandatory": 0.011,
           "passenger_overflow": 0.0055,
-          "stale_timestamp": 0.0137,
-          "swapped_zones": 0.0055,
-          "tip_spike": 0.7603
+          "stale_timestamp": 0.0082,
+          "swapped_zones": 0.0028,
+          "tip_spike": 0.8127
         },
         "precision_ci95": [
-          0.3316,
-          0.3672
+          0.3438,
+          0.3802
         ],
         "recall_ci95": [
-          0.1921,
-          0.2143
+          0.1926,
+          0.2149
         ]
       },
       "rules_critical+zscore": {
-        "tp": 3442,
-        "fp": 1659,
-        "fn": 921,
-        "tn": 194341,
-        "precision": 0.6748,
-        "recall": 0.7889,
-        "false_positive_rate": 0.008464,
-        "flagged": 5101,
+        "tp": 3431,
+        "fp": 1567,
+        "fn": 932,
+        "tn": 194433,
+        "precision": 0.6865,
+        "recall": 0.7864,
+        "false_positive_rate": 0.007995,
+        "flagged": 4998,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.011,
+          "distance_x5": 0.0083,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.6842,
+          "fare_x10": 0.6056,
           "invalid_payment_type": 1.0,
           "negative_fare": 1.0,
           "null_mandatory": 1.0,
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
-          "swapped_zones": 0.0055,
-          "tip_spike": 0.7603
+          "swapped_zones": 0.0028,
+          "tip_spike": 0.8127
         },
         "precision_ci95": [
-          0.6624,
-          0.6878
+          0.6745,
+          0.6982
         ],
         "recall_ci95": [
-          0.7788,
-          0.8006
+          0.7757,
+          0.7997
         ]
       },
       "isolation_forest": {
-        "tp": 199,
-        "fp": 1804,
-        "fn": 4164,
-        "tn": 194196,
-        "precision": 0.0994,
-        "recall": 0.0456,
-        "false_positive_rate": 0.009204,
+        "tp": 203,
+        "fp": 1800,
+        "fn": 4160,
+        "tn": 194200,
+        "precision": 0.1013,
+        "recall": 0.0465,
+        "false_positive_rate": 0.009184,
         "flagged": 2003,
         "recall_by_error_type": {
           "distance_unit_error": 0.1209,
-          "distance_x5": 0.0303,
-          "dropoff_before_pickup": 0.011,
+          "distance_x5": 0.0413,
+          "dropoff_before_pickup": 0.022,
           "exact_duplicate": 0.0083,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.1773,
-          "invalid_payment_type": 0.0082,
-          "negative_fare": 0.0055,
-          "null_mandatory": 0.0055,
-          "passenger_overflow": 0.0027,
-          "stale_timestamp": 0.0137,
-          "swapped_zones": 0.0055,
-          "tip_spike": 0.1543
+          "fare_x10": 0.1722,
+          "invalid_payment_type": 0.011,
+          "negative_fare": 0.0137,
+          "null_mandatory": 0.011,
+          "passenger_overflow": 0.0137,
+          "stale_timestamp": 0.0082,
+          "swapped_zones": 0.011,
+          "tip_spike": 0.1185
         },
         "precision_ci95": [
-          0.0866,
-          0.1136
+          0.0892,
+          0.1155
         ],
         "recall_ci95": [
-          0.0393,
-          0.0524
+          0.0405,
+          0.0527
         ]
       },
       "rules_critical+isolation_forest": {
-        "tp": 3046,
-        "fp": 1804,
-        "fn": 1317,
-        "tn": 194196,
-        "precision": 0.628,
-        "recall": 0.6981,
-        "false_positive_rate": 0.009204,
-        "flagged": 4850,
+        "tp": 3038,
+        "fp": 1800,
+        "fn": 1325,
+        "tn": 194200,
+        "precision": 0.6279,
+        "recall": 0.6963,
+        "false_positive_rate": 0.009184,
+        "flagged": 4838,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.0303,
+          "distance_x5": 0.0413,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.1773,
+          "fare_x10": 0.1722,
           "invalid_payment_type": 1.0,
           "negative_fare": 1.0,
           "null_mandatory": 1.0,
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
-          "swapped_zones": 0.0055,
-          "tip_spike": 0.1543
+          "swapped_zones": 0.011,
+          "tip_spike": 0.1185
         },
         "precision_ci95": [
-          0.6149,
-          0.6403
+          0.6144,
+          0.6416
         ],
         "recall_ci95": [
-          0.6852,
-          0.7114
+          0.6841,
+          0.7102
         ]
       },
       "fare_model": {
-        "tp": 972,
-        "fp": 273,
-        "fn": 3391,
-        "tn": 195727,
-        "precision": 0.7807,
-        "recall": 0.2228,
-        "false_positive_rate": 0.001393,
-        "flagged": 1245,
+        "tp": 959,
+        "fp": 135,
+        "fn": 3404,
+        "tn": 195865,
+        "precision": 0.8766,
+        "recall": 0.2198,
+        "false_positive_rate": 0.000689,
+        "flagged": 1094,
         "recall_by_error_type": {
-          "distance_unit_error": 0.7198,
-          "distance_x5": 0.022,
-          "dropoff_before_pickup": 0.0742,
+          "distance_unit_error": 0.7253,
+          "distance_x5": 0.0055,
+          "dropoff_before_pickup": 0.0577,
           "exact_duplicate": 0.0,
           "fare_over_cap": 1.0,
           "fare_x10": 1.0,
-          "invalid_payment_type": 0.0027,
-          "negative_fare": 0.8516,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.8489,
           "null_mandatory": 0.0,
           "passenger_overflow": 0.0,
-          "stale_timestamp": 0.0027,
+          "stale_timestamp": 0.0,
           "swapped_zones": 0.0,
           "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.7622,
-          0.8017
+          0.8568,
+          0.8938
         ],
         "recall_ci95": [
-          0.211,
-          0.2361
+          0.2081,
+          0.2323
         ]
       },
       "rules_critical+fare_model": {
-        "tp": 3282,
-        "fp": 273,
-        "fn": 1081,
-        "tn": 195727,
-        "precision": 0.9232,
-        "recall": 0.7522,
-        "false_positive_rate": 0.001393,
-        "flagged": 3555,
+        "tp": 3276,
+        "fp": 135,
+        "fn": 1087,
+        "tn": 195865,
+        "precision": 0.9604,
+        "recall": 0.7509,
+        "false_positive_rate": 0.000689,
+        "flagged": 3411,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.022,
+          "distance_x5": 0.0055,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
@@ -1829,125 +1893,125 @@
           "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.9148,
-          0.9318
+          0.9539,
+          0.9662
         ],
         "recall_ci95": [
-          0.7408,
-          0.7644
+          0.7398,
+          0.7629
         ]
       },
       "distance_model": {
-        "tp": 596,
-        "fp": 399,
-        "fn": 3767,
-        "tn": 195601,
-        "precision": 0.599,
-        "recall": 0.1366,
-        "false_positive_rate": 0.002036,
-        "flagged": 995,
+        "tp": 573,
+        "fp": 67,
+        "fn": 3790,
+        "tn": 195933,
+        "precision": 0.8953,
+        "recall": 0.1313,
+        "false_positive_rate": 0.000342,
+        "flagged": 640,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.3278,
-          "dropoff_before_pickup": 0.2995,
+          "distance_x5": 0.3113,
+          "dropoff_before_pickup": 0.2582,
           "exact_duplicate": 0.0,
           "fare_over_cap": 0.0,
-          "fare_x10": 0.0028,
+          "fare_x10": 0.0,
           "invalid_payment_type": 0.0,
-          "negative_fare": 0.0,
-          "null_mandatory": 0.0,
+          "negative_fare": 0.0027,
+          "null_mandatory": 0.0027,
           "passenger_overflow": 0.0,
-          "stale_timestamp": 0.0055,
+          "stale_timestamp": 0.0,
           "swapped_zones": 0.0,
-          "tip_spike": 0.0028
+          "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.5683,
-          0.6272
+          0.8702,
+          0.9158
         ],
         "recall_ci95": [
-          0.1264,
-          0.1474
+          0.1215,
+          0.1412
         ]
       },
       "rules_critical+distance_model": {
-        "tp": 3034,
-        "fp": 399,
-        "fn": 1329,
-        "tn": 195601,
-        "precision": 0.8838,
-        "recall": 0.6954,
-        "false_positive_rate": 0.002036,
-        "flagged": 3433,
+        "tp": 3027,
+        "fp": 67,
+        "fn": 1336,
+        "tn": 195933,
+        "precision": 0.9783,
+        "recall": 0.6938,
+        "false_positive_rate": 0.000342,
+        "flagged": 3094,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.3278,
+          "distance_x5": 0.3113,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
-          "fare_x10": 0.0028,
+          "fare_x10": 0.0,
           "invalid_payment_type": 1.0,
           "negative_fare": 1.0,
           "null_mandatory": 1.0,
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
           "swapped_zones": 0.0,
-          "tip_spike": 0.0028
+          "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.8721,
-          0.894
+          0.9726,
+          0.9828
         ],
         "recall_ci95": [
-          0.6836,
+          0.6817,
           0.7072
         ]
       },
       "fare_model+distance_model": {
-        "tp": 1278,
-        "fp": 655,
-        "fn": 3085,
-        "tn": 195345,
-        "precision": 0.6611,
-        "recall": 0.2929,
-        "false_positive_rate": 0.003342,
-        "flagged": 1933,
+        "tp": 1248,
+        "fp": 194,
+        "fn": 3115,
+        "tn": 195806,
+        "precision": 0.8655,
+        "recall": 0.286,
+        "false_positive_rate": 0.00099,
+        "flagged": 1442,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.3416,
-          "dropoff_before_pickup": 0.3104,
+          "distance_x5": 0.314,
+          "dropoff_before_pickup": 0.2665,
           "exact_duplicate": 0.0,
           "fare_over_cap": 1.0,
           "fare_x10": 1.0,
-          "invalid_payment_type": 0.0027,
-          "negative_fare": 0.8516,
-          "null_mandatory": 0.0,
+          "invalid_payment_type": 0.0,
+          "negative_fare": 0.8489,
+          "null_mandatory": 0.0027,
           "passenger_overflow": 0.0,
-          "stale_timestamp": 0.0055,
+          "stale_timestamp": 0.0,
           "swapped_zones": 0.0,
-          "tip_spike": 0.0028
+          "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.6407,
-          0.6803
+          0.8457,
+          0.8834
         ],
         "recall_ci95": [
-          0.2804,
-          0.3077
+          0.2722,
+          0.2989
         ]
       },
       "rules_critical+fare_model+distance_model": {
-        "tp": 3399,
-        "fp": 655,
-        "fn": 964,
-        "tn": 195345,
-        "precision": 0.8384,
-        "recall": 0.7791,
-        "false_positive_rate": 0.003342,
-        "flagged": 4054,
+        "tp": 3388,
+        "fp": 194,
+        "fn": 975,
+        "tn": 195806,
+        "precision": 0.9458,
+        "recall": 0.7765,
+        "false_positive_rate": 0.00099,
+        "flagged": 3582,
         "recall_by_error_type": {
           "distance_unit_error": 1.0,
-          "distance_x5": 0.3416,
+          "distance_x5": 0.314,
           "dropoff_before_pickup": 1.0,
           "exact_duplicate": 1.0,
           "fare_over_cap": 1.0,
@@ -1958,40 +2022,40 @@
           "passenger_overflow": 1.0,
           "stale_timestamp": 1.0,
           "swapped_zones": 0.0,
-          "tip_spike": 0.0028
+          "tip_spike": 0.0
         },
         "precision_ci95": [
-          0.8267,
-          0.8487
+          0.9374,
+          0.9529
         ],
         "recall_ci95": [
-          0.7671,
-          0.79
+          0.7657,
+          0.7877
         ]
       }
     },
     "runtime_s": {
-      "rules": 0.125,
-      "iqr": 0.092,
-      "iqr_log": 0.051,
-      "zscore": 0.014,
-      "isolation_forest": 1.768,
-      "fare_model": 0.186,
-      "distance_model": 0.362
+      "rules": 0.136,
+      "iqr": 0.061,
+      "iqr_log": 0.059,
+      "zscore": 0.018,
+      "isolation_forest": 2.079,
+      "fare_model": 0.239,
+      "distance_model": 0.528
     },
     "rows_per_sec": {
-      "rules": 1605981,
-      "iqr": 2172868,
-      "iqr_log": 3961724,
-      "zscore": 14372521,
-      "isolation_forest": 113309,
-      "fare_model": 1079797,
-      "distance_model": 554118
+      "rules": 1470506,
+      "iqr": 3291146,
+      "iqr_log": 3401125,
+      "zscore": 11399807,
+      "isolation_forest": 96390,
+      "fare_model": 837521,
+      "distance_model": 379275
     },
     "seed": 42
   },
   "failure_demo": {
-    "run_id": "1eed9cee-85dd-4e1e-92ff-16b1bb5edc59",
+    "run_id": "dcb0add9-10a8-412d-bb2c-c511fd14050c",
     "database": "dqc_demo",
     "checks": [
       {
@@ -2130,7 +2194,7 @@
             "r2": 0.9267692649546315,
             "mae": 1.302825539283401,
             "rmse": 5.005130706376393,
-            "fit_s": 1.83,
+            "fit_s": 8.1,
             "median_ae": 0.3932205989377433,
             "size_bytes": 292266,
             "within_tolerance": false
@@ -2140,7 +2204,7 @@
             "r2": 0.9274435644720149,
             "mae": 1.2763120520684466,
             "rmse": 4.982034104657043,
-            "fit_s": 4.45,
+            "fit_s": 14.01,
             "median_ae": 0.3715538429890284,
             "size_bytes": 1070948,
             "within_tolerance": true
@@ -2150,7 +2214,7 @@
             "r2": 0.9254053615274954,
             "mae": 1.315549134658719,
             "rmse": 5.05152531104415,
-            "fit_s": 0.92,
+            "fit_s": 5.8,
             "median_ae": 0.40044991595330615,
             "size_bytes": 182586,
             "within_tolerance": false
@@ -2160,7 +2224,7 @@
             "r2": 0.9278562935498083,
             "mae": 1.2789067669834513,
             "rmse": 4.967844027432591,
-            "fit_s": 4.04,
+            "fit_s": 14.01,
             "median_ae": 0.37046764999012627,
             "size_bytes": 794212,
             "within_tolerance": false
@@ -2170,7 +2234,7 @@
             "r2": 0.9268399055331102,
             "mae": 1.3534510359371865,
             "rmse": 5.0027160738157725,
-            "fit_s": 1.57,
+            "fit_s": 7.08,
             "median_ae": 0.4293954610900741,
             "size_bytes": 181884,
             "within_tolerance": false
@@ -2180,7 +2244,7 @@
             "r2": 0.926648429332019,
             "mae": 1.3378073409799986,
             "rmse": 5.009258404951764,
-            "fit_s": 1.63,
+            "fit_s": 8.88,
             "median_ae": 0.4047586480248899,
             "size_bytes": 180418,
             "within_tolerance": false
@@ -2190,7 +2254,7 @@
             "r2": 0.9274951418310967,
             "mae": 1.2666245597082748,
             "rmse": 4.980263029204395,
-            "fit_s": 2.43,
+            "fit_s": 11.14,
             "median_ae": 0.3643865009758773,
             "size_bytes": 809093,
             "within_tolerance": true
@@ -2200,7 +2264,7 @@
             "r2": 0.9270737091225364,
             "mae": 1.3386873115168019,
             "rmse": 4.994715886226116,
-            "fit_s": 1.64,
+            "fit_s": 4.79,
             "median_ae": 0.4125189262592812,
             "size_bytes": 188486,
             "within_tolerance": false
@@ -2210,7 +2274,7 @@
             "r2": 0.9261715130521401,
             "mae": 1.2750530017645443,
             "rmse": 5.025516586251319,
-            "fit_s": 3.37,
+            "fit_s": 15.0,
             "median_ae": 0.3739952813939711,
             "size_bytes": 1275736,
             "within_tolerance": true
@@ -2220,7 +2284,7 @@
             "r2": 0.9274034751214837,
             "mae": 1.2759501117610124,
             "rmse": 4.9834102674274465,
-            "fit_s": 3.64,
+            "fit_s": 15.16,
             "median_ae": 0.37174638261007686,
             "size_bytes": 1043302,
             "within_tolerance": true
@@ -2230,7 +2294,7 @@
             "r2": 0.9274510467311962,
             "mae": 1.3007480795294561,
             "rmse": 4.98177721613139,
-            "fit_s": 4.14,
+            "fit_s": 23.43,
             "median_ae": 0.3747366157346832,
             "size_bytes": 1523205,
             "within_tolerance": false
@@ -2240,7 +2304,7 @@
             "r2": 0.9294995254920195,
             "mae": 1.264484862911903,
             "rmse": 4.910941340791378,
-            "fit_s": 7.2,
+            "fit_s": 59.63,
             "median_ae": 0.3543636214319408,
             "size_bytes": 47588143,
             "within_tolerance": true
@@ -2250,7 +2314,7 @@
             "r2": 0.7557151122830899,
             "mae": 4.512601577030721,
             "rmse": 9.141490812377423,
-            "fit_s": 0.04,
+            "fit_s": 1.64,
             "median_ae": 3.0064853839912846,
             "size_bytes": 919,
             "within_tolerance": false
@@ -2260,7 +2324,7 @@
             "r2": -0.11867891511826523,
             "mae": 11.0810084,
             "rmse": 19.562369284504708,
-            "fit_s": 0.0,
+            "fit_s": 0.1,
             "median_ae": 6.299999999999999,
             "size_bytes": 75,
             "within_tolerance": false
@@ -2271,7 +2335,7 @@
           "r2": 0.9274951418310967,
           "mae": 1.2666245597082748,
           "rmse": 4.980263029204395,
-          "fit_s": 2.43,
+          "fit_s": 11.14,
           "mae_ci95": [
             1.249388903441106,
             1.2838602159754435
@@ -2356,25 +2420,25 @@
             },
             {
               "n": 2717875,
-              "mae": 0.796147933558126,
+              "mae": 0.7961479335581282,
               "flag_rate": 0.0009661960171089546,
               "payment_type": 1
             },
             {
               "n": 434350,
-              "mae": 0.9114442792661837,
+              "mae": 0.9114442792661851,
               "flag_rate": 0.001977667779440543,
               "payment_type": 2
             },
             {
               "n": 17928,
-              "mae": 2.3357118455014145,
+              "mae": 2.335711845501412,
               "flag_rate": 0.01712405176260598,
               "payment_type": 3
             },
             {
               "n": 40465,
-              "mae": 1.8580400070452447,
+              "mae": 1.8580400070452434,
               "flag_rate": 0.010527616458667984,
               "payment_type": 4
             }
@@ -2403,25 +2467,25 @@
             },
             {
               "n": 2732785,
-              "mae": 0.8548410557928818,
+              "mae": 0.8548410557928885,
               "flag_rate": 0.0010816804102774277,
               "payment_type": 1
             },
             {
               "n": 473038,
-              "mae": 1.0137956478646177,
+              "mae": 1.0137956478646175,
               "flag_rate": 0.0024247523454775303,
               "payment_type": 2
             },
             {
               "n": 19261,
-              "mae": 2.8472225246599363,
+              "mae": 2.847222524659935,
               "flag_rate": 0.019988577955454025,
               "payment_type": 3
             },
             {
               "n": 46528,
-              "mae": 2.0019033901202308,
+              "mae": 2.00190339012023,
               "flag_rate": 0.01111158872077029,
               "payment_type": 4
             }
@@ -2444,31 +2508,31 @@
           "by_payment_type": [
             {
               "n": 455027,
-              "mae": 3.0815585258778584,
+              "mae": 3.081558525877858,
               "flag_rate": 0.010937812481457145,
               "payment_type": 0
             },
             {
               "n": 2443108,
-              "mae": 0.7381836505623487,
+              "mae": 0.7381836505623443,
               "flag_rate": 0.0010457990395840054,
               "payment_type": 1
             },
             {
               "n": 375752,
-              "mae": 0.9171962156388194,
+              "mae": 0.9171962156388147,
               "flag_rate": 0.0023552768847537736,
               "payment_type": 2
             },
             {
               "n": 15638,
-              "mae": 2.3929622661216765,
+              "mae": 2.392962266121676,
               "flag_rate": 0.020143240823634737,
               "payment_type": 3
             },
             {
               "n": 39061,
-              "mae": 1.8640577035668366,
+              "mae": 1.8640577035668373,
               "flag_rate": 0.011418038452676582,
               "payment_type": 4
             },
@@ -2497,31 +2561,31 @@
           "by_payment_type": [
             {
               "n": 678780,
-              "mae": 2.933545563573378,
+              "mae": 2.933545563573372,
               "flag_rate": 0.0015542591119361206,
               "payment_type": 0
             },
             {
               "n": 2332139,
-              "mae": 0.731848112448124,
+              "mae": 0.731848112448116,
               "flag_rate": 0.0009922221617150607,
               "payment_type": 1
             },
             {
               "n": 325376,
-              "mae": 0.8941565460839259,
+              "mae": 0.8941565460839201,
               "flag_rate": 0.002698416601101495,
               "payment_type": 2
             },
             {
               "n": 14646,
-              "mae": 1.9999399342736552,
+              "mae": 1.9999399342736544,
               "flag_rate": 0.01529427830124266,
               "payment_type": 3
             },
             {
               "n": 38214,
-              "mae": 1.6347760473008022,
+              "mae": 1.6347760473008,
               "flag_rate": 0.009211283822682787,
               "payment_type": 4
             }
@@ -2569,7 +2633,7 @@
             "rmse": 19.562369284504708,
             "median_ae": 6.299999999999999,
             "r2": -0.11867891511826523,
-            "fit_s": 0.0,
+            "fit_s": 0.1,
             "size_bytes": 75,
             "within_tolerance": false
           },
@@ -2579,7 +2643,7 @@
             "rmse": 9.141490812377423,
             "median_ae": 3.0064853839912846,
             "r2": 0.7557151122830899,
-            "fit_s": 0.04,
+            "fit_s": 1.64,
             "size_bytes": 919,
             "within_tolerance": false
           },
@@ -2589,7 +2653,7 @@
             "rmse": 4.910941340791378,
             "median_ae": 0.3543636214319408,
             "r2": 0.9294995254920195,
-            "fit_s": 7.2,
+            "fit_s": 59.63,
             "size_bytes": 47588143,
             "within_tolerance": true
           },
@@ -2599,7 +2663,7 @@
             "rmse": 5.005130706376393,
             "median_ae": 0.3932205989377433,
             "r2": 0.9267692649546315,
-            "fit_s": 1.83,
+            "fit_s": 8.1,
             "size_bytes": 292266,
             "within_tolerance": false
           },
@@ -2609,7 +2673,7 @@
             "rmse": 4.982034104657043,
             "median_ae": 0.3715538429890284,
             "r2": 0.9274435644720149,
-            "fit_s": 4.45,
+            "fit_s": 14.01,
             "size_bytes": 1070948,
             "within_tolerance": true
           },
@@ -2619,7 +2683,7 @@
             "rmse": 5.05152531104415,
             "median_ae": 0.40044991595330615,
             "r2": 0.9254053615274954,
-            "fit_s": 0.92,
+            "fit_s": 5.8,
             "size_bytes": 182586,
             "within_tolerance": false
           },
@@ -2629,7 +2693,7 @@
             "rmse": 4.967844027432591,
             "median_ae": 0.37046764999012627,
             "r2": 0.9278562935498083,
-            "fit_s": 4.04,
+            "fit_s": 14.01,
             "size_bytes": 794212,
             "within_tolerance": false
           },
@@ -2639,7 +2703,7 @@
             "rmse": 5.0027160738157725,
             "median_ae": 0.4293954610900741,
             "r2": 0.9268399055331102,
-            "fit_s": 1.57,
+            "fit_s": 7.08,
             "size_bytes": 181884,
             "within_tolerance": false
           },
@@ -2649,7 +2713,7 @@
             "rmse": 5.009258404951764,
             "median_ae": 0.4047586480248899,
             "r2": 0.926648429332019,
-            "fit_s": 1.63,
+            "fit_s": 8.88,
             "size_bytes": 180418,
             "within_tolerance": false
           },
@@ -2659,7 +2723,7 @@
             "rmse": 4.980263029204395,
             "median_ae": 0.3643865009758773,
             "r2": 0.9274951418310967,
-            "fit_s": 2.43,
+            "fit_s": 11.14,
             "size_bytes": 809093,
             "within_tolerance": true
           },
@@ -2669,7 +2733,7 @@
             "rmse": 4.994715886226116,
             "median_ae": 0.4125189262592812,
             "r2": 0.9270737091225364,
-            "fit_s": 1.64,
+            "fit_s": 4.79,
             "size_bytes": 188486,
             "within_tolerance": false
           },
@@ -2679,7 +2743,7 @@
             "rmse": 5.025516586251319,
             "median_ae": 0.3739952813939711,
             "r2": 0.9261715130521401,
-            "fit_s": 3.37,
+            "fit_s": 15.0,
             "size_bytes": 1275736,
             "within_tolerance": true
           },
@@ -2689,7 +2753,7 @@
             "rmse": 4.9834102674274465,
             "median_ae": 0.37174638261007686,
             "r2": 0.9274034751214837,
-            "fit_s": 3.64,
+            "fit_s": 15.16,
             "size_bytes": 1043302,
             "within_tolerance": true
           },
@@ -2699,7 +2763,7 @@
             "rmse": 4.98177721613139,
             "median_ae": 0.3747366157346832,
             "r2": 0.9274510467311962,
-            "fit_s": 4.14,
+            "fit_s": 23.43,
             "size_bytes": 1523205,
             "within_tolerance": false
           }
@@ -2711,7 +2775,7 @@
           "rmse": 4.980263029204395,
           "median_ae": 0.3643865009758773,
           "r2": 0.9274951418310967,
-          "fit_s": 2.43,
+          "fit_s": 11.14,
           "size_bytes": 809093,
           "within_tolerance": true,
           "mae_ci95": [
@@ -2733,7 +2797,7 @@
           {
             "payment_type": 2,
             "n": 39394,
-            "mae": 0.9923577469059992
+            "mae": 0.9923577469059994
           },
           {
             "payment_type": 3,
@@ -2854,7 +2918,7 @@
             "r2": 0.8904685927674508,
             "mae": 0.7393649919952671,
             "rmse": 1.4584107154941122,
-            "fit_s": 4.35,
+            "fit_s": 16.58,
             "median_ae": 0.3966266294979911,
             "size_bytes": 1081097,
             "within_tolerance": false
@@ -2864,7 +2928,7 @@
             "r2": 0.8918924949828475,
             "mae": 0.7318291466757326,
             "rmse": 1.4489000757510588,
-            "fit_s": 6.79,
+            "fit_s": 34.42,
             "median_ae": 0.39159759986018483,
             "size_bytes": 2358515,
             "within_tolerance": true
@@ -2874,7 +2938,7 @@
             "r2": 0.8869636117870142,
             "mae": 0.7425116111500041,
             "rmse": 1.481561381148293,
-            "fit_s": 3.43,
+            "fit_s": 15.85,
             "median_ae": 0.3916455870584836,
             "size_bytes": 1278979,
             "within_tolerance": false
@@ -2884,7 +2948,7 @@
             "r2": 0.8916684453249796,
             "mae": 0.7343492625311708,
             "rmse": 1.4504007002729606,
-            "fit_s": 6.42,
+            "fit_s": 26.12,
             "median_ae": 0.3914188263171132,
             "size_bytes": 2040792,
             "within_tolerance": true
@@ -2894,7 +2958,7 @@
             "r2": 0.8909827313863927,
             "mae": 0.740948390002017,
             "rmse": 1.4549838113842237,
-            "fit_s": 4.85,
+            "fit_s": 17.32,
             "median_ae": 0.3980599046426411,
             "size_bytes": 677237,
             "within_tolerance": false
@@ -2904,7 +2968,7 @@
             "r2": 0.8912444529301604,
             "mae": 0.7396122182684425,
             "rmse": 1.4532362468048348,
-            "fit_s": 6.87,
+            "fit_s": 20.11,
             "median_ae": 0.3966611372426041,
             "size_bytes": 930617,
             "within_tolerance": false
@@ -2914,7 +2978,7 @@
             "r2": 0.8907320083488028,
             "mae": 0.733765480777458,
             "rmse": 1.4566559705817612,
-            "fit_s": 5.0,
+            "fit_s": 25.62,
             "median_ae": 0.39004310921560004,
             "size_bytes": 2006490,
             "within_tolerance": true
@@ -2924,7 +2988,7 @@
             "r2": 0.8892319344529984,
             "mae": 0.7496709979739298,
             "rmse": 1.4666206599435045,
-            "fit_s": 3.09,
+            "fit_s": 9.6,
             "median_ae": 0.4030835394044554,
             "size_bytes": 420826,
             "within_tolerance": false
@@ -2934,7 +2998,7 @@
             "r2": 0.8902793355765724,
             "mae": 0.7331768024217138,
             "rmse": 1.4596701514628123,
-            "fit_s": 8.54,
+            "fit_s": 45.64,
             "median_ae": 0.39040240602264165,
             "size_bytes": 3858319,
             "within_tolerance": true
@@ -2944,7 +3008,7 @@
             "r2": 0.8913468653433743,
             "mae": 0.7347884795294578,
             "rmse": 1.4525518473016708,
-            "fit_s": 8.81,
+            "fit_s": 46.75,
             "median_ae": 0.39361989361239547,
             "size_bytes": 2948039,
             "within_tolerance": true
@@ -2954,7 +3018,7 @@
             "r2": 0.8913383481932393,
             "mae": 0.7356082888498132,
             "rmse": 1.452608777825411,
-            "fit_s": 3.43,
+            "fit_s": 18.79,
             "median_ae": 0.3906397449576672,
             "size_bytes": 1475938,
             "within_tolerance": true
@@ -2964,7 +3028,7 @@
             "r2": 0.8664486603163731,
             "mae": 0.7894199604359595,
             "rmse": 1.6104032462047388,
-            "fit_s": 6.55,
+            "fit_s": 28.45,
             "median_ae": 0.37939507640912135,
             "size_bytes": 47369758,
             "within_tolerance": false
@@ -2974,7 +3038,7 @@
             "r2": 0.1208722787124672,
             "mae": 2.5137892444703507,
             "rmse": 4.13177344650323,
-            "fit_s": 0.02,
+            "fit_s": 0.06,
             "median_ae": 1.804595979318956,
             "size_bytes": 895,
             "within_tolerance": false
@@ -2995,7 +3059,7 @@
           "r2": 0.8913383481932393,
           "mae": 0.7356082888498132,
           "rmse": 1.452608777825411,
-          "fit_s": 3.43,
+          "fit_s": 18.79,
           "mae_ci95": [
             0.7311259870566726,
             0.7400905906429538
@@ -3080,19 +3144,19 @@
             },
             {
               "n": 2717875,
-              "mae": 0.6383656431605699,
+              "mae": 0.6383656431605679,
               "flag_rate": 0.0020008278526422296,
               "payment_type": 1
             },
             {
               "n": 434350,
-              "mae": 0.6629382809979123,
+              "mae": 0.6629382809979133,
               "flag_rate": 0.0018763669851502244,
               "payment_type": 2
             },
             {
               "n": 17928,
-              "mae": 0.6967819096321052,
+              "mae": 0.696781909632105,
               "flag_rate": 0.008032128514056224,
               "payment_type": 3
             },
@@ -3127,25 +3191,25 @@
             },
             {
               "n": 2732785,
-              "mae": 0.6977433817931564,
+              "mae": 0.6977433817931539,
               "flag_rate": 0.0022855804609583264,
               "payment_type": 1
             },
             {
               "n": 473038,
-              "mae": 0.7423904045173504,
+              "mae": 0.7423904045173496,
               "flag_rate": 0.002261974725074941,
               "payment_type": 2
             },
             {
               "n": 19261,
-              "mae": 0.7490321549005822,
+              "mae": 0.7490321549005821,
               "flag_rate": 0.00789159441358185,
               "payment_type": 3
             },
             {
               "n": 46528,
-              "mae": 0.8434970391549909,
+              "mae": 0.8434970391549907,
               "flag_rate": 0.003094910591471802,
               "payment_type": 4
             }
@@ -3168,31 +3232,31 @@
           "by_payment_type": [
             {
               "n": 455027,
-              "mae": 0.9241305517885622,
+              "mae": 0.9241305517885645,
               "flag_rate": 0.022130554890149375,
               "payment_type": 0
             },
             {
               "n": 2443108,
-              "mae": 0.6166684160854744,
+              "mae": 0.6166684160854708,
               "flag_rate": 0.002113291757875624,
               "payment_type": 1
             },
             {
               "n": 375752,
-              "mae": 0.6571130546493795,
+              "mae": 0.6571130546493761,
               "flag_rate": 0.0019667227320147333,
               "payment_type": 2
             },
             {
               "n": 15638,
-              "mae": 0.6560480362246174,
+              "mae": 0.6560480362246182,
               "flag_rate": 0.008440977107046936,
               "payment_type": 3
             },
             {
               "n": 39061,
-              "mae": 0.7700066039658537,
+              "mae": 0.7700066039658542,
               "flag_rate": 0.0033025268170297738,
               "payment_type": 4
             },
@@ -3221,19 +3285,19 @@
           "by_payment_type": [
             {
               "n": 678780,
-              "mae": 0.9396917957003341,
+              "mae": 0.9396917957003345,
               "flag_rate": 0.02098323462683049,
               "payment_type": 0
             },
             {
               "n": 2332139,
-              "mae": 0.5979132134894599,
+              "mae": 0.5979132134894579,
               "flag_rate": 0.002176971441239137,
               "payment_type": 1
             },
             {
               "n": 325376,
-              "mae": 0.6279484199025304,
+              "mae": 0.6279484199025298,
               "flag_rate": 0.002240484854445319,
               "payment_type": 2
             },
@@ -3245,7 +3309,7 @@
             },
             {
               "n": 38214,
-              "mae": 0.7088418431708206,
+              "mae": 0.7088418431708208,
               "flag_rate": 0.00248599989532632,
               "payment_type": 4
             }
@@ -3300,7 +3364,7 @@
             "rmse": 4.13177344650323,
             "median_ae": 1.804595979318956,
             "r2": 0.1208722787124672,
-            "fit_s": 0.02,
+            "fit_s": 0.06,
             "size_bytes": 895,
             "within_tolerance": false
           },
@@ -3310,7 +3374,7 @@
             "rmse": 1.6104032462047388,
             "median_ae": 0.37939507640912135,
             "r2": 0.8664486603163731,
-            "fit_s": 6.55,
+            "fit_s": 28.45,
             "size_bytes": 47369758,
             "within_tolerance": false
           },
@@ -3320,7 +3384,7 @@
             "rmse": 1.4584107154941122,
             "median_ae": 0.3966266294979911,
             "r2": 0.8904685927674508,
-            "fit_s": 4.35,
+            "fit_s": 16.58,
             "size_bytes": 1081097,
             "within_tolerance": false
           },
@@ -3330,7 +3394,7 @@
             "rmse": 1.4489000757510588,
             "median_ae": 0.39159759986018483,
             "r2": 0.8918924949828475,
-            "fit_s": 6.79,
+            "fit_s": 34.42,
             "size_bytes": 2358515,
             "within_tolerance": true
           },
@@ -3340,7 +3404,7 @@
             "rmse": 1.481561381148293,
             "median_ae": 0.3916455870584836,
             "r2": 0.8869636117870142,
-            "fit_s": 3.43,
+            "fit_s": 15.85,
             "size_bytes": 1278979,
             "within_tolerance": false
           },
@@ -3350,7 +3414,7 @@
             "rmse": 1.4504007002729606,
             "median_ae": 0.3914188263171132,
             "r2": 0.8916684453249796,
-            "fit_s": 6.42,
+            "fit_s": 26.12,
             "size_bytes": 2040792,
             "within_tolerance": true
           },
@@ -3360,7 +3424,7 @@
             "rmse": 1.4549838113842237,
             "median_ae": 0.3980599046426411,
             "r2": 0.8909827313863927,
-            "fit_s": 4.85,
+            "fit_s": 17.32,
             "size_bytes": 677237,
             "within_tolerance": false
           },
@@ -3370,7 +3434,7 @@
             "rmse": 1.4532362468048348,
             "median_ae": 0.3966611372426041,
             "r2": 0.8912444529301604,
-            "fit_s": 6.87,
+            "fit_s": 20.11,
             "size_bytes": 930617,
             "within_tolerance": false
           },
@@ -3380,7 +3444,7 @@
             "rmse": 1.4566559705817612,
             "median_ae": 0.39004310921560004,
             "r2": 0.8907320083488028,
-            "fit_s": 5.0,
+            "fit_s": 25.62,
             "size_bytes": 2006490,
             "within_tolerance": true
           },
@@ -3390,7 +3454,7 @@
             "rmse": 1.4666206599435045,
             "median_ae": 0.4030835394044554,
             "r2": 0.8892319344529984,
-            "fit_s": 3.09,
+            "fit_s": 9.6,
             "size_bytes": 420826,
             "within_tolerance": false
           },
@@ -3400,7 +3464,7 @@
             "rmse": 1.4596701514628123,
             "median_ae": 0.39040240602264165,
             "r2": 0.8902793355765724,
-            "fit_s": 8.54,
+            "fit_s": 45.64,
             "size_bytes": 3858319,
             "within_tolerance": true
           },
@@ -3410,7 +3474,7 @@
             "rmse": 1.4525518473016708,
             "median_ae": 0.39361989361239547,
             "r2": 0.8913468653433743,
-            "fit_s": 8.81,
+            "fit_s": 46.75,
             "size_bytes": 2948039,
             "within_tolerance": true
           },
@@ -3420,7 +3484,7 @@
             "rmse": 1.452608777825411,
             "median_ae": 0.3906397449576672,
             "r2": 0.8913383481932393,
-            "fit_s": 3.43,
+            "fit_s": 18.79,
             "size_bytes": 1475938,
             "within_tolerance": true
           }
@@ -3432,7 +3496,7 @@
           "rmse": 1.452608777825411,
           "median_ae": 0.3906397449576672,
           "r2": 0.8913383481932393,
-          "fit_s": 3.43,
+          "fit_s": 18.79,
           "size_bytes": 1475938,
           "within_tolerance": true,
           "mae_ci95": [
@@ -3444,22 +3508,22 @@
           {
             "payment_type": 0,
             "n": 26361,
-            "mae": 1.0676640876028378
+            "mae": 1.0676640876028392
           },
           {
             "payment_type": 1,
             "n": 228764,
-            "mae": 0.693882656240399
+            "mae": 0.6938826562403944
           },
           {
             "payment_type": 2,
             "n": 39394,
-            "mae": 0.7428664573043338
+            "mae": 0.742866457304334
           },
           {
             "payment_type": 3,
             "n": 1569,
-            "mae": 0.7482381178417518
+            "mae": 0.7482381178417522
           },
           {
             "payment_type": 4,
@@ -3571,49 +3635,49 @@
     "partitions": [
       {
         "partition_id": "yellow_2024-11",
-        "ref_score": 95.15162892181236,
-        "rerun_score": 95.15162892181236,
+        "ref_score": 94.94322982671255,
+        "rerun_score": 94.94322982671255,
         "ref_q": 73800,
         "rerun_q": 73800,
-        "ref_s": 128.60243950001313,
-        "rerun_s": 80.90599729999667,
-        "rerun_raw_landing_s": 3.524,
+        "ref_s": 95.45091549999779,
+        "rerun_s": 82.66956000000937,
+        "rerun_raw_landing_s": 4.183,
         "raw_rows": 3646369,
         "rows_total": 3646369
       },
       {
         "partition_id": "yellow_2024-12",
-        "ref_score": 95.28944864082722,
-        "rerun_score": 95.28944864082722,
+        "ref_score": 95.05112078358486,
+        "rerun_score": 95.05112078358486,
         "ref_q": 80397,
         "rerun_q": 80397,
-        "ref_s": 130.07343240000773,
-        "rerun_s": 94.29550449998351,
-        "rerun_raw_landing_s": 3.182,
+        "ref_s": 86.05046809997293,
+        "rerun_s": 157.8733892000164,
+        "rerun_raw_landing_s": 10.404,
         "raw_rows": 3668371,
         "rows_total": 3668371
       },
       {
         "partition_id": "yellow_2025-01",
-        "ref_score": 92.19914762378045,
-        "rerun_score": 92.19914762378045,
+        "ref_score": 91.99352790293351,
+        "rerun_score": 91.99352790293351,
         "ref_q": 146639,
         "rerun_q": 146639,
-        "ref_s": 178.54021239999565,
-        "rerun_s": 95.38550229999237,
-        "rerun_raw_landing_s": 5.277,
+        "ref_s": 108.30380769999465,
+        "rerun_s": 139.32257990000653,
+        "rerun_raw_landing_s": 4.818,
         "raw_rows": 3475226,
         "rows_total": 3475226
       },
       {
         "partition_id": "yellow_2025-02",
-        "ref_score": 89.73058464985606,
-        "rerun_score": 89.73058464985606,
+        "ref_score": 89.53909149379896,
+        "rerun_score": 89.53909149379896,
         "ref_q": 188388,
         "rerun_q": 188388,
-        "ref_s": 221.48504289999255,
-        "rerun_s": 107.29014259998803,
-        "rerun_raw_landing_s": 3.097,
+        "ref_s": 203.0118763000064,
+        "rerun_s": 162.59483960000216,
+        "rerun_raw_landing_s": 4.339,
         "raw_rows": 3577543,
         "rows_total": 3577543
       }
@@ -3625,7 +3689,7 @@
     {
       "provider": "deterministic_analyzer",
       "status": "proposed",
-      "n": 5
+      "n": 10
     }
   ]
 }
