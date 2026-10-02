@@ -1,0 +1,233 @@
+# Deterministic data-quality rules for TLC Yellow Taxi trip records.
+#
+# Every rule is explicit and versioned. Bump `rule_version` whenever the logic of a
+# rule changes; bump `ruleset_version` whenever any rule is added/removed/changed.
+#
+# severity:
+#   critical -> the record is QUARANTINED (never deleted) and excluded from fct_clean_trips
+#   warning  -> the record stays in the curated layer; the failure is logged as a quality event
+#
+# Every threshold below is grounded in either the TLC data dictionary
+# (https://www.nyc.gov/assets/tlc/downloads/pdf/data_dictionary_trip_records_yellow.pdf),
+# TLC rules, or a quantile measured on the real partitions (see docs in README "Deterministic Rules").
+
+ruleset_version: "1.3.0"
+
+rules:
+  # ---------------- completeness ----------------
+  - rule_id: DQ001_mandatory_fields_not_null
+    rule_version: 1
+    severity: critical
+    dimension: completeness
+    type: not_null
+    columns: [VendorID, tpep_pickup_datetime, tpep_dropoff_datetime, PULocationID, DOLocationID,
+              trip_distance, fare_amount, total_amount, payment_type]
+    description: Mandatory trip attributes must be present.
+
+  - rule_id: DQ002_passenger_count_not_null
+    rule_version: 1
+    severity: warning
+    dimension: completeness
+    type: not_null
+    columns: [passenger_count]
+    description: >
+      passenger_count should be populated. Measured: nulls co-occur 1:1 with payment_type=0
+      (Flex Fare) and with null RatecodeID/store_and_fwd_flag/congestion_surcharge/Airport_fee,
+      so this is a systematic reporting gap, not random loss -> warning, not quarantine.
+
+  # ---------------- validity: temporal ----------------
+  - rule_id: DQ010_pickup_before_dropoff
+    rule_version: 1
+    severity: critical
+    dimension: consistency
+    type: column_compare
+    left: tpep_pickup_datetime
+    op: "<"
+    right: tpep_dropoff_datetime
+    description: Pickup must happen strictly before drop-off (zero or negative duration is impossible).
+
+  - rule_id: DQ011_trip_duration_max
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: duration_max
+    max_seconds: 86400
+    description: A single metered trip longer than 24h is not physically plausible (meter left running).
+
+  - rule_id: DQ012_pickup_in_partition_window
+    rule_version: 1
+    severity: critical
+    dimension: consistency
+    type: partition_window
+    column: tpep_pickup_datetime
+    description: >
+      Pickup must fall inside the calendar month of the file it was published in
+      (measured: records dated 2002/2008/2009 appear in 2024 files).
+
+  # ---------------- validity: numeric ----------------
+  - rule_id: DQ020_trip_distance_range
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: range
+    column: trip_distance
+    min: 0
+    max: 200
+    description: >
+      Distance in miles must be >= 0 and <= 200. p99.99 measured ~57 mi; 200 mi already
+      exceeds any trip to neighbouring states; values like 398,608 mi are odometer/telemetry errors.
+
+  - rule_id: DQ021_fare_amount_range
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: range
+    column: fare_amount
+    min: 0
+    max: 1000
+    description: >
+      Metered fare must be non-negative and <= $1,000 (p99.99 measured ~$300). Negative
+      fares are reversal/void/dispute accounting entries, not trips.
+
+  - rule_id: DQ022_total_amount_range
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: range
+    column: total_amount
+    min: 0
+    max: 1500
+    description: Total charged must be non-negative and <= $1,500.
+
+  - rule_id: DQ023_tip_amount_non_negative
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: range
+    column: tip_amount
+    min: 0
+    description: Tips cannot be negative.
+
+  - rule_id: DQ024_passenger_count_max
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: range
+    column: passenger_count
+    max: 6
+    allow_null: true
+    description: >
+      TLC rule: max 4 (or 5 in a 5-seat cab) passengers plus one child under 7 -> > 6 is impossible.
+
+  - rule_id: DQ025_passenger_count_zero
+    rule_version: 1
+    severity: warning
+    dimension: validity
+    type: range
+    column: passenger_count
+    min: 1
+    allow_null: true
+    description: passenger_count = 0 is a driver-entered value; trip is otherwise usable.
+
+  - rule_id: DQ026_implied_speed_plausible
+    rule_version: 1
+    severity: warning
+    dimension: consistency
+    type: implied_speed
+    max_mph: 90
+    description: distance / duration implying > 90 mph average speed signals distance or clock errors.
+
+  # ---------------- validity: domains (TLC data dictionary) ----------------
+  - rule_id: DQ030_vendor_id_accepted
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: accepted_values
+    column: VendorID
+    values: [1, 2, 6, 7]
+    description: 1=Creative Mobile Technologies, 2=Curb Mobility, 6=Myle Technologies, 7=Helix.
+
+  - rule_id: DQ031_payment_type_accepted
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: accepted_values
+    column: payment_type
+    values: [0, 1, 2, 3, 4, 5, 6]
+    description: 0=Flex Fare, 1=Credit card, 2=Cash, 3=No charge, 4=Dispute, 5=Unknown, 6=Voided trip.
+
+  - rule_id: DQ032_ratecode_accepted
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: accepted_values
+    column: RatecodeID
+    values: [1, 2, 3, 4, 5, 6, 99]
+    allow_null: true
+    description: 1..6 per dictionary, 99 = Null/unknown.
+
+  - rule_id: DQ033_store_and_fwd_flag_accepted
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: accepted_values
+    column: store_and_fwd_flag
+    values: ["Y", "N"]
+    allow_null: true
+    description: Store-and-forward flag must be Y or N.
+
+  - rule_id: DQ034_location_ids_known
+    rule_version: 1
+    severity: critical
+    dimension: validity
+    type: zone_lookup
+    columns: [PULocationID, DOLocationID]
+    description: >
+      Pickup/drop-off zone must exist in the official TLC taxi zone lookup. Replaces the
+      "plausible coordinates" check: lat/long columns were removed from TLC files after June 2016.
+
+  - rule_id: DQ035_location_unknown
+    rule_version: 1
+    severity: warning
+    dimension: validity
+    type: accepted_values_negated
+    columns: [PULocationID, DOLocationID]
+    values: [264]
+    description: Zone 264 = "Unknown" in the lookup (265 = Outside of NYC, which is legitimate).
+
+  # ---------------- consistency: monetary reconciliation ----------------
+  - rule_id: DQ040_total_amount_reconciles
+    rule_version: 3
+    severity: warning
+    dimension: consistency
+    type: total_reconciliation
+    tolerance: 0.01
+    skip_payment_types: [0]
+    embedded_surcharge_vendors: [1]
+    description: >
+      total_amount must equal the sum of its components (+/- 1 cent).
+      v1 (naive sum) flagged ~28% of Nov-2024 rows; measured that VendorID=1 embeds
+      congestion_surcharge / Airport_fee inside `extra` -> v2 accepted those residuals.
+      v2 flagged 15% of Jan-2025 rows: VendorID=1 also embeds the new cbd_congestion_fee -> v3
+      accepts residuals equal to any combination of surcharges, ONLY for vendors listed in
+      embedded_surcharge_vendors. Flex Fare (payment_type=0) rows are out of scope: their
+      components are not populated by design.
+
+  # ---------------- uniqueness ----------------
+  - rule_id: DQ050_exact_duplicate
+    rule_version: 1
+    severity: critical
+    dimension: uniqueness
+    type: exact_duplicate
+    description: Fully identical rows within a partition; the first occurrence is kept, the copies are quarantined.
+
+  - rule_id: DQ051_business_key_duplicate
+    rule_version: 1
+    severity: warning
+    dimension: uniqueness
+    type: business_key_duplicate
+    key: [VendorID, tpep_pickup_datetime, tpep_dropoff_datetime, PULocationID, DOLocationID, trip_distance]
+    exclude_reversal_pairs: true
+    description: >
+      Same vendor/timestamps/zones/distance recorded more than once. Groups that contain a
+      negative-amount record are charge+reversal pairs (measured: >99% of key collisions) and are excluded.

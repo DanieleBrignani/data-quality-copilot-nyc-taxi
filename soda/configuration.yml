@@ -1,0 +1,8 @@
+data_source dqc:
+  type: postgres
+  host: ${DQC_PG_HOST}
+  port: ${DQC_PG_PORT}
+  username: ${DQC_PG_USER}
+  password: ${DQC_PG_PASSWORD}
+  database: ${DQC_PG_DB}
+  schema: analytics

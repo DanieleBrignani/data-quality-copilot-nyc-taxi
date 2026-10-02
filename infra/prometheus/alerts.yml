@@ -1,0 +1,28 @@
+groups:
+  - name: data-quality-slo
+    rules:
+      - alert: ValidRecordRateBelowSLO
+        expr: dq_valid_record_rate < 95
+        labels: {severity: critical}
+        annotations:
+          summary: "Partition {{ $labels.partition }} valid record rate {{ $value | printf \"%.2f\" }}% < 95%"
+      - alert: QualityScoreBelowSLO
+        expr: dq_quality_score < 92
+        labels: {severity: warning}
+        annotations:
+          summary: "Partition {{ $labels.partition }} quality score {{ $value | printf \"%.2f\" }} < 92"
+      - alert: UnexpectedSchemaChange
+        expr: dq_schema_failures_total > 0
+        labels: {severity: critical}
+        annotations:
+          summary: "Unexpected schema change in {{ $labels.partition }}"
+      - alert: DriftAlerts
+        expr: dq_drift_alerts_total > 0
+        labels: {severity: warning}
+        annotations:
+          summary: "{{ $value }} drift metrics above threshold in {{ $labels.partition }}"
+      - alert: SourceFreshness
+        expr: dq_source_lag_days > 75
+        labels: {severity: warning}
+        annotations:
+          summary: "TLC published {{ $labels.partition }} {{ $value | printf \"%.0f\" }} days after month end"

@@ -1,0 +1,1613 @@
+{
+  "generated_at": "2026-09-30T19:01:06+00:00",
+  "totals": {
+    "partitions": 4,
+    "records_processed": 14367509,
+    "quarantined_records": 489224,
+    "quarantined_pct": 3.405071818643023,
+    "warning_only_records": 1995424,
+    "warning_only_pct": 13.88844788612974,
+    "processing_s": 780.4202358999974,
+    "rows_per_sec": 18409.964707579733,
+    "schema_changes_detected": 1,
+    "unexpected_schema_changes": 0,
+    "drift_alerts": 9,
+    "drift_warnings": 2
+  },
+  "partitions": [
+    {
+      "run_id": "7d215ac5-c2ac-493b-aad4-3410d3da4aed",
+      "partition_id": "yellow_2024-11",
+      "rows_total": 3646369,
+      "valid_rows": 3572569,
+      "quarantined_records": 73800,
+      "warning_only_records": 411958,
+      "valid_record_rate": 97.97606879610923,
+      "quality_score": 95.15162892181236,
+      "dimension_scores": {
+        "validity": 96.771,
+        "uniqueness": 100.0,
+        "consistency": 99.7863,
+        "completeness": 89.7522
+      },
+      "schema_status": "ok",
+      "unexpected_schema_changes": 0,
+      "source_lag_days": 47.8358912037037,
+      "data_age_days": 668.7735380960648,
+      "duration_s": 168.5873345,
+      "rows_per_sec": 21628.961694035206,
+      "stage_timings": {
+        "drift": null,
+        "rules": 15.2,
+        "anomaly": 58.363,
+        "profiling": 7.169,
+        "raw_landing": 41.672,
+        "persist_quality": 44.881,
+        "read_and_schema": 1.302
+      },
+      "computed_at": "2026-09-30 18:31:05.090225+00:00",
+      "year_month": "2024-11",
+      "ruleset_version": "1.3.0",
+      "code_version": "0.1.0"
+    },
+    {
+      "run_id": "7d215ac5-c2ac-493b-aad4-3410d3da4aed",
+      "partition_id": "yellow_2024-12",
+      "rows_total": 3668371,
+      "valid_rows": 3587974,
+      "quarantined_records": 80397,
+      "warning_only_records": 369614,
+      "valid_record_rate": 97.80837325341412,
+      "quality_score": 95.28944864082722,
+      "dimension_scores": {
+        "validity": 96.5412,
+        "uniqueness": 100.0,
+        "consistency": 99.7641,
+        "completeness": 91.1053
+      },
+      "schema_status": "ok",
+      "unexpected_schema_changes": 0,
+      "source_lag_days": 51.895266203703706,
+      "data_age_days": 637.7759889446991,
+      "duration_s": 211.48592369999824,
+      "rows_per_sec": 17345.698171400476,
+      "stage_timings": {
+        "drift": 8.729,
+        "rules": 16.086,
+        "anomaly": 41.427,
+        "profiling": 7.723,
+        "raw_landing": 95.904,
+        "persist_quality": 39.849,
+        "read_and_schema": 1.767
+      },
+      "computed_at": "2026-09-30 18:33:53.951082+00:00",
+      "year_month": "2024-12",
+      "ruleset_version": "1.3.0",
+      "code_version": "0.1.0"
+    },
+    {
+      "run_id": "7d215ac5-c2ac-493b-aad4-3410d3da4aed",
+      "partition_id": "yellow_2025-01",
+      "rows_total": 3475226,
+      "valid_rows": 3328587,
+      "quarantined_records": 146639,
+      "warning_only_records": 497833,
+      "valid_record_rate": 95.78044708459248,
+      "quality_score": 92.19914762378045,
+      "dimension_scores": {
+        "validity": 94.6918,
+        "uniqueness": 100.0,
+        "consistency": 99.0303,
+        "completeness": 84.4572
+      },
+      "schema_status": "additive_change",
+      "unexpected_schema_changes": 0,
+      "source_lag_days": 81.68886574074074,
+      "data_age_days": 606.7786325214005,
+      "duration_s": 228.30303889999777,
+      "rows_per_sec": 15221.987480956102,
+      "stage_timings": {
+        "drift": 7.595,
+        "rules": 12.177,
+        "anomaly": 40.978,
+        "profiling": 3.161,
+        "raw_landing": 127.28,
+        "persist_quality": 36.335,
+        "read_and_schema": 0.776
+      },
+      "computed_at": "2026-09-30 18:37:25.544925+00:00",
+      "year_month": "2025-01",
+      "ruleset_version": "1.3.0",
+      "code_version": "0.1.0"
+    },
+    {
+      "run_id": "7d215ac5-c2ac-493b-aad4-3410d3da4aed",
+      "partition_id": "yellow_2025-02",
+      "rows_total": 3577543,
+      "valid_rows": 3389155,
+      "quarantined_records": 188388,
+      "warning_only_records": 716019,
+      "valid_record_rate": 94.73415134353381,
+      "quality_score": 89.73058464985606,
+      "dimension_scores": {
+        "validity": 93.9034,
+        "uniqueness": 100.0,
+        "consistency": 99.7491,
+        "completeness": 77.4444
+      },
+      "schema_status": "additive_change",
+      "unexpected_schema_changes": 0,
+      "source_lag_days": 53.678449074074074,
+      "data_age_days": 578.7806244101041,
+      "duration_s": 172.04393880000134,
+      "rows_per_sec": 20794.356517022337,
+      "stage_timings": {
+        "drift": 4.09,
+        "rules": 8.873,
+        "anomaly": 23.126,
+        "profiling": 2.142,
+        "raw_landing": 100.981,
+        "persist_quality": 31.554,
+        "read_and_schema": 1.278
+      },
+      "computed_at": "2026-09-30 18:41:13.889574+00:00",
+      "year_month": "2025-02",
+      "ruleset_version": "1.3.0",
+      "code_version": "0.1.0"
+    }
+  ],
+  "rules": [
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ001_mandatory_fields_not_null",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ002_passenger_count_not_null",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 373674,
+      "failure_rate": 0.10247838329033622
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ010_pickup_before_dropoff",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 1861,
+      "failure_rate": 0.0005103707277019961
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ011_trip_duration_max",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 12,
+      "failure_rate": 3.2909450469768694e-06
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ012_pickup_in_partition_window",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 50,
+      "failure_rate": 1.371227102907029e-05
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ020_trip_distance_range",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 107,
+      "failure_rate": 2.9344260002210417e-05
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ021_fare_amount_range",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 71473,
+      "failure_rate": 0.019601142945214815
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ022_total_amount_range",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 60565,
+      "failure_rate": 0.01660967389751284
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ023_tip_amount_non_negative",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 117,
+      "failure_rate": 3.208671420802448e-05
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ024_passenger_count_max",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 21,
+      "failure_rate": 5.759153832209521e-06
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ025_passenger_count_zero",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 28370,
+      "failure_rate": 0.007780342581894482
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ026_implied_speed_plausible",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 955,
+      "failure_rate": 0.0002619043766552425
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ030_vendor_id_accepted",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ031_payment_type_accepted",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ032_ratecode_accepted",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ033_store_and_fwd_flag_accepted",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ034_location_ids_known",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ035_location_unknown",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 18123,
+      "failure_rate": 0.004970149757196817
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ040_total_amount_reconciles",
+      "severity": "warning",
+      "records_checked": 3272695,
+      "failed_rows": 4925,
+      "failure_rate": 0.001504875950860071
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ050_exact_duplicate",
+      "severity": "critical",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "rule_id": "DQ051_business_key_duplicate",
+      "severity": "warning",
+      "records_checked": 3646369,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ001_mandatory_fields_not_null",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ002_passenger_count_not_null",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 326291,
+      "failure_rate": 0.08894711031136164
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ010_pickup_before_dropoff",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 1223,
+      "failure_rate": 0.00033339048858471514
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ011_trip_duration_max",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 18,
+      "failure_rate": 4.906810134525652e-06
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ012_pickup_in_partition_window",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 34,
+      "failure_rate": 9.268419142992898e-06
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ020_trip_distance_range",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 91,
+      "failure_rate": 2.480665123565746e-05
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ021_fare_amount_range",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 78450,
+      "failure_rate": 0.021385514169640966
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ022_total_amount_range",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 70500,
+      "failure_rate": 0.0192183396935588
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ023_tip_amount_non_negative",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 140,
+      "failure_rate": 3.8164078824088406e-05
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ024_passenger_count_max",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 18,
+      "failure_rate": 4.906810134525652e-06
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ025_passenger_count_zero",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 30397,
+      "failure_rate": 0.00828623931439868
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ026_implied_speed_plausible",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 1005,
+      "failure_rate": 0.0002739635658443489
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ030_vendor_id_accepted",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ031_payment_type_accepted",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ032_ratecode_accepted",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ033_store_and_fwd_flag_accepted",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ034_location_ids_known",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ035_location_unknown",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 18322,
+      "failure_rate": 0.004994587515821055
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ040_total_amount_reconciles",
+      "severity": "warning",
+      "records_checked": 3342080,
+      "failed_rows": 6519,
+      "failure_rate": 0.001950581673688242
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ050_exact_duplicate",
+      "severity": "critical",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "rule_id": "DQ051_business_key_duplicate",
+      "severity": "warning",
+      "records_checked": 3668371,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ001_mandatory_fields_not_null",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ002_passenger_count_not_null",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 540149,
+      "failure_rate": 0.1554284527107014
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ010_pickup_before_dropoff",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 2051,
+      "failure_rate": 0.0005901774445748277
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ011_trip_duration_max",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 20,
+      "failure_rate": 5.755021400047076e-06
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ012_pickup_in_partition_window",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 22,
+      "failure_rate": 6.330523540051783e-06
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ020_trip_distance_range",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 122,
+      "failure_rate": 3.510563054028716e-05
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ021_fare_amount_range",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 144121,
+      "failure_rate": 0.041470971959809234
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ022_total_amount_range",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 63039,
+      "failure_rate": 0.01813953970187838
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ023_tip_amount_non_negative",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 124,
+      "failure_rate": 3.568113268029187e-05
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ024_passenger_count_max",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 18,
+      "failure_rate": 5.179519260042369e-06
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ025_passenger_count_zero",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 24656,
+      "failure_rate": 0.007094790381978035
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ026_implied_speed_plausible",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 933,
+      "failure_rate": 0.0002684717483121961
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ030_vendor_id_accepted",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ031_payment_type_accepted",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ032_ratecode_accepted",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ033_store_and_fwd_flag_accepted",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ034_location_ids_known",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ035_location_unknown",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 16015,
+      "failure_rate": 0.004608333386087697
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ040_total_amount_reconciles",
+      "severity": "warning",
+      "records_checked": 2935077,
+      "failed_rows": 31255,
+      "failure_rate": 0.010648783660530882
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ050_exact_duplicate",
+      "severity": "critical",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "rule_id": "DQ051_business_key_duplicate",
+      "severity": "warning",
+      "records_checked": 3475226,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ001_mandatory_fields_not_null",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ002_passenger_count_not_null",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 806937,
+      "failure_rate": 0.22555619876546557
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ010_pickup_before_dropoff",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 5164,
+      "failure_rate": 0.0014434487579883736
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ011_trip_duration_max",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 16,
+      "failure_rate": 4.4723431695999184e-06
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ012_pickup_in_partition_window",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 31,
+      "failure_rate": 8.665164891099841e-06
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ020_trip_distance_range",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 151,
+      "failure_rate": 4.220773866309923e-05
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ021_fare_amount_range",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 182661,
+      "failure_rate": 0.05105766723139316
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ022_total_amount_range",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 55183,
+      "failure_rate": 0.015424832070502019
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ023_tip_amount_non_negative",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 105,
+      "failure_rate": 2.9349752050499464e-05
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ024_passenger_count_max",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 16,
+      "failure_rate": 4.4723431695999184e-06
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ025_passenger_count_zero",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 21751,
+      "failure_rate": 0.006079871017622989
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ026_implied_speed_plausible",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 798,
+      "failure_rate": 0.00022305811558379592
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ030_vendor_id_accepted",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ031_payment_type_accepted",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ032_ratecode_accepted",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ033_store_and_fwd_flag_accepted",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ034_location_ids_known",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ035_location_unknown",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 13771,
+      "failure_rate": 0.0038492898617850297
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ040_total_amount_reconciles",
+      "severity": "warning",
+      "records_checked": 2770606,
+      "failed_rows": 4890,
+      "failure_rate": 0.0017649568361578659
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ050_exact_duplicate",
+      "severity": "critical",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "rule_id": "DQ051_business_key_duplicate",
+      "severity": "warning",
+      "records_checked": 3577543,
+      "failed_rows": 0,
+      "failure_rate": 0.0
+    }
+  ],
+  "schema_events": [
+    {
+      "partition_id": "yellow_2025-01",
+      "check_name": "optional_column_present",
+      "column_name": "cbd_congestion_fee",
+      "severity": "info",
+      "detail": "documented additive column"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "check_name": "column_added_vs_previous",
+      "column_name": "cbd_congestion_fee",
+      "severity": "info",
+      "detail": "new column (double)"
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "check_name": "optional_column_present",
+      "column_name": "cbd_congestion_fee",
+      "severity": "info",
+      "detail": "documented additive column"
+    }
+  ],
+  "drift": [
+    {
+      "partition_id": "yellow_2024-12",
+      "reference_partition_id": "yellow_2024-11",
+      "column_name": "VendorID",
+      "metric": "cardinality_change_pct",
+      "value": 33.333333333333336,
+      "threshold": 20.0,
+      "status": "warn"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "passenger_count",
+      "metric": "null_rate_change_pp",
+      "value": 6.6481342399339765,
+      "threshold": 2.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "payment_type",
+      "metric": "cardinality_change_pct",
+      "value": 20.0,
+      "threshold": 20.0,
+      "status": "warn"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "RatecodeID",
+      "metric": "null_rate_change_pp",
+      "value": 6.6481342399339765,
+      "threshold": 2.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "store_and_fwd_flag",
+      "metric": "null_rate_change_pp",
+      "value": 6.6481342399339765,
+      "threshold": 2.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "trip_duration_min",
+      "metric": "ks_statistic",
+      "value": 0.1081200000000001,
+      "threshold": 0.1,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "trip_duration_min",
+      "metric": "mean_shift_pct",
+      "value": -19.661998232691154,
+      "threshold": 15.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "reference_partition_id": "yellow_2024-12",
+      "column_name": "trip_duration_min",
+      "metric": "median_shift_pct",
+      "value": -15.11487303506651,
+      "threshold": 15.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "reference_partition_id": "yellow_2025-01",
+      "column_name": "passenger_count",
+      "metric": "null_rate_change_pp",
+      "value": 7.012774605476416,
+      "threshold": 2.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "reference_partition_id": "yellow_2025-01",
+      "column_name": "RatecodeID",
+      "metric": "null_rate_change_pp",
+      "value": 7.012774605476416,
+      "threshold": 2.0,
+      "status": "alert"
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "reference_partition_id": "yellow_2025-01",
+      "column_name": "store_and_fwd_flag",
+      "metric": "null_rate_change_pp",
+      "value": 7.012774605476416,
+      "threshold": 2.0,
+      "status": "alert"
+    }
+  ],
+  "anomalies": [
+    {
+      "partition_id": "yellow_2024-11",
+      "method": "iqr",
+      "records_scored": 3572569,
+      "anomalies": 311070,
+      "anomaly_rate": 0.08707179623402655,
+      "runtime_s": 2.889
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "method": "iqr_log",
+      "records_scored": 3572569,
+      "anomalies": 4849,
+      "anomaly_rate": 0.0013572865912456834,
+      "runtime_s": 3.489
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "method": "isolation_forest",
+      "records_scored": 3572569,
+      "anomalies": 33683,
+      "anomaly_rate": 0.009428229377795083,
+      "runtime_s": 42.263
+    },
+    {
+      "partition_id": "yellow_2024-11",
+      "method": "zscore",
+      "records_scored": 3572569,
+      "anomalies": 62322,
+      "anomaly_rate": 0.017444589593650955,
+      "runtime_s": 0.94
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "method": "iqr",
+      "records_scored": 3587974,
+      "anomalies": 316460,
+      "anomaly_rate": 0.08820019320095408,
+      "runtime_s": 3.265
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "method": "iqr_log",
+      "records_scored": 3587974,
+      "anomalies": 4301,
+      "anomaly_rate": 0.001198726635142841,
+      "runtime_s": 2.858
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "method": "isolation_forest",
+      "records_scored": 3587974,
+      "anomalies": 35614,
+      "anomaly_rate": 0.009925935918153253,
+      "runtime_s": 28.216
+    },
+    {
+      "partition_id": "yellow_2024-12",
+      "method": "zscore",
+      "records_scored": 3587974,
+      "anomalies": 60619,
+      "anomaly_rate": 0.016895049964130174,
+      "runtime_s": 0.897
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "method": "iqr",
+      "records_scored": 3328587,
+      "anomalies": 295939,
+      "anomaly_rate": 0.0889082965234197,
+      "runtime_s": 1.871
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "method": "iqr_log",
+      "records_scored": 3328587,
+      "anomalies": 6828,
+      "anomaly_rate": 0.0020513208757950447,
+      "runtime_s": 2.546
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "method": "isolation_forest",
+      "records_scored": 3328587,
+      "anomalies": 33251,
+      "anomaly_rate": 0.00998952408334227,
+      "runtime_s": 32.665
+    },
+    {
+      "partition_id": "yellow_2025-01",
+      "method": "zscore",
+      "records_scored": 3328587,
+      "anomalies": 62158,
+      "anomaly_rate": 0.018673989894210367,
+      "runtime_s": 0.769
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "method": "iqr",
+      "records_scored": 3389155,
+      "anomalies": 267919,
+      "anomaly_rate": 0.07905185805901471,
+      "runtime_s": 1.588
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "method": "iqr_log",
+      "records_scored": 3389155,
+      "anomalies": 5974,
+      "anomaly_rate": 0.0017626812583077492,
+      "runtime_s": 1.522
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "method": "isolation_forest",
+      "records_scored": 3389155,
+      "anomalies": 33890,
+      "anomaly_rate": 0.009999542658863344,
+      "runtime_s": 17.558
+    },
+    {
+      "partition_id": "yellow_2025-02",
+      "method": "zscore",
+      "records_scored": 3389155,
+      "anomalies": 70776,
+      "anomaly_rate": 0.020883081476061143,
+      "runtime_s": 0.412
+    }
+  ],
+  "quarantine_by_rule": [
+    {
+      "failed_rule": "DQ021_fare_amount_range",
+      "rows": 476705,
+      "records": 476705
+    },
+    {
+      "failed_rule": "DQ022_total_amount_range",
+      "rows": 249287,
+      "records": 249287
+    },
+    {
+      "failed_rule": "DQ010_pickup_before_dropoff",
+      "rows": 10299,
+      "records": 10299
+    },
+    {
+      "failed_rule": "DQ023_tip_amount_non_negative",
+      "rows": 486,
+      "records": 486
+    },
+    {
+      "failed_rule": "DQ020_trip_distance_range",
+      "rows": 471,
+      "records": 471
+    },
+    {
+      "failed_rule": "DQ012_pickup_in_partition_window",
+      "rows": 137,
+      "records": 137
+    },
+    {
+      "failed_rule": "DQ024_passenger_count_max",
+      "rows": 73,
+      "records": 73
+    },
+    {
+      "failed_rule": "DQ011_trip_duration_max",
+      "rows": 66,
+      "records": 66
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "7d215ac5-c2ac-493b-aad4-3410d3da4aed",
+      "status": "success",
+      "trigger": "reproduce",
+      "rows_processed": 14367509,
+      "duration_s": 781.3661198000009,
+      "started_at": "2026-09-30 18:31:05.047345+00:00"
+    },
+    {
+      "run_id": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449",
+      "status": "success",
+      "trigger": "rerun",
+      "rows_processed": 14367509,
+      "duration_s": 441.7269505999975,
+      "started_at": "2026-09-30 18:44:18.622808+00:00"
+    }
+  ],
+  "benchmark": {
+    "partition": "yellow_2025-01",
+    "clean_real_records": 200000,
+    "injected_error_rows": 4363,
+    "total_rows": 200363,
+    "error_types": {
+      "negative_fare": "rule_detectable",
+      "dropoff_before_pickup": "rule_detectable",
+      "null_mandatory": "rule_detectable",
+      "passenger_overflow": "rule_detectable",
+      "distance_unit_error": "rule_detectable",
+      "invalid_payment_type": "rule_detectable",
+      "stale_timestamp": "rule_detectable",
+      "fare_x10": "plausible",
+      "distance_x5": "plausible",
+      "tip_spike": "plausible",
+      "swapped_zones": "plausible",
+      "fare_over_cap": "rule_detectable",
+      "exact_duplicate": "rule_detectable"
+    },
+    "label_counts": {
+      "clean": 196000,
+      "distance_unit_error": 364,
+      "distance_x5": 363,
+      "dropoff_before_pickup": 364,
+      "exact_duplicate": 363,
+      "fare_over_cap": 2,
+      "fare_x10": 361,
+      "invalid_payment_type": 364,
+      "negative_fare": 364,
+      "null_mandatory": 364,
+      "passenger_overflow": 364,
+      "stale_timestamp": 364,
+      "swapped_zones": 363,
+      "tip_spike": 363
+    },
+    "results": {
+      "rules_critical": {
+        "tp": 2913,
+        "fp": 0,
+        "fn": 1450,
+        "tn": 196000,
+        "precision": 1.0,
+        "recall": 0.6677,
+        "false_positive_rate": 0.0,
+        "flagged": 2913,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.0,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.0,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "rules_critical_plus_warning": {
+        "tp": 2955,
+        "fp": 0,
+        "fn": 1408,
+        "tn": 196000,
+        "precision": 1.0,
+        "recall": 0.6773,
+        "false_positive_rate": 0.0,
+        "flagged": 2955,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.1157,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.0,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.0
+        }
+      },
+      "iqr": {
+        "tp": 1564,
+        "fp": 19217,
+        "fn": 2799,
+        "tn": 176783,
+        "precision": 0.0753,
+        "recall": 0.3585,
+        "false_positive_rate": 0.098046,
+        "flagged": 20781,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.4656,
+          "dropoff_before_pickup": 0.0962,
+          "exact_duplicate": 0.1019,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.9612,
+          "invalid_payment_type": 0.1264,
+          "negative_fare": 0.1813,
+          "null_mandatory": 0.1044,
+          "passenger_overflow": 0.0824,
+          "stale_timestamp": 0.1181,
+          "swapped_zones": 0.0826,
+          "tip_spike": 0.9835
+        }
+      },
+      "rules_critical+iqr": {
+        "tp": 3816,
+        "fp": 19217,
+        "fn": 547,
+        "tn": 176783,
+        "precision": 0.1657,
+        "recall": 0.8746,
+        "false_positive_rate": 0.098046,
+        "flagged": 23033,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.4656,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.9612,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0826,
+          "tip_spike": 0.9835
+        }
+      },
+      "iqr_log": {
+        "tp": 1337,
+        "fp": 439,
+        "fn": 3026,
+        "tn": 195561,
+        "precision": 0.7528,
+        "recall": 0.3064,
+        "false_positive_rate": 0.00224,
+        "flagged": 1776,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.1212,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 0.0028,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.3712,
+          "invalid_payment_type": 0.0027,
+          "negative_fare": 1.0,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0,
+          "stale_timestamp": 0.0082,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.1653
+        }
+      },
+      "rules_critical+iqr_log": {
+        "tp": 3151,
+        "fp": 439,
+        "fn": 1212,
+        "tn": 195561,
+        "precision": 0.8777,
+        "recall": 0.7222,
+        "false_positive_rate": 0.00224,
+        "flagged": 3590,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.1212,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.3712,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0,
+          "tip_spike": 0.1653
+        }
+      },
+      "zscore": {
+        "tp": 884,
+        "fp": 1659,
+        "fn": 3479,
+        "tn": 194341,
+        "precision": 0.3476,
+        "recall": 0.2026,
+        "false_positive_rate": 0.008464,
+        "flagged": 2543,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.8736,
+          "distance_x5": 0.011,
+          "dropoff_before_pickup": 0.0027,
+          "exact_duplicate": 0.011,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.6842,
+          "invalid_payment_type": 0.0055,
+          "negative_fare": 0.0577,
+          "null_mandatory": 0.0,
+          "passenger_overflow": 0.0055,
+          "stale_timestamp": 0.0137,
+          "swapped_zones": 0.0055,
+          "tip_spike": 0.7603
+        }
+      },
+      "rules_critical+zscore": {
+        "tp": 3442,
+        "fp": 1659,
+        "fn": 921,
+        "tn": 194341,
+        "precision": 0.6748,
+        "recall": 0.7889,
+        "false_positive_rate": 0.008464,
+        "flagged": 5101,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.011,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.6842,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0055,
+          "tip_spike": 0.7603
+        }
+      },
+      "isolation_forest": {
+        "tp": 199,
+        "fp": 1804,
+        "fn": 4164,
+        "tn": 194196,
+        "precision": 0.0994,
+        "recall": 0.0456,
+        "false_positive_rate": 0.009204,
+        "flagged": 2003,
+        "recall_by_error_type": {
+          "distance_unit_error": 0.1209,
+          "distance_x5": 0.0303,
+          "dropoff_before_pickup": 0.011,
+          "exact_duplicate": 0.0083,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.1773,
+          "invalid_payment_type": 0.0082,
+          "negative_fare": 0.0055,
+          "null_mandatory": 0.0055,
+          "passenger_overflow": 0.0027,
+          "stale_timestamp": 0.0137,
+          "swapped_zones": 0.0055,
+          "tip_spike": 0.1543
+        }
+      },
+      "rules_critical+isolation_forest": {
+        "tp": 3046,
+        "fp": 1804,
+        "fn": 1317,
+        "tn": 194196,
+        "precision": 0.628,
+        "recall": 0.6981,
+        "false_positive_rate": 0.009204,
+        "flagged": 4850,
+        "recall_by_error_type": {
+          "distance_unit_error": 1.0,
+          "distance_x5": 0.0303,
+          "dropoff_before_pickup": 1.0,
+          "exact_duplicate": 1.0,
+          "fare_over_cap": 1.0,
+          "fare_x10": 0.1773,
+          "invalid_payment_type": 1.0,
+          "negative_fare": 1.0,
+          "null_mandatory": 1.0,
+          "passenger_overflow": 1.0,
+          "stale_timestamp": 1.0,
+          "swapped_zones": 0.0055,
+          "tip_spike": 0.1543
+        }
+      }
+    },
+    "runtime_s": {
+      "rules": 0.289,
+      "iqr": 0.073,
+      "iqr_log": 0.054,
+      "zscore": 0.018,
+      "isolation_forest": 2.077
+    },
+    "rows_per_sec": {
+      "rules": 692667,
+      "iqr": 2734081,
+      "iqr_log": 3685230,
+      "zscore": 10854194,
+      "isolation_forest": 96474
+    },
+    "seed": 42
+  },
+  "failure_demo": {
+    "run_id": "4faf06dd-7434-47d0-894d-042cc7f7fc5f",
+    "database": "dqc_demo",
+    "checks": [
+      {
+        "fixture": "schema_break",
+        "expected": {
+          "schema_status": "breaking",
+          "rows_propagated": 0
+        },
+        "detected": true,
+        "observed": {
+          "schema_status": "breaking",
+          "raw_rows_loaded": 0,
+          "critical_schema_events": [
+            "type_mismatch:trip_distance",
+            "missing_required_column:fare_amount"
+          ]
+        }
+      },
+      {
+        "fixture": "duplicate",
+        "expected": {
+          "rule": "DQ050_exact_duplicate",
+          "failed_rows": 25
+        },
+        "detected": true,
+        "observed": {
+          "failed_rows": 25,
+          "quarantined": 25,
+          "valid_record_rate": 98.765
+        }
+      },
+      {
+        "fixture": "invalid_amount",
+        "expected": {
+          "rule": "DQ021_fare_amount_range",
+          "failed_rows": 40
+        },
+        "detected": true,
+        "observed": {
+          "failed_rows": 40,
+          "quarantined": 40,
+          "valid_record_rate": 98.0
+        }
+      },
+      {
+        "fixture": "missing_mandatory",
+        "expected": {
+          "rule": "DQ001_mandatory_fields_not_null",
+          "failed_rows": 35
+        },
+        "detected": true,
+        "observed": {
+          "failed_rows": 35,
+          "quarantined": 35,
+          "valid_record_rate": 98.25
+        }
+      },
+      {
+        "fixture": "impossible_duration",
+        "expected": {
+          "rule": "DQ010_pickup_before_dropoff",
+          "failed_rows": 12
+        },
+        "detected": true,
+        "observed": {
+          "failed_rows": 12,
+          "quarantined": 12,
+          "valid_record_rate": 99.4
+        }
+      },
+      {
+        "fixture": "invalid_passenger_count",
+        "expected": {
+          "rule": "DQ024_passenger_count_max",
+          "failed_rows": 8
+        },
+        "detected": true,
+        "observed": {
+          "failed_rows": 8,
+          "quarantined": 8,
+          "valid_record_rate": 99.6
+        }
+      }
+    ],
+    "all_detected": true
+  },
+  "anomaly_review": {
+    "method": "isolation_forest",
+    "partition": "yellow_2025-01",
+    "sample_size": 40,
+    "seed": 11,
+    "verdict_counts": {
+      "plausible_legitimate": 29,
+      "likely_data_error": 6,
+      "undetermined": 5
+    },
+    "estimated_false_positive_share": 0.725,
+    "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+  },
+  "rerun_check": {
+    "partitions": [
+      {
+        "partition_id": "yellow_2024-11",
+        "ref_score": 95.15162892181236,
+        "rerun_score": 95.15162892181236,
+        "ref_q": 73800,
+        "rerun_q": 73800,
+        "ref_s": 168.5873345,
+        "rerun_s": 53.8837182999996,
+        "rerun_raw_landing_s": 3.318,
+        "raw_rows": 3646369,
+        "rows_total": 3646369
+      },
+      {
+        "partition_id": "yellow_2024-12",
+        "ref_score": 95.28944864082722,
+        "rerun_score": 95.28944864082722,
+        "ref_q": 80397,
+        "rerun_q": 80397,
+        "ref_s": 211.48592369999824,
+        "rerun_s": 80.05229869999675,
+        "rerun_raw_landing_s": 3.977,
+        "raw_rows": 3668371,
+        "rows_total": 3668371
+      },
+      {
+        "partition_id": "yellow_2025-01",
+        "ref_score": 92.19914762378045,
+        "rerun_score": 92.19914762378045,
+        "ref_q": 146639,
+        "rerun_q": 146639,
+        "ref_s": 228.30303889999777,
+        "rerun_s": 112.97871040000246,
+        "rerun_raw_landing_s": 20.717,
+        "raw_rows": 3475226,
+        "rows_total": 3475226
+      },
+      {
+        "partition_id": "yellow_2025-02",
+        "ref_score": 89.73058464985606,
+        "rerun_score": 89.73058464985606,
+        "ref_q": 188388,
+        "rerun_q": 188388,
+        "ref_s": 172.04393880000134,
+        "rerun_s": 193.7443880000028,
+        "rerun_raw_landing_s": 6.713,
+        "raw_rows": 3577543,
+        "rows_total": 3577543
+      }
+    ],
+    "identical_results": true,
+    "no_duplicate_rows": true
+  },
+  "copilot": [
+    {
+      "provider": "deterministic_template",
+      "status": "proposed",
+      "n": 5
+    }
+  ]
+}

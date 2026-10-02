@@ -1,0 +1,129 @@
+[
+  {
+    "suggestion_id": 1,
+    "incident_ref": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449/yellow_2025-01/DQ002_passenger_count_not_null",
+    "provider": "deterministic_template",
+    "model": null,
+    "label": "SUGGESTION \u2014 not verified, requires human review",
+    "response": {
+      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 540,149 of 3,475,226 records (15.543%) in yellow_2025-01.",
+      "likely_causes": [
+        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share",
+        "Failure rate is 1.7x the previous partition: likely an upstream behaviour change"
+      ],
+      "investigation_steps": [
+        "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2025-01' LIMIT 100",
+        "Break down failures by VendorID, payment_type and pickup date"
+      ],
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "candidate_rule": {
+        "rule_id": "",
+        "severity": "",
+        "description": "",
+        "yaml": ""
+      },
+      "confidence": "low"
+    }
+  },
+  {
+    "suggestion_id": 2,
+    "incident_ref": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449/yellow_2025-01/DQ021_fare_amount_range",
+    "provider": "deterministic_template",
+    "model": null,
+    "label": "SUGGESTION \u2014 not verified, requires human review",
+    "response": {
+      "summary": "DQ021_fare_amount_range (v1, critical) failed 144,121 of 3,475,226 records (4.147%) in yellow_2025-01. Top segments: payment_type=0/vendor=2: 84822, payment_type=4/vendor=2: 37405, payment_type=2/vendor=2: 13804.",
+      "likely_causes": [
+        "Negative amounts are typically reversal/void/dispute accounting entries (payment_type 3/4/0)",
+        "Failure rate is 1.9x the previous partition: likely an upstream behaviour change"
+      ],
+      "investigation_steps": [
+        "SELECT original_record FROM dq.quarantine WHERE failed_rule='DQ021_fare_amount_range' AND partition_id='yellow_2025-01' LIMIT 100",
+        "Break down failures by VendorID, payment_type and pickup date"
+      ],
+      "remediation_suggestion": "Confirm with the source owner; keep records quarantined until reviewed.",
+      "candidate_rule": {
+        "rule_id": "",
+        "severity": "",
+        "description": "",
+        "yaml": ""
+      },
+      "confidence": "low"
+    }
+  },
+  {
+    "suggestion_id": 3,
+    "incident_ref": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449/yellow_2025-02/DQ002_passenger_count_not_null",
+    "provider": "deterministic_template",
+    "model": null,
+    "label": "SUGGESTION \u2014 not verified, requires human review",
+    "response": {
+      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 806,937 of 3,577,543 records (22.556%) in yellow_2025-02.",
+      "likely_causes": [
+        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share"
+      ],
+      "investigation_steps": [
+        "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2025-02' LIMIT 100",
+        "Break down failures by VendorID, payment_type and pickup date"
+      ],
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "candidate_rule": {
+        "rule_id": "",
+        "severity": "",
+        "description": "",
+        "yaml": ""
+      },
+      "confidence": "low"
+    }
+  },
+  {
+    "suggestion_id": 4,
+    "incident_ref": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449/yellow_2025-02/DQ021_fare_amount_range",
+    "provider": "deterministic_template",
+    "model": null,
+    "label": "SUGGESTION \u2014 not verified, requires human review",
+    "response": {
+      "summary": "DQ021_fare_amount_range (v1, critical) failed 182,661 of 3,577,543 records (5.106%) in yellow_2025-02. Top segments: payment_type=0/vendor=2: 127878, payment_type=4/vendor=2: 34858, payment_type=2/vendor=2: 12912.",
+      "likely_causes": [
+        "Negative amounts are typically reversal/void/dispute accounting entries (payment_type 3/4/0)"
+      ],
+      "investigation_steps": [
+        "SELECT original_record FROM dq.quarantine WHERE failed_rule='DQ021_fare_amount_range' AND partition_id='yellow_2025-02' LIMIT 100",
+        "Break down failures by VendorID, payment_type and pickup date"
+      ],
+      "remediation_suggestion": "Confirm with the source owner; keep records quarantined until reviewed.",
+      "candidate_rule": {
+        "rule_id": "",
+        "severity": "",
+        "description": "",
+        "yaml": ""
+      },
+      "confidence": "low"
+    }
+  },
+  {
+    "suggestion_id": 5,
+    "incident_ref": "f7d9c7cb-c277-4ada-9d87-3b3143dd6449/yellow_2024-11/DQ002_passenger_count_not_null",
+    "provider": "deterministic_template",
+    "model": null,
+    "label": "SUGGESTION \u2014 not verified, requires human review",
+    "response": {
+      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 373,674 of 3,646,369 records (10.248%) in yellow_2024-11.",
+      "likely_causes": [
+        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share"
+      ],
+      "investigation_steps": [
+        "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2024-11' LIMIT 100",
+        "Break down failures by VendorID, payment_type and pickup date"
+      ],
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "candidate_rule": {
+        "rule_id": "",
+        "severity": "",
+        "description": "",
+        "yaml": ""
+      },
+      "confidence": "low"
+    }
+  }
+]

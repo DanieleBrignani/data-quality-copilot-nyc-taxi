@@ -1,0 +1,62 @@
+name: dq-copilot
+
+services:
+  postgres:
+    image: postgres:16
+    shm_size: 1g
+    environment:
+      POSTGRES_USER: dqc
+      POSTGRES_PASSWORD: dqc
+      POSTGRES_DB: dqc
+    command: ["postgres", "-c", "shared_buffers=512MB", "-c", "max_wal_size=4GB", "-c", "work_mem=64MB"]
+    ports: ["5433:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dqc -d dqc"]
+      interval: 5s
+      retries: 20
+
+  api:
+    build: .
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    environment:
+      DQC_PG_DSN: postgresql://dqc:dqc@postgres:5432/dqc
+      DQC_COPILOT_DSN: postgresql://dqc_copilot:copilot@postgres:5432/dqc
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports: ["${DQC_API_PORT:-8000}:8000"]
+    depends_on:
+      postgres: {condition: service_healthy}
+
+  dashboard:
+    build: .
+    command: ["streamlit", "run", "dashboard/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    environment:
+      DQC_PG_DSN: postgresql://dqc_reader:reader@postgres:5432/dqc
+    ports: ["${DQC_DASHBOARD_PORT:-8502}:8501"]
+    depends_on:
+      postgres: {condition: service_healthy}
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
+    ports: ["${DQC_PROMETHEUS_PORT:-9091}:9090"]
+    depends_on: [api]
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["${DQC_GRAFANA_PORT:-3001}:3000"]
+    depends_on: [prometheus, postgres]
+
+volumes:
+  pgdata:

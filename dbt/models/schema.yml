@@ -1,0 +1,51 @@
+version: 2
+
+models:
+  - name: stg_trips
+    description: Typed view over raw landing. One row per source record.
+    columns:
+      - name: record_id
+        tests: [not_null]
+
+  - name: int_trip_quality
+    description: Trips joined with record-level rule verdicts.
+
+  - name: fct_clean_trips
+    description: Curated trips — only records that passed every critical rule.
+    columns:
+      - name: record_id
+        tests: [unique, not_null]
+      - name: pickup_datetime
+        tests: [not_null]
+      - name: dropoff_datetime
+        tests: [not_null]
+      - name: fare_amount
+        tests: [not_null]
+      - name: payment_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1, 2, 3, 4, 5, 6]
+                quote: false
+      - name: vendor_id
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 6, 7]
+                quote: false
+
+  - name: fct_quality_events
+    description: Append-only event stream of rule failures, schema changes, drift and anomaly signals.
+    columns:
+      - name: event_id
+        tests: [unique, not_null]
+      - name: event_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: [rule_failure, schema_change, drift, anomaly]
+
+  - name: fct_partition_quality
+    columns:
+      - name: partition_id
+        tests: [unique, not_null]

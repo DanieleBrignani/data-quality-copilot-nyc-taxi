@@ -1,0 +1,41 @@
+record_id,verdict,note
+yellow_2025-01:2575678,plausible_legitimate,JFK->DUMBO metered; $5.2/mi and 11.7 mph consistent with airport traffic
+yellow_2025-01:2435065,plausible_legitimate,JFK->Windsor Terrace; longer-than-direct route but fare matches metered distance
+yellow_2025-01:2896285,plausible_legitimate,RatecodeID 4 (Nassau/Westchester) to Outside of NYC; fare/distance consistent
+yellow_2025-01:1755061,undetermined,Vendor 1 RatecodeID 99; 5.5 mi in 83 min but fare too low for metered waiting time
+yellow_2025-01:707916,plausible_legitimate,RatecodeID 4 to Outside of NYC with tolls; consistent
+yellow_2025-01:2088183,plausible_legitimate,RatecodeID 3 Newark trip with tolls; consistent
+yellow_2025-01:314647,plausible_legitimate,RatecodeID 4 JFK->Outside of NYC 31 mi; consistent
+yellow_2025-01:51520,likely_data_error,0.0 mi and 9 s duration with $96 negotiated fare: trip attributes not captured
+yellow_2025-01:2378263,plausible_legitimate,Penn Station->Newark with tolls; consistent
+yellow_2025-01:1123292,plausible_legitimate,RatecodeID 2 JFK flat fare $70; consistent
+yellow_2025-01:1933002,undetermined,Vendor 1 RatecodeID 99; 16.6 mi in 93 min with fare below expected metered time charge
+yellow_2025-01:1040983,plausible_legitimate,RatecodeID 3 Newark with tolls; consistent
+yellow_2025-01:825704,plausible_legitimate,RatecodeID 5 negotiated JFK->UES 16.7 mi $86; plausible
+yellow_2025-01:1006183,plausible_legitimate,RatecodeID 4 JFK->Outside of NYC 43 mi $227; consistent
+yellow_2025-01:224486,plausible_legitimate,RatecodeID 4 to Outside of NYC; dispute payment but values consistent
+yellow_2025-01:2483279,plausible_legitimate,LaGuardia->FiDi metered with tolls; consistent
+yellow_2025-01:173622,plausible_legitimate,RatecodeID 3 Newark; consistent
+yellow_2025-01:1853016,plausible_legitimate,RatecodeID 2 JFK flat fare; consistent
+yellow_2025-01:2835201,likely_data_error,0.0 mi and 4 s duration with $82 negotiated fare between different zones
+yellow_2025-01:1276096,plausible_legitimate,RatecodeID 2 JFK flat fare; consistent
+yellow_2025-01:157987,plausible_legitimate,RatecodeID 3 Newark; consistent
+yellow_2025-01:1317277,plausible_legitimate,RatecodeID 2 JFK flat fare; consistent
+yellow_2025-01:2839645,plausible_legitimate,RatecodeID 3 Newark with tolls; consistent
+yellow_2025-01:2373078,plausible_legitimate,RatecodeID 3 Newark; consistent
+yellow_2025-01:2583586,plausible_legitimate,RatecodeID 5 negotiated JFK->UWS $97; plausible
+yellow_2025-01:2668873,undetermined,Vendor 1 RatecodeID 99; 14 mi in 90 min with fare below expected metered time charge
+yellow_2025-01:1386791,undetermined,RatecodeID 5 negotiated $100 for 2.3 mi within Manhattan; possible but unusual
+yellow_2025-01:865582,plausible_legitimate,RatecodeID 3 Newark with tolls; consistent
+yellow_2025-01:75068,plausible_legitimate,RatecodeID 4 30 mi to Outside of NYC; consistent
+yellow_2025-01:558136,likely_data_error,0.0 mi and 6 s duration with $88 negotiated fare: trip attributes not captured
+yellow_2025-01:1834230,plausible_legitimate,RatecodeID 5 negotiated JFK->Times Sq $87; plausible
+yellow_2025-01:491183,plausible_legitimate,RatecodeID 3 JFK->Outside of NYC 42 mi; consistent
+yellow_2025-01:1695980,plausible_legitimate,RatecodeID 3 Newark with tolls; consistent
+yellow_2025-01:2168710,plausible_legitimate,RatecodeID 2 JFK flat fare; consistent
+yellow_2025-01:308583,undetermined,RatecodeID 5 negotiated $85 for 2.1 mi to JFK; possible but unusual
+yellow_2025-01:2583125,plausible_legitimate,RatecodeID 2 JFK flat fare (to JFK); consistent
+yellow_2025-01:218390,likely_data_error,JFK->JFK 0.1 mi in 97 s with $89 fare: trip attributes not captured
+yellow_2025-01:2435390,likely_data_error,RatecodeID 2 (JFK flat fare) on a 0.64 mi trip within Upper West Side: ratecode inconsistent with zones
+yellow_2025-01:43032,likely_data_error,0.0 mi and 33 s duration with $250 negotiated fare: trip attributes not captured
+yellow_2025-01:1479827,plausible_legitimate,RatecodeID 2 JFK flat fare; consistent

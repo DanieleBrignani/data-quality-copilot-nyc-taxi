@@ -1,0 +1,30 @@
+{
+  "schema_breaking": false,
+  "rows": 50000,
+  "ruleset_version": "1.3.0",
+  "quality_score": 92.2035,
+  "valid_record_rate": 95.796,
+  "rule_failure_rates": {
+    "DQ001_mandatory_fields_not_null": 0.0,
+    "DQ002_passenger_count_not_null": 0.15566,
+    "DQ010_pickup_before_dropoff": 0.00056,
+    "DQ011_trip_duration_max": 2e-05,
+    "DQ012_pickup_in_partition_window": 0.0,
+    "DQ020_trip_distance_range": 2e-05,
+    "DQ021_fare_amount_range": 0.04142,
+    "DQ022_total_amount_range": 0.01848,
+    "DQ023_tip_amount_non_negative": 4e-05,
+    "DQ024_passenger_count_max": 0.0,
+    "DQ025_passenger_count_zero": 0.0066,
+    "DQ026_implied_speed_plausible": 0.00026,
+    "DQ030_vendor_id_accepted": 0.0,
+    "DQ031_payment_type_accepted": 0.0,
+    "DQ032_ratecode_accepted": 0.0,
+    "DQ033_store_and_fwd_flag_accepted": 0.0,
+    "DQ034_location_ids_known": 0.0,
+    "DQ035_location_unknown": 0.0048,
+    "DQ040_total_amount_reconciles": 0.011062,
+    "DQ050_exact_duplicate": 0.0,
+    "DQ051_business_key_duplicate": 0.0
+  }
+}

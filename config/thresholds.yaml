@@ -1,0 +1,72 @@
+# Configurable thresholds for schema, drift, anomaly detection and quality SLOs.
+
+schema:
+  # Columns whose absence makes a partition unusable (partition is rejected, nothing loaded).
+  required_columns:
+    VendorID: int
+    tpep_pickup_datetime: datetime
+    tpep_dropoff_datetime: datetime
+    passenger_count: int
+    trip_distance: float
+    RatecodeID: int
+    store_and_fwd_flag: str
+    PULocationID: int
+    DOLocationID: int
+    payment_type: int
+    fare_amount: float
+    extra: float
+    mta_tax: float
+    tip_amount: float
+    tolls_amount: float
+    improvement_surcharge: float
+    total_amount: float
+    congestion_surcharge: float
+    Airport_fee: float
+  # Known optional columns (additive changes documented by TLC). Anything else = unexpected.
+  optional_columns:
+    cbd_congestion_fee: float   # introduced Jan 2025 (MTA congestion relief zone toll)
+  # Column-name aliases seen across TLC releases (normalised before validation).
+  aliases:
+    airport_fee: Airport_fee
+
+drift:
+  sample_size: 200000        # rows sampled per partition for KS (p-values on millions of rows are always ~0)
+  psi_bins: 10
+  psi_warn: 0.10
+  psi_alert: 0.25
+  ks_alert: 0.10             # KS D statistic (effect size), not p-value
+  null_rate_alert_pp: 2.0    # absolute change in percentage points
+  cardinality_alert_pct: 20.0
+  min_new_category_share_pct: 0.1   # below this, a cardinality change is a warn, not an alert
+  mean_shift_alert_pct: 15.0
+  std_mean_shift_alert: 0.20   # |mean_cur - mean_ref| / std_ref (effect size)
+  volume_alert_pct: 20.0
+  numeric_columns: [trip_distance, fare_amount, tip_amount, total_amount, passenger_count, trip_duration_min]
+  categorical_columns: [VendorID, payment_type, RatecodeID, PULocationID, DOLocationID, store_and_fwd_flag]
+
+anomaly:
+  features: [trip_distance, trip_duration_min, fare_amount, tip_amount, total_amount, tolls_amount]
+  iqr_k: 3.0                 # Tukey far-out fences
+  zscore_threshold: 4.0
+  iforest_train_sample: 200000
+  iforest_n_estimators: 100
+  iforest_contamination: 0.01
+  random_state: 42
+  top_n_persist: 500
+
+quality_score:
+  # score = 100 * (1 - (critical_failed_records + warning_weight * warning_only_records) / rows)
+  warning_weight: 0.25
+
+slo:
+  # Targets set from the measured baseline (see README "Quality SLO"). Evaluated per partition.
+  min_valid_record_rate_pct: 95.0
+  min_quality_score: 92.0
+  max_unexpected_schema_changes: 0
+  max_freshness_days: 75      # TLC publishes monthly with ~2 month lag
+  max_run_duration_s: 900
+
+ci_gate:
+  baseline_file: ci/quality_baseline.json
+  max_score_drop: 2.0         # points
+  max_valid_rate_drop_pp: 2.0

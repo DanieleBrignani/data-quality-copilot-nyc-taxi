@@ -1,0 +1,62 @@
+[
+  {
+    "name": "schema_break",
+    "path": "fixture_schema_break_2025-01.parquet",
+    "rows": 2000,
+    "description": "fare_amount column removed and trip_distance delivered as string",
+    "expect": {
+      "schema_status": "breaking",
+      "rows_propagated": 0
+    }
+  },
+  {
+    "name": "duplicate",
+    "path": "fixture_duplicate_2025-01.parquet",
+    "rows": 2025,
+    "description": "25 rows re-sent (exact copies)",
+    "expect": {
+      "rule": "DQ050_exact_duplicate",
+      "failed_rows": 25
+    }
+  },
+  {
+    "name": "invalid_amount",
+    "path": "fixture_invalid_amount_2025-01.parquet",
+    "rows": 2000,
+    "description": "30 negative fares and 10 fares of $25,000",
+    "expect": {
+      "rule": "DQ021_fare_amount_range",
+      "failed_rows": 40
+    }
+  },
+  {
+    "name": "missing_mandatory",
+    "path": "fixture_missing_mandatory_2025-01.parquet",
+    "rows": 2000,
+    "description": "20 null pickup timestamps + 15 null drop-off zones",
+    "expect": {
+      "rule": "DQ001_mandatory_fields_not_null",
+      "failed_rows": 35
+    }
+  },
+  {
+    "name": "impossible_duration",
+    "path": "fixture_impossible_duration_2025-01.parquet",
+    "rows": 2000,
+    "description": "12 drop-offs 5 minutes before pickup",
+    "expect": {
+      "rule": "DQ010_pickup_before_dropoff",
+      "failed_rows": 12
+    }
+  },
+  {
+    "name": "invalid_passenger_count",
+    "path": "fixture_invalid_passenger_count_2025-01.parquet",
+    "rows": 2000,
+    "description": "8 trips with 9 passengers",
+    "expect": {
+      "rule": "DQ024_passenger_count_max",
+      "failed_rows": 8
+    }
+  }
+]

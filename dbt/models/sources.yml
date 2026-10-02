@@ -1,0 +1,26 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw
+    description: Landing copy of the immutable TLC parquet files (one LIST partition per source file).
+    tables:
+      - name: yellow_trips
+        columns:
+          - name: record_id
+            description: "<partition_id>:<row number in the source file> — stable lineage back to the raw file."
+
+  - name: dq
+    schema: dq
+    description: Quality metadata written by the Python rule engine (source of truth for record verdicts).
+    tables:
+      - name: record_quality
+      - name: rule_results
+      - name: schema_checks
+      - name: drift_results
+      - name: anomaly_results
+      - name: partition_quality
+      - name: pipeline_runs
+      - name: quarantine
+      - name: rule_definitions
+      - name: dataset_partitions

@@ -1,0 +1,381 @@
+{
+  "uid": "dq-copilot",
+  "title": "Data Quality Copilot \u2014 NYC Taxi",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "2024-10-01T00:00:00Z",
+    "to": "2025-03-31T00:00:00Z"
+  },
+  "refresh": "1m",
+  "tags": [
+    "data-quality"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Quality score (latest, Prometheus)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "dq_quality_score",
+          "legendFormat": "{{partition}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 2,
+      "title": "Valid record rate % (Prometheus)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "dq_valid_record_rate",
+          "legendFormat": "{{partition}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 3,
+      "title": "Drift alerts (Prometheus)",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "dq_drift_alerts_total",
+          "legendFormat": "{{partition}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 4,
+      "title": "Quality score over time",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT to_date(year_month || '-01', 'YYYY-MM-DD') AS time, quality_score, valid_record_rate FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) x ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 5,
+      "title": "Dataset volume vs quarantine volume",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT to_date(year_month || '-01', 'YYYY-MM-DD') AS time, rows_total AS rows, quarantined_records AS quarantined, warning_only_records AS warning_only FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) x ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "bars"
+          }
+        },
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 6,
+      "title": "Rules failing (latest run per partition)",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 12,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT rr.partition_id, rr.rule_id, rr.severity, rr.failed_rows, round((100*rr.failure_rate)::numeric, 4) AS failure_pct\n                  FROM dq.rule_results rr JOIN (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) l USING (run_id, partition_id)\n                  WHERE rr.failed_rows > 0 ORDER BY rr.partition_id, rr.failed_rows DESC"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 7,
+      "title": "Failure rate by column (%)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 13,
+        "w": 12,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT to_date(l.year_month || '-01', 'YYYY-MM-DD') AS time, rr.columns AS metric,\n                         100*sum(rr.failed_rows)::float/max(rr.records_checked) AS value\n                  FROM dq.rule_results rr JOIN (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) l USING (run_id, partition_id)\n                  WHERE rr.failed_rows > 0 GROUP BY 1, 2 ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 8,
+      "title": "Drift metrics (alerts & warnings)",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 16,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT d.partition_id, d.reference_partition_id AS reference, d.column_name, d.metric,\n                         round(d.value::numeric, 4) AS value, d.threshold, d.status\n                  FROM dq.drift_results d JOIN (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) l USING (run_id, partition_id)\n                  WHERE d.status IN ('alert','warn') ORDER BY d.partition_id, d.status, d.column_name"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 9,
+      "title": "Freshness: TLC publication lag (days after month end)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 23,
+        "w": 8,
+        "h": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT to_date(year_month || '-01', 'YYYY-MM-DD') AS time, source_lag_days FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) x ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 10,
+      "title": "Schema events",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 33,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT s.partition_id, s.check_name, s.column_name, s.severity, s.detail\n                 FROM dq.schema_checks s JOIN dq.dataset_partitions p USING (partition_id)\n                 WHERE p.service='yellow' ORDER BY s.checked_at DESC LIMIT 50"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    },
+    {
+      "id": 11,
+      "title": "Anomaly detectors (investigation queue, not quarantined)",
+      "type": "table",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 33,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT a.partition_id, a.method, a.anomalies, round((100*a.anomaly_rate)::numeric, 3) AS rate_pct,\n                         round(a.runtime_s::numeric, 2) AS runtime_s\n                  FROM dq.anomaly_results a JOIN (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) l USING (run_id, partition_id) ORDER BY 1, 2"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {}
+    }
+  ]
+}

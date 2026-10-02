@@ -1,0 +1,13 @@
+{
+  "method": "isolation_forest",
+  "partition": "yellow_2025-01",
+  "sample_size": 40,
+  "seed": 11,
+  "verdict_counts": {
+    "plausible_legitimate": 29,
+    "likely_data_error": 6,
+    "undetermined": 5
+  },
+  "estimated_false_positive_share": 0.725,
+  "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+}

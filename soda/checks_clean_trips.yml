@@ -1,0 +1,35 @@
+# Soda Core contract on the curated layer — an independent engine re-asserting what the
+# Python rule engine guarantees. If this ever fails, bad data leaked past quarantine.
+checks for fct_clean_trips:
+  - schema:
+      fail:
+        when required column missing: [record_id, partition_id, pickup_datetime, dropoff_datetime,
+                                        fare_amount, total_amount, payment_type, vendor_id]
+  - row_count > 0
+  - duplicate_count(record_id) = 0
+  - missing_count(pickup_datetime) = 0
+  - missing_count(dropoff_datetime) = 0
+  - missing_count(fare_amount) = 0
+  - min(fare_amount) >= 0
+  - max(fare_amount) <= 1000
+  - min(total_amount) >= 0
+  - min(tip_amount) >= 0
+  - min(trip_distance) >= 0
+  - max(trip_distance) <= 200
+  - invalid_count(payment_type) = 0:
+      valid values: [0, 1, 2, 3, 4, 5, 6]
+  - invalid_count(vendor_id) = 0:
+      valid values: [1, 2, 6, 7]
+  - failed rows:
+      name: dropoff strictly after pickup
+      fail condition: dropoff_datetime <= pickup_datetime
+  - failed rows:
+      name: passenger_count at most 6
+      fail condition: passenger_count > 6
+
+checks for fct_partition_quality:
+  - row_count > 0
+  - min(valid_record_rate) >= 95:
+      name: SLO — valid record rate >= 95% on every partition
+  - max(unexpected_schema_changes) = 0:
+      name: SLO — no unexpected schema changes

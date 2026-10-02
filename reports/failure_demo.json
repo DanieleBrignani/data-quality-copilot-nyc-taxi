@@ -1,0 +1,88 @@
+{
+  "run_id": "b9286b56-701e-45f8-93d2-607820a0002b",
+  "database": "dqc_demo",
+  "checks": [
+    {
+      "fixture": "schema_break",
+      "expected": {
+        "schema_status": "breaking",
+        "rows_propagated": 0
+      },
+      "detected": true,
+      "observed": {
+        "schema_status": "breaking",
+        "raw_rows_loaded": 0,
+        "critical_schema_events": [
+          "type_mismatch:trip_distance",
+          "missing_required_column:fare_amount"
+        ]
+      }
+    },
+    {
+      "fixture": "duplicate",
+      "expected": {
+        "rule": "DQ050_exact_duplicate",
+        "failed_rows": 25
+      },
+      "detected": true,
+      "observed": {
+        "failed_rows": 25,
+        "quarantined": 25,
+        "valid_record_rate": 98.765
+      }
+    },
+    {
+      "fixture": "invalid_amount",
+      "expected": {
+        "rule": "DQ021_fare_amount_range",
+        "failed_rows": 40
+      },
+      "detected": true,
+      "observed": {
+        "failed_rows": 40,
+        "quarantined": 40,
+        "valid_record_rate": 98.0
+      }
+    },
+    {
+      "fixture": "missing_mandatory",
+      "expected": {
+        "rule": "DQ001_mandatory_fields_not_null",
+        "failed_rows": 35
+      },
+      "detected": true,
+      "observed": {
+        "failed_rows": 35,
+        "quarantined": 35,
+        "valid_record_rate": 98.25
+      }
+    },
+    {
+      "fixture": "impossible_duration",
+      "expected": {
+        "rule": "DQ010_pickup_before_dropoff",
+        "failed_rows": 12
+      },
+      "detected": true,
+      "observed": {
+        "failed_rows": 12,
+        "quarantined": 12,
+        "valid_record_rate": 99.4
+      }
+    },
+    {
+      "fixture": "invalid_passenger_count",
+      "expected": {
+        "rule": "DQ024_passenger_count_max",
+        "failed_rows": 8
+      },
+      "detected": true,
+      "observed": {
+        "failed_rows": 8,
+        "quarantined": 8,
+        "valid_record_rate": 99.6
+      }
+    }
+  ],
+  "all_detected": true
+}
