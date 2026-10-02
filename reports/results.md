@@ -1,4 +1,4 @@
-# Results (generated 2026-09-30T19:01:06+00:00)
+# Results (generated 2026-10-02T18:29:36+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
@@ -8,7 +8,7 @@ All values below are read from the warehouse / report files; regenerate with `py
 - records processed: 14,367,509
 - quarantined records: 489,224 (3.405%)
 - warning-only records (kept, flagged): 1,995,424 (13.888%)
-- processing time (sum of partitions): 780.4s -> 18,410 rows/s
+- processing time (sum of partitions): 507.6s -> 28,308 rows/s
 - schema changes detected between consecutive partitions: 1 (unexpected / contract-breaking: 0)
 - drift alerts: 9 (warnings: 2)
 
@@ -16,19 +16,19 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 | partition | rows | quarantined | % | warning-only | valid % | score | schema | duration s | rows/s | source lag d |
 |---|---:|---:|---:|---:|---:|---:|---|---:|---:|---:|
-| yellow_2024-11 | 3,646,369 | 73,800 | 2.024 | 411,958 | 97.976 | 95.152 | ok | 168.6 | 21,629 | 47.8 |
-| yellow_2024-12 | 3,668,371 | 80,397 | 2.192 | 369,614 | 97.808 | 95.289 | ok | 211.5 | 17,346 | 51.9 |
-| yellow_2025-01 | 3,475,226 | 146,639 | 4.220 | 497,833 | 95.780 | 92.199 | additive_change | 228.3 | 15,222 | 81.7 |
-| yellow_2025-02 | 3,577,543 | 188,388 | 5.266 | 716,019 | 94.734 | 89.731 | additive_change | 172.0 | 20,794 | 53.7 |
+| yellow_2024-11 | 3,646,369 | 73,800 | 2.024 | 411,958 | 97.976 | 95.152 | ok | 115.5 | 31,575 | 47.8 |
+| yellow_2024-12 | 3,668,371 | 80,397 | 2.192 | 369,614 | 97.808 | 95.289 | ok | 115.2 | 31,849 | 51.9 |
+| yellow_2025-01 | 3,475,226 | 146,639 | 4.220 | 497,833 | 95.780 | 92.199 | additive_change | 113.0 | 30,759 | 81.7 |
+| yellow_2025-02 | 3,577,543 | 188,388 | 5.266 | 716,019 | 94.734 | 89.731 | additive_change | 163.9 | 21,826 | 53.7 |
 
 ## Stage timings (s)
 
 | partition | read_and_schema | raw_landing | profiling | rules | persist_quality | anomaly | drift |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| yellow_2024-11 | 1.3 | 41.7 | 7.2 | 15.2 | 44.9 | 58.4 | - |
-| yellow_2024-12 | 1.8 | 95.9 | 7.7 | 16.1 | 39.8 | 41.4 | 8.7 |
-| yellow_2025-01 | 0.8 | 127.3 | 3.2 | 12.2 | 36.3 | 41.0 | 7.6 |
-| yellow_2025-02 | 1.3 | 101.0 | 2.1 | 8.9 | 31.6 | 23.1 | 4.1 |
+| yellow_2024-11 | 0.5 | 71.5 | 2.1 | 7.4 | 12.0 | 22.1 | - |
+| yellow_2024-12 | 0.4 | 67.6 | 2.8 | 5.6 | 16.8 | 19.3 | 2.8 |
+| yellow_2025-01 | 0.2 | 62.2 | 1.8 | 7.3 | 18.7 | 19.6 | 3.0 |
+| yellow_2025-02 | 0.3 | 91.0 | 2.0 | 9.4 | 39.3 | 19.0 | 2.8 |
 
 ## Rule failures (failed rows / failure rate %)
 
@@ -84,36 +84,36 @@ All values below are read from the warehouse / report files; regenerate with `py
 
 | partition | method | scored | flagged | % | runtime s |
 |---|---|---:|---:|---:|---:|
-| yellow_2024-11 | iqr | 3,572,569 | 311,070 | 8.707 | 2.89 |
-| yellow_2024-11 | iqr_log | 3,572,569 | 4,849 | 0.136 | 3.49 |
-| yellow_2024-11 | isolation_forest | 3,572,569 | 33,683 | 0.943 | 42.26 |
-| yellow_2024-11 | zscore | 3,572,569 | 62,322 | 1.744 | 0.94 |
-| yellow_2024-12 | iqr | 3,587,974 | 316,460 | 8.820 | 3.27 |
-| yellow_2024-12 | iqr_log | 3,587,974 | 4,301 | 0.120 | 2.86 |
-| yellow_2024-12 | isolation_forest | 3,587,974 | 35,614 | 0.993 | 28.22 |
-| yellow_2024-12 | zscore | 3,587,974 | 60,619 | 1.690 | 0.90 |
-| yellow_2025-01 | iqr | 3,328,587 | 295,939 | 8.891 | 1.87 |
-| yellow_2025-01 | iqr_log | 3,328,587 | 6,828 | 0.205 | 2.55 |
-| yellow_2025-01 | isolation_forest | 3,328,587 | 33,251 | 0.999 | 32.66 |
-| yellow_2025-01 | zscore | 3,328,587 | 62,158 | 1.867 | 0.77 |
-| yellow_2025-02 | iqr | 3,389,155 | 267,919 | 7.905 | 1.59 |
-| yellow_2025-02 | iqr_log | 3,389,155 | 5,974 | 0.176 | 1.52 |
-| yellow_2025-02 | isolation_forest | 3,389,155 | 33,890 | 1.000 | 17.56 |
-| yellow_2025-02 | zscore | 3,389,155 | 70,776 | 2.088 | 0.41 |
+| yellow_2024-11 | iqr | 3,572,569 | 311,070 | 8.707 | 1.08 |
+| yellow_2024-11 | iqr_log | 3,572,569 | 4,849 | 0.136 | 1.85 |
+| yellow_2024-11 | isolation_forest | 3,572,569 | 33,683 | 0.943 | 16.87 |
+| yellow_2024-11 | zscore | 3,572,569 | 62,322 | 1.744 | 0.64 |
+| yellow_2024-12 | iqr | 3,587,974 | 316,460 | 8.820 | 1.25 |
+| yellow_2024-12 | iqr_log | 3,587,974 | 4,301 | 0.120 | 1.19 |
+| yellow_2024-12 | isolation_forest | 3,587,974 | 35,614 | 0.993 | 14.59 |
+| yellow_2024-12 | zscore | 3,587,974 | 60,619 | 1.690 | 0.33 |
+| yellow_2025-01 | iqr | 3,328,587 | 295,939 | 8.891 | 1.70 |
+| yellow_2025-01 | iqr_log | 3,328,587 | 6,828 | 0.205 | 1.39 |
+| yellow_2025-01 | isolation_forest | 3,328,587 | 33,251 | 0.999 | 14.59 |
+| yellow_2025-01 | zscore | 3,328,587 | 62,158 | 1.867 | 0.40 |
+| yellow_2025-02 | iqr | 3,389,155 | 267,919 | 7.905 | 1.84 |
+| yellow_2025-02 | iqr_log | 3,389,155 | 5,974 | 0.176 | 1.08 |
+| yellow_2025-02 | isolation_forest | 3,389,155 | 33,890 | 1.000 | 14.22 |
+| yellow_2025-02 | zscore | 3,389,155 | 70,776 | 2.088 | 0.36 |
 
 ## Benchmark on injected errors (yellow_2025-01, 200,000 real rule-clean records + 4,363 labelled errors, seed 42)
 
 | detector | precision | recall | FPR | flagged | runtime s |
 |---|---:|---:|---:|---:|---:|
-| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.289 |
-| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.289 |
-| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.073 |
+| rules_critical | 1.0 | 0.6677 | 0.0 | 2,913 | 0.205 |
+| rules_critical_plus_warning | 1.0 | 0.6773 | 0.0 | 2,955 | 0.205 |
+| iqr | 0.0753 | 0.3585 | 0.098046 | 20,781 | 0.05 |
 | rules_critical+iqr | 0.1657 | 0.8746 | 0.098046 | 23,033 |  |
-| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.054 |
+| iqr_log | 0.7528 | 0.3064 | 0.00224 | 1,776 | 0.051 |
 | rules_critical+iqr_log | 0.8777 | 0.7222 | 0.00224 | 3,590 |  |
-| zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.018 |
+| zscore | 0.3476 | 0.2026 | 0.008464 | 2,543 | 0.03 |
 | rules_critical+zscore | 0.6748 | 0.7889 | 0.008464 | 5,101 |  |
-| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 2.077 |
+| isolation_forest | 0.0994 | 0.0456 | 0.009204 | 2,003 | 2.002 |
 | rules_critical+isolation_forest | 0.628 | 0.6981 | 0.009204 | 4,850 |  |
 
 ### Recall by error type
@@ -151,10 +151,10 @@ identical quality results: True · raw rows not duplicated: True
 
 | partition | score ref | score rerun | quarantined ref | quarantined rerun | raw rows | duration ref s | duration rerun s | rerun raw landing s |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| yellow_2024-11 | 95.1516 | 95.1516 | 73,800 | 73,800 | 3,646,369 | 168.6 | 53.9 | 3.3 |
-| yellow_2024-12 | 95.2894 | 95.2894 | 80,397 | 80,397 | 3,668,371 | 211.5 | 80.1 | 4.0 |
-| yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 228.3 | 113.0 | 20.7 |
-| yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 172.0 | 193.7 | 6.7 |
+| yellow_2024-11 | 95.1516 | 95.1516 | 73,800 | 73,800 | 3,646,369 | 115.5 | 66.3 | 2.1 |
+| yellow_2024-12 | 95.2894 | 95.2894 | 80,397 | 80,397 | 3,668,371 | 115.2 | 74.8 | 6.2 |
+| yellow_2025-01 | 92.1991 | 92.1991 | 146,639 | 146,639 | 3,475,226 | 113.0 | 101.1 | 4.5 |
+| yellow_2025-02 | 89.7306 | 89.7306 | 188,388 | 188,388 | 3,577,543 | 163.9 | 143.2 | 16.8 |
 
 ## Manual review of real anomalies
 

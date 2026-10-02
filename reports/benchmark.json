@@ -287,18 +287,18 @@
     }
   },
   "runtime_s": {
-    "rules": 0.289,
-    "iqr": 0.073,
-    "iqr_log": 0.054,
-    "zscore": 0.018,
-    "isolation_forest": 2.077
+    "rules": 0.205,
+    "iqr": 0.05,
+    "iqr_log": 0.051,
+    "zscore": 0.03,
+    "isolation_forest": 2.002
   },
   "rows_per_sec": {
-    "rules": 692667,
-    "iqr": 2734081,
-    "iqr_log": 3685230,
-    "zscore": 10854194,
-    "isolation_forest": 96474
+    "rules": 979713,
+    "iqr": 4017811,
+    "iqr_log": 3949176,
+    "zscore": 6598659,
+    "isolation_forest": 100077
   },
   "seed": 42
 }

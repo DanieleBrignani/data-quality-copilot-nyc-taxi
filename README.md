@@ -2,7 +2,7 @@
 
 **14,367,509 real NYC TLC trips · 4 monthly partitions · 21 versioned rules · 489,224 records quarantined (3.41%), 0 silently lost · 1 real schema change and 9 drift alerts detected · deterministic rules: precision 1.00 / recall 1.00 on every contract-violating error type · Isolation Forest: precision 0.10 on the same benchmark · the Feb-2025 partition breaches the 95% valid-record SLO, and the system says so.**
 
-All numbers in this README are read from `reports/results.md`, which `scripts/reproduce.sh` regenerates from scratch (raw files → wiped warehouse → pipeline → rerun → dbt → Soda → failure demo → benchmark → report). End-to-end processing of the 14.4M rows: 780 s (18,410 rows/s) on a 16-logical-core / 16 GB Windows machine (Docker Desktop).
+All numbers in this README are read from `reports/results.md`, which `scripts/reproduce.sh` regenerates from scratch (raw files → wiped warehouse → pipeline → rerun → dbt → Soda → failure demo → benchmark → report). End-to-end processing of the 14.4M rows: 508 s (28,308 rows/s) on a 16-logical-core / 16 GB Windows machine (Docker Desktop).
 
 ---
 
@@ -181,15 +181,15 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 
 | partition | rows | quarantined | % | warning-only (kept) | valid % | quality score | schema vs contract | duration s | rows/s |
 |---|---:|---:|---:|---:|---:|---:|---|---:|---:|
-| yellow_2024-11 | 3,646,369 | 73,800 | 2.02 | 411,958 | 97.98 | 95.15 | ok | 169 | 21,629 |
-| yellow_2024-12 | 3,668,371 | 80,397 | 2.19 | 369,614 | 97.81 | 95.29 | ok | 211 | 17,346 |
-| yellow_2025-01 | 3,475,226 | 146,639 | 4.22 | 497,833 | 95.78 | 92.20 | additive_change | 228 | 15,222 |
-| yellow_2025-02 | 3,577,543 | 188,388 | 5.27 | 716,019 | 94.73 | 89.73 | additive_change | 172 | 20,794 |
-| **total** | **14,367,509** | **489,224** | **3.41** | 1,995,424 | | | | **780** | **18,410** |
+| yellow_2024-11 | 3,646,369 | 73,800 | 2.02 | 411,958 | 97.98 | 95.15 | ok | 115 | 31,575 |
+| yellow_2024-12 | 3,668,371 | 80,397 | 2.19 | 369,614 | 97.81 | 95.29 | ok | 115 | 31,849 |
+| yellow_2025-01 | 3,475,226 | 146,639 | 4.22 | 497,833 | 95.78 | 92.20 | additive_change | 113 | 30,759 |
+| yellow_2025-02 | 3,577,543 | 188,388 | 5.27 | 716,019 | 94.73 | 89.73 | additive_change | 164 | 21,826 |
+| **total** | **14,367,509** | **489,224** | **3.41** | 1,995,424 | | | | **508** | **28,308** |
 
 - Schema changes detected between consecutive partitions: **1** (unexpected / breaking: 0). Drift: **9 alerts**, 2 warnings.
-- Stage times (s, reference run): raw landing 42–127 · rules 9–16 · persisting quality results 32–45 · anomaly detection 23–58 · profiling 2–8 · drift 4–9. Wall-clock times on this shared Docker Desktop host vary by up to ~2× between runs (the rerun of 2025-02 took 194 s vs 172 s); the counts and scores are bit-for-bit identical.
-- **Rerun on identical inputs**: identical scores and quarantine counts for all four partitions, raw landing skipped by sha256 (3–21 s instead of 42–127 s), 0 duplicated raw rows, 0 new quarantine rows (`reports/results.md` → *Rerun check*).
+- Stage times (s, reference run): raw landing 62–91 · rules 6–9 · persisting quality results 12–39 · anomaly detection 19–22 · profiling 2–3 · drift 3. Wall-clock times on this shared Docker Desktop host vary by up to ~2× between runs (two full reproductions took 780 s and 508 s for the same reference run); the counts and scores are bit-for-bit identical.
+- **Rerun on identical inputs**: identical scores and quarantine counts for all four partitions, raw landing skipped by sha256 (2–17 s instead of 62–91 s), 0 duplicated raw rows, 0 new quarantine rows (`reports/results.md` → *Rerun check*).
 - Quarantine table: 737,524 (record, rule) rows for 489,224 records, 1.08 GB including indexes and the JSONB original records.
 
 **Reading the numbers**
@@ -206,15 +206,15 @@ See [`reports/results.md`](reports/results.md) for every table. Reference run (f
 
 | detector | precision | recall | false-positive rate | flagged | runtime s (204k rows) |
 |---|---:|---:|---:|---:|---:|
-| rules_critical | 1.00 | 0.67 | 0.00% | 2,913 | 0.289 |
-| rules_critical_plus_warning | 1.00 | 0.68 | 0.00% | 2,955 | 0.289 |
-| iqr | 0.08 | 0.36 | 9.80% | 20,781 | 0.073 |
+| rules_critical | 1.00 | 0.67 | 0.00% | 2,913 | 0.205 |
+| rules_critical_plus_warning | 1.00 | 0.68 | 0.00% | 2,955 | 0.205 |
+| iqr | 0.08 | 0.36 | 9.80% | 20,781 | 0.05 |
 | rules_critical+iqr | 0.17 | 0.87 | 9.80% | 23,033 |  |
-| iqr_log | 0.75 | 0.31 | 0.22% | 1,776 | 0.054 |
+| iqr_log | 0.75 | 0.31 | 0.22% | 1,776 | 0.051 |
 | rules_critical+iqr_log | 0.88 | 0.72 | 0.22% | 3,590 |  |
-| zscore | 0.35 | 0.20 | 0.85% | 2,543 | 0.018 |
+| zscore | 0.35 | 0.20 | 0.85% | 2,543 | 0.03 |
 | rules_critical+zscore | 0.67 | 0.79 | 0.85% | 5,101 |  |
-| isolation_forest | 0.10 | 0.05 | 0.92% | 2,003 | 2.077 |
+| isolation_forest | 0.10 | 0.05 | 0.92% | 2,003 | 2.002 |
 | rules_critical+isolation_forest | 0.63 | 0.70 | 0.92% | 4,850 |  |
 
 Recall by error type:
@@ -238,7 +238,7 @@ Recall by error type:
 - Rules: **precision 1.00, recall 1.00 on every rule-detectable type**, 0.00 on every plausible type → overall recall 0.67. FPR is 0 **by construction** here (negatives were selected as rule-clean) — an upper bound, not a claim that rules never misfire; the real-data false positives of the rules are the ambiguous Flex Fare cases discussed above.
 - Plain IQR has the highest standalone recall (0.36) at a useless **9.8% FPR** (19,217 false alarms on 196,000 clean rows).
 - **log-IQR is the best complement**: FPR 0.22%; *rules + log-IQR* = precision 0.88, recall 0.72.
-- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~38× slower than log-IQR (2.08 s vs 0.054 s on 204k rows).
+- **Isolation Forest is the worst detector on this data**: precision 0.10, recall 0.05, and ~39× slower than log-IQR (2.00 s vs 0.051 s on 204k rows).
 - Nothing catches **swapped PU/DO zones** (≤ 8%): detecting it would need a zone-pair distance reference — listed under limitations.
 
 **2. Manual inspection of real anomalies.** 40 randomly sampled (seed 11) Isolation-Forest flags on rule-valid Jan-2025 data, inspected record by record against explicit criteria — $/mile, implied speed, RatecodeID vs zones (JFK flat fare $70, Newark, Nassau/Westchester), distance/duration vs fare (`reports/anomaly_review_labels.csv`, with a note per record):
@@ -268,7 +268,7 @@ Targets were set after measuring the first two partitions (valid rate ≈ 97.8�
 | quality score | ≥ 92 | 95.15 ✅ | 95.29 ✅ | 92.20 ✅ | **89.73 ❌** |
 | unexpected schema changes | 0 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
 | source freshness (TLC publication lag) | ≤ 75 days | 47.8 ✅ | 51.9 ✅ | **81.7 ❌** | 53.7 ✅ |
-| run duration per partition | ≤ 900 s | 169 s ✅ | 212 s ✅ | 228 s ✅ | 172 s ✅ |
+| run duration per partition | ≤ 900 s | 115 s ✅ | 115 s ✅ | 113 s ✅ | 164 s ✅ |
 
 Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --slo` both fail on 2025-02 (logs in `reports/`). The 2025-01 freshness breach reflects the current `Last-Modified` of the TLC file (the file was re-published in April 2025), not necessarily the original publication date — a limitation of using HTTP metadata as the freshness signal. *Data age* at run time (≈ 590 days) is not an SLO: this is a deliberate historical backfill.
 
@@ -320,7 +320,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Warnings don't quarantine.** Quarantining `passenger_count IS NULL` would remove 10–23% of trips whose fares are fine.
 - **Drift on the input (pre-rules) distribution.** Rule failures that surge (e.g. negative fares) show up in drift too — intentional: drift is about what upstream sends.
 - **Record-level quality score** (sensitive, interpretable) over mean rule pass rate (always ≈ 99.9).
-- **Raw landing in Postgres** (42–127 s/partition, the slowest stage) buys SQL lineage from any curated row back to the source row; a lakehouse (DuckDB/Iceberg) would be faster.
+- **Raw landing in Postgres** (62–91 s/partition, the slowest stage) buys SQL lineage from any curated row back to the source row; a lakehouse (DuckDB/Iceberg) would be faster.
 - **Isolation Forest kept** in the pipeline despite poor results — as a measured baseline that justifies the choice of log-IQR, not as a control.
 
 ## What Failed and What I Changed
@@ -336,7 +336,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 | "2 schema changes detected" | the same added column counted in two partitions | explicit schema diff vs previous partition → 1 change |
 | Quarantine build | 40–50 s per partition | per-rule assembly on the failing subset → 0.5 s |
 | Record flags | 34 s per partition | filter failing rows before building lists → 4 s |
-| Raw load | 79 s with row-by-row index maintenance | COPY into an index-free table + `ATTACH PARTITION`; still 42–127 s — the remaining bottleneck |
+| Raw load | 79 s with row-by-row index maintenance | COPY into an index-free table + `ATTACH PARTITION`; still 62–91 s — the remaining bottleneck |
 | dbt `fct_clean_trips` | `No space left on device` (Docker `/dev/shm` = 64 MB) | `shm_size: 1g` |
 | Soda Core | `ModuleNotFoundError: distutils` on Python 3.13 | `setuptools` shim pinned in the `soda` extra |
 | Copilot template | suggested querying quarantine for *warning* rules | severity-aware investigation steps |
