@@ -55,7 +55,7 @@ flowchart TD
 | API + metrics exporter | FastAPI, prometheus-client | `api/main.py` |
 | Monitoring | Prometheus (+ alert rules), Grafana (provisioned) | `infra/` |
 | Dashboard | Streamlit + Altair | `dashboard/app.py` |
-| Copilot | Anthropic API (`claude-opus-5-5`) or deterministic template | `src/dqc/copilot.py` |
+| Copilot | built-in deterministic analyzer (default, no API key); optional Anthropic API (`claude-opus-5-5`) | `src/dqc/copilot.py` |
 | Tests / CI | pytest, GitHub Actions | `tests/`, `.github/workflows/ci.yml` |
 
 **Evidently was not used**: PSI/KS/null-rate/cardinality are ~120 lines in `drift.py`, fully tested, and persisted in the same warehouse as everything else. Evidently's HTML reports would add a heavy dependency without adding a metric we need.
@@ -168,12 +168,19 @@ Runs only after detection. `python -m dqc copilot` / `POST /copilot/explain`:
 
 1. picks the highest-impact incidents from `dq.*` (failed rows × severity × week-on-week jump; drift by distance above threshold),
 2. builds an **evidence** JSON from warehouse facts only (rule definition, counts, previous-partition rate, 8 quarantined samples, vendor × payment breakdown),
-3. calls `claude-opus-5-5` with a JSON-schema-constrained output (`summary, likely_causes, investigation_steps, remediation_suggestion, candidate_rule, confidence`) — or, without `ANTHROPIC_API_KEY`, a **deterministic template** that uses the same evidence,
+3. produces `summary, likely_causes, investigation_steps, remediation_suggestion, candidate_rule, confidence` with one of two providers: the **built-in deterministic analyzer** (default — no API key, no network, fully reproducible) or, only if `ANTHROPIC_API_KEY` is set, `claude-opus-5-5` with a JSON-schema-constrained output,
 4. stores it in `dq.copilot_suggestions` with the evidence, its sha256, provider, model, prompt version, label **"SUGGESTION — not verified, requires human review"** and `status='proposed'`.
 
 It **cannot** change data by construction, not by prompt: it writes through the Postgres role `dqc_copilot`, which has `INSERT` on `dq.copilot_suggestions` and nothing else (no `UPDATE` on quarantine, no access to `raw`/`analytics` — tested). Accepting a suggestion (`PATCH /copilot/suggestions/{id}`) records a decision; a rule change still goes through a PR, a version bump and the CI gate.
 
-The suggestions currently in `reports/copilot_suggestions.json` were produced by the **deterministic template** (no API key in the build environment); the LLM path is implemented but its output quality has **not** been evaluated here.
+**The project needs no API key.** The built-in analyzer computes its explanation from the evidence: which (VendorID, payment_type) segment concentrates the failures and at what in-segment rate, whether the segment fails systematically (≈100%), the trend across partitions, which segment drives the change versus the previous partition, and — for drift — which payment-type share moved and which schema events happened in the same month. When one segment holds ≥ 50% of the failures at an in-segment rate ≥ 30% it proposes a candidate rule in YAML (explicitly marked as not implemented). Real output on the Feb-2025 incident (`reports/copilot_suggestions.json`):
+
+> DQ021_fare_amount_range (v1, critical) failed 182,661 of 3,577,543 records (5.106%) in yellow_2025-02. Trend: 1.960% -> 2.139% -> 4.147% -> 5.106%.
+> - 70.0% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 127,878 of its 695,049 records fail (18.4%, 3.6x the partition-wide rate).
+> - 100.0% of that segment's failing records still have a non-negative total_amount: fare_amount looks like an adjustment component there, not a reversed trip (hypothesis for the source owner).
+> - Remediation: keep the records quarantined until the source owner confirms; do not relax the rule to meet the SLO.
+
+It covers the incident shapes it was written for (segment concentration, trend, share shifts); it does not reason about novel situations — that is what the optional LLM provider is for. The LLM path is implemented but was **never executed** in this build (no API key), so its output quality is not evaluated here.
 
 ## Results
 
@@ -274,7 +281,7 @@ Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --sl
 
 ## Testing
 
-`pytest` — 42 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
+`pytest` — 46 unit tests (no DB) + 5 integration tests against an isolated Postgres database (`-m db`):
 
 | requirement | test |
 |---|---|
@@ -289,6 +296,7 @@ Breaches are reported, not hidden: Soda's SLO check and `python -m dqc gate --sl
 | duplicate ingestion / idempotent reruns | `test_ingest.py::test_ingestion_is_idempotent_and_raw_is_read_only`, `test_pipeline_db.py::test_duplicate_ingestion_and_rerun_are_idempotent` |
 | raw immutability | `test_tampered_raw_file_is_detected`, `test_raw_integrity_violation_fails_the_run` |
 | audit / least privilege | `test_review_is_audited_and_copilot_role_cannot_touch_data` |
+| copilot (no API) | `test_copilot.py` (systematic segment + candidate rule, diffuse failures → low confidence, negative fare with positive total, null-rate drift linked to payment type) |
 | CI gate | `test_gate.py` (degraded data fails, schema regression fails, unexplained improvement fails) |
 
 Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contract, **no silent loss**, no quarantined record in clean) and Soda: 19 checks — 18 pass, the valid-record-rate SLO check fails on 2025-02 by design of the data, not of the code.
@@ -351,7 +359,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 - **Swapped zones and other plausible errors** are undetected; a zone-pair distance/fare model would be the next control.
 - **Freshness** uses HTTP `Last-Modified`, which changes on re-publication.
 - **Single machine** (16 logical cores, 16 GB, Docker Desktop/WSL2). Throughput numbers are for that host; raw landing dominates.
-- **LLM path not evaluated** (no API key in the build environment); only the deterministic template produced the stored suggestions.
+- **Optional LLM provider never executed** (no API key in the build environment). All stored suggestions come from the built-in deterministic analyzer, which only handles the incident shapes it was coded for.
 - **Only Yellow Taxi**; green/FHV have different schemas and would need their own contracts.
 - `code_version` falls back to the package version when the directory is not a git repository.
 
@@ -367,7 +375,7 @@ python -m dqc run
 docker compose up -d            # API :8000, Streamlit :8502, Prometheus :9091, Grafana :3001
 ```
 
-Everything, from scratch, including the numbers in this README: `PY=python scripts/reproduce.sh`. Orchestrated: `python flows/quality_flow.py` (Prefect). Optional LLM: `export ANTHROPIC_API_KEY=...` then `python -m dqc copilot`.
+Everything, from scratch, including the numbers in this README: `PY=python scripts/reproduce.sh`. Orchestrated: `python flows/quality_flow.py` (Prefect). Copilot: `python -m dqc copilot` (no API key needed; set `ANTHROPIC_API_KEY` only to try the optional LLM provider).
 
 ## Final Answer
 

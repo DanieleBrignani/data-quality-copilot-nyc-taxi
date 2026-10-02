@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T18:29:36+00:00",
+  "generated_at": "2026-10-02T19:07:32+00:00",
   "totals": {
     "partitions": 4,
     "records_processed": 14367509,
@@ -1604,6 +1604,11 @@
     "no_duplicate_rows": true
   },
   "copilot": [
+    {
+      "provider": "deterministic_analyzer",
+      "status": "proposed",
+      "n": 11
+    },
     {
       "provider": "deterministic_template",
       "status": "proposed",

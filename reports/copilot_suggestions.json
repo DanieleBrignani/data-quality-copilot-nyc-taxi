@@ -1,129 +1,141 @@
 [
   {
-    "suggestion_id": 1,
+    "suggestion_id": 12,
     "incident_ref": "df60234c-129b-409e-a57c-a905e867b532/yellow_2025-01/DQ002_passenger_count_not_null",
-    "provider": "deterministic_template",
+    "provider": "deterministic_analyzer",
     "model": null,
     "label": "SUGGESTION \u2014 not verified, requires human review",
     "response": {
-      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 540,149 of 3,475,226 records (15.543%) in yellow_2025-01.",
+      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 540,149 of 3,475,226 records (15.543%) in yellow_2025-01. Trend: 10.248% -> 8.895% -> 15.543%.",
       "likely_causes": [
-        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share",
-        "Failure rate is 1.7x the previous partition: likely an upstream behaviour change"
+        "83.6% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 451,456 of its 451,456 records fail (100.0%, 6.4x the partition-wide rate).",
+        "Every record of that segment fails: this is how the segment is reported upstream (systematic), not random corruption.",
+        "Versus yellow_2024-12 failures rose by 213,858; VendorID=2 / payment_type=0 (Flex Fare) alone accounts for +193,355 (90% of the increase)."
       ],
       "investigation_steps": [
         "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2025-01' LIMIT 100",
-        "Break down failures by VendorID, payment_type and pickup date"
+        "Ask the owner of VendorID=2 / payment_type=0 (Flex Fare) data whether the pattern is intended; check the TLC data dictionary revision for that month.",
+        "Plot the daily failure count of that segment to find the exact start date of the change."
       ],
-      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm whether the pattern is expected before changing severity.",
       "candidate_rule": {
-        "rule_id": "",
-        "severity": "",
-        "description": "",
-        "yaml": ""
+        "rule_id": "DQ002b_passenger_count_not_null_payment_type_0",
+        "severity": "warning",
+        "description": "Track the VendorID=2 / payment_type=0 (Flex Fare) pattern separately instead of mixing it with the rest of DQ002_passenger_count_not_null; decide its severity once the source owner confirms the semantics.",
+        "yaml": "- rule_id: DQ002b_passenger_count_not_null_payment_type_0\n  rule_version: 1\n  severity: warning\n  dimension: completeness\n  type: same_as:DQ002_passenger_count_not_null\n  only_payment_types: [0]\n  description: >\n    Same check as DQ002_passenger_count_not_null, restricted to payment_type=0 (Flex Fare).\n# and on DQ002_passenger_count_not_null: add  skip_payment_types: [0]  and bump rule_version\n# NOTE: `only_payment_types` / `same_as` are not implemented in the engine yet. This is a\n# proposal to be reviewed, implemented, tested and passed through the CI gate."
       },
-      "confidence": "low"
+      "confidence": "medium"
     }
   },
   {
-    "suggestion_id": 2,
+    "suggestion_id": 13,
     "incident_ref": "df60234c-129b-409e-a57c-a905e867b532/yellow_2025-01/DQ021_fare_amount_range",
-    "provider": "deterministic_template",
+    "provider": "deterministic_analyzer",
     "model": null,
     "label": "SUGGESTION \u2014 not verified, requires human review",
     "response": {
-      "summary": "DQ021_fare_amount_range (v1, critical) failed 144,121 of 3,475,226 records (4.147%) in yellow_2025-01. Top segments: payment_type=0/vendor=2: 84822, payment_type=4/vendor=2: 37405, payment_type=2/vendor=2: 13804.",
+      "summary": "DQ021_fare_amount_range (v1, critical) failed 144,121 of 3,475,226 records (4.147%) in yellow_2025-01. Trend: 1.960% -> 2.139% -> 4.147%.",
       "likely_causes": [
-        "Negative amounts are typically reversal/void/dispute accounting entries (payment_type 3/4/0)",
-        "Failure rate is 1.9x the previous partition: likely an upstream behaviour change"
+        "58.9% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 84,822 of its 451,456 records fail (18.8%, 4.5x the partition-wide rate).",
+        "96.0% of that segment's failing records still have a non-negative total_amount: fare_amount looks like an adjustment component there, not a reversed trip (hypothesis for the source owner).",
+        "Versus yellow_2024-12 failures rose by 65,671; VendorID=2 / payment_type=0 (Flex Fare) alone accounts for +75,116 (more than the whole net increase, because other segments fell)."
       ],
       "investigation_steps": [
         "SELECT original_record FROM dq.quarantine WHERE failed_rule='DQ021_fare_amount_range' AND partition_id='yellow_2025-01' LIMIT 100",
-        "Break down failures by VendorID, payment_type and pickup date"
+        "Ask the owner of VendorID=2 / payment_type=0 (Flex Fare) data whether the pattern is intended; check the TLC data dictionary revision for that month.",
+        "Plot the daily failure count of that segment to find the exact start date of the change."
       ],
-      "remediation_suggestion": "Confirm with the source owner; keep records quarantined until reviewed.",
+      "remediation_suggestion": "Keep the records quarantined until the source owner confirms; do not relax the rule to meet the SLO.",
       "candidate_rule": {
         "rule_id": "",
         "severity": "",
         "description": "",
         "yaml": ""
       },
-      "confidence": "low"
+      "confidence": "medium"
     }
   },
   {
-    "suggestion_id": 3,
+    "suggestion_id": 14,
     "incident_ref": "df60234c-129b-409e-a57c-a905e867b532/yellow_2025-02/DQ002_passenger_count_not_null",
-    "provider": "deterministic_template",
+    "provider": "deterministic_analyzer",
     "model": null,
     "label": "SUGGESTION \u2014 not verified, requires human review",
     "response": {
-      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 806,937 of 3,577,543 records (22.556%) in yellow_2025-02.",
+      "summary": "DQ002_passenger_count_not_null (v1, warning) failed 806,937 of 3,577,543 records (22.556%) in yellow_2025-02. Trend: 10.248% -> 8.895% -> 15.543% -> 22.556%.",
       "likely_causes": [
-        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share"
+        "86.1% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 695,049 of its 695,049 records fail (100.0%, 4.4x the partition-wide rate).",
+        "Every record of that segment fails: this is how the segment is reported upstream (systematic), not random corruption.",
+        "Versus yellow_2025-01 failures rose by 266,788; VendorID=2 / payment_type=0 (Flex Fare) alone accounts for +243,593 (91% of the increase)."
       ],
       "investigation_steps": [
         "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2025-02' LIMIT 100",
-        "Break down failures by VendorID, payment_type and pickup date"
+        "Ask the owner of VendorID=2 / payment_type=0 (Flex Fare) data whether the pattern is intended; check the TLC data dictionary revision for that month.",
+        "Plot the daily failure count of that segment to find the exact start date of the change."
       ],
-      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm whether the pattern is expected before changing severity.",
       "candidate_rule": {
-        "rule_id": "",
-        "severity": "",
-        "description": "",
-        "yaml": ""
+        "rule_id": "DQ002b_passenger_count_not_null_payment_type_0",
+        "severity": "warning",
+        "description": "Track the VendorID=2 / payment_type=0 (Flex Fare) pattern separately instead of mixing it with the rest of DQ002_passenger_count_not_null; decide its severity once the source owner confirms the semantics.",
+        "yaml": "- rule_id: DQ002b_passenger_count_not_null_payment_type_0\n  rule_version: 1\n  severity: warning\n  dimension: completeness\n  type: same_as:DQ002_passenger_count_not_null\n  only_payment_types: [0]\n  description: >\n    Same check as DQ002_passenger_count_not_null, restricted to payment_type=0 (Flex Fare).\n# and on DQ002_passenger_count_not_null: add  skip_payment_types: [0]  and bump rule_version\n# NOTE: `only_payment_types` / `same_as` are not implemented in the engine yet. This is a\n# proposal to be reviewed, implemented, tested and passed through the CI gate."
       },
-      "confidence": "low"
+      "confidence": "medium"
     }
   },
   {
-    "suggestion_id": 4,
+    "suggestion_id": 15,
     "incident_ref": "df60234c-129b-409e-a57c-a905e867b532/yellow_2025-02/DQ021_fare_amount_range",
-    "provider": "deterministic_template",
+    "provider": "deterministic_analyzer",
     "model": null,
     "label": "SUGGESTION \u2014 not verified, requires human review",
     "response": {
-      "summary": "DQ021_fare_amount_range (v1, critical) failed 182,661 of 3,577,543 records (5.106%) in yellow_2025-02. Top segments: payment_type=0/vendor=2: 127878, payment_type=4/vendor=2: 34858, payment_type=2/vendor=2: 12912.",
+      "summary": "DQ021_fare_amount_range (v1, critical) failed 182,661 of 3,577,543 records (5.106%) in yellow_2025-02. Trend: 1.960% -> 2.139% -> 4.147% -> 5.106%.",
       "likely_causes": [
-        "Negative amounts are typically reversal/void/dispute accounting entries (payment_type 3/4/0)"
+        "70.0% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 127,878 of its 695,049 records fail (18.4%, 3.6x the partition-wide rate).",
+        "100.0% of that segment's failing records still have a non-negative total_amount: fare_amount looks like an adjustment component there, not a reversed trip (hypothesis for the source owner).",
+        "Versus yellow_2025-01 failures rose by 38,540; VendorID=2 / payment_type=0 (Flex Fare) alone accounts for +43,056 (more than the whole net increase, because other segments fell)."
       ],
       "investigation_steps": [
         "SELECT original_record FROM dq.quarantine WHERE failed_rule='DQ021_fare_amount_range' AND partition_id='yellow_2025-02' LIMIT 100",
-        "Break down failures by VendorID, payment_type and pickup date"
+        "Ask the owner of VendorID=2 / payment_type=0 (Flex Fare) data whether the pattern is intended; check the TLC data dictionary revision for that month.",
+        "Plot the daily failure count of that segment to find the exact start date of the change."
       ],
-      "remediation_suggestion": "Confirm with the source owner; keep records quarantined until reviewed.",
+      "remediation_suggestion": "Keep the records quarantined until the source owner confirms; do not relax the rule to meet the SLO.",
       "candidate_rule": {
         "rule_id": "",
         "severity": "",
         "description": "",
         "yaml": ""
       },
-      "confidence": "low"
+      "confidence": "medium"
     }
   },
   {
-    "suggestion_id": 5,
+    "suggestion_id": 16,
     "incident_ref": "df60234c-129b-409e-a57c-a905e867b532/yellow_2024-11/DQ002_passenger_count_not_null",
-    "provider": "deterministic_template",
+    "provider": "deterministic_analyzer",
     "model": null,
     "label": "SUGGESTION \u2014 not verified, requires human review",
     "response": {
       "summary": "DQ002_passenger_count_not_null (v1, warning) failed 373,674 of 3,646,369 records (10.248%) in yellow_2024-11.",
       "likely_causes": [
-        "passenger_count nulls co-occur with payment_type=0 (Flex Fare); growth tracks Flex Fare share"
+        "81.0% of the failures come from VendorID=2 / payment_type=0 (Flex Fare): 302,537 of its 302,537 records fail (100.0%, 9.8x the partition-wide rate).",
+        "Every record of that segment fails: this is how the segment is reported upstream (systematic), not random corruption."
       ],
       "investigation_steps": [
         "SELECT t.* FROM analytics.fct_clean_trips t WHERE 'DQ002_passenger_count_not_null' = ANY(t.failed_warning_rules) AND t.partition_id='yellow_2024-11' LIMIT 100",
-        "Break down failures by VendorID, payment_type and pickup date"
+        "Ask the owner of VendorID=2 / payment_type=0 (Flex Fare) data whether the pattern is intended; check the TLC data dictionary revision for that month.",
+        "Plot the daily failure count of that segment to find the exact start date of the change."
       ],
-      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm with the source owner whether the pattern is expected.",
+      "remediation_suggestion": "Records stay in the curated layer with a warning flag; confirm whether the pattern is expected before changing severity.",
       "candidate_rule": {
-        "rule_id": "",
-        "severity": "",
-        "description": "",
-        "yaml": ""
+        "rule_id": "DQ002b_passenger_count_not_null_payment_type_0",
+        "severity": "warning",
+        "description": "Track the VendorID=2 / payment_type=0 (Flex Fare) pattern separately instead of mixing it with the rest of DQ002_passenger_count_not_null; decide its severity once the source owner confirms the semantics.",
+        "yaml": "- rule_id: DQ002b_passenger_count_not_null_payment_type_0\n  rule_version: 1\n  severity: warning\n  dimension: completeness\n  type: same_as:DQ002_passenger_count_not_null\n  only_payment_types: [0]\n  description: >\n    Same check as DQ002_passenger_count_not_null, restricted to payment_type=0 (Flex Fare).\n# and on DQ002_passenger_count_not_null: add  skip_payment_types: [0]  and bump rule_version\n# NOTE: `only_payment_types` / `same_as` are not implemented in the engine yet. This is a\n# proposal to be reviewed, implemented, tested and passed through the CI gate."
       },
-      "confidence": "low"
+      "confidence": "medium"
     }
   }
 ]

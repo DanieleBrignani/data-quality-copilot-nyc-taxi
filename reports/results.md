@@ -1,4 +1,4 @@
-# Results (generated 2026-10-02T18:29:36+00:00)
+# Results (generated 2026-10-02T19:07:32+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
