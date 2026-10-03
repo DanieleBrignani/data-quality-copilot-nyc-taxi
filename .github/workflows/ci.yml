@@ -6,10 +6,10 @@ on:
 
 jobs:
   unit-and-gate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.13"}
       - run: pip install -e ".[dev]"
       - name: Lint
@@ -22,7 +22,7 @@ jobs:
         run: python -m dqc gate
 
   integration:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: unit-and-gate
     services:
       postgres:
@@ -42,8 +42,8 @@ jobs:
       DQC_API_KEY: ci-ephemeral-key
       DQC_PG_DB: dqc
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with: {python-version: "3.13"}
       - run: pip install -e ".[dev,dbt,soda]"
       - run: python -m dqc init-db
