@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T23:29:02+00:00",
+  "generated_at": "2026-10-03T00:32:08+00:00",
   "totals": {
     "partitions": 4,
     "records_processed": 14367509,
@@ -2153,7 +2153,7 @@
       "undetermined": 5
     },
     "estimated_false_positive_share": 0.725,
-    "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+    "note": "Verdicts assigned manually by a single reviewer against the criteria documented in the README; not validated by an independent TLC domain expert."
   },
   "models": [
     {
@@ -3611,11 +3611,11 @@
     "verdict_counts": {
       "likely_data_error": 22,
       "flex_fare_semantics": 16,
-      "undetermined": 1,
-      "plausible_legitimate": 1
+      "plausible_legitimate": 1,
+      "undetermined": 1
     },
     "estimated_false_positive_share": 0.025,
-    "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+    "note": "Verdicts assigned manually by a single reviewer against the criteria documented in the README; not validated by an independent TLC domain expert."
   },
   "distance_model_review": {
     "method": "distance_model",
@@ -3625,11 +3625,11 @@
     "seed": 7,
     "verdict_counts": {
       "likely_data_error": 38,
-      "undetermined": 1,
-      "plausible_legitimate": 1
+      "plausible_legitimate": 1,
+      "undetermined": 1
     },
     "estimated_false_positive_share": 0.025,
-    "note": "Verdicts assigned by the project author (AI-assisted build, not an independent TLC domain expert) against the criteria documented in the README."
+    "note": "Verdicts assigned manually by a single reviewer against the criteria documented in the README; not validated by an independent TLC domain expert."
   },
   "rerun_check": {
     "partitions": [

@@ -54,8 +54,8 @@ def summarize(name: str = F.FARE.name) -> dict:
     out = {"method": name, "model_version": residual.latest_version(name), "partition": PARTITION,
            "sample_size": labels.height, "seed": SEED, "verdict_counts": counts,
            "estimated_false_positive_share": round(counts.get("plausible_legitimate", 0) / labels.height, 3),
-           "note": ("Verdicts assigned by the project author (AI-assisted build, not an independent TLC "
-                    "domain expert) against the criteria documented in the README.")}
+           "note": ("Verdicts assigned manually by a single reviewer against the criteria documented in the "
+                    "README; not validated by an independent TLC domain expert.")}
     out_json.write_text(json.dumps(out, indent=2), encoding="utf-8")
     return out
 

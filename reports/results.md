@@ -1,4 +1,4 @@
-# Results (generated 2026-10-02T23:29:02+00:00)
+# Results (generated 2026-10-03T00:32:08+00:00)
 
 All values below are read from the warehouse / report files; regenerate with `python -m dqc report`.
 
@@ -321,8 +321,8 @@ partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
 |---|---:|
 | likely_data_error | 22 |
 | flex_fare_semantics | 16 |
-| undetermined | 1 |
 | plausible_legitimate | 1 |
+| undetermined | 1 |
 
 ## Manual review of real distance_model flags
 
@@ -331,8 +331,8 @@ partition yellow_2025-01 (out-of-time), sample 40 (seed 7)
 | verdict | count |
 |---|---:|
 | likely_data_error | 38 |
-| undetermined | 1 |
 | plausible_legitimate | 1 |
+| undetermined | 1 |
 
 ## Manual review of real anomalies
 

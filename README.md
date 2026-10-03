@@ -416,7 +416,7 @@ Recall by error type:
 | likely data error (0.0 mi / < 1 min trips billed $82–$250; JFK flat-fare code on a 0.6 mi Upper West Side trip) | 6 |
 | undetermined (negotiated fares, very slow Vendor-1 RatecodeID 99 trips) | 5 |
 
-→ **~73% of Isolation Forest flags are false positives** on real data. The 6 true issues suggest two candidate *rules* (zero-distance trips with fare > $X; RatecodeID 2 without a JFK endpoint) — i.e. the anomaly detector's real value was to *discover rules*, not to replace them. The labels were assigned by the project author (AI-assisted build), not an independent TLC domain expert.
+→ **~73% of Isolation Forest flags are false positives** on real data. The 6 true issues suggest two candidate *rules* (zero-distance trips with fare > $X; RatecodeID 2 without a JFK endpoint) — i.e. the anomaly detector's real value was to *discover rules*, not to replace them. The labels were assigned manually by a single reviewer against those criteria, not by an independent TLC domain expert.
 
 **3. Manual inspection of real model flags.** Same procedure, 40 random flags per model (seed 7) from Jan-2025, a month neither model saw (`reports/fare_model_review_labels.csv`, `reports/distance_model_review_labels.csv`):
 
@@ -431,7 +431,7 @@ Recall by error type:
 - **Distance model:** 35 of the 38 errors are the same pattern — a trip between two **different** zones lasting 13–91 minutes with a recorded distance of 0.0 mi (the fare is normal: the distance simply was not captured); the rest are trips at 440–1,040 mph. The one legitimate case is a model under-prediction.
 - → **1 false positive in 40 for each model (2.5%)**, against 29 in 40 for Isolation Forest on the same month.
 
-Caveats: 40 records per model, labelled by the author. For zero-distance, zero-duration records the fare model is right partly for the wrong reason (it predicts an average negotiated fare for an input it rarely saw). Both reviews point to the same missing **rule** — "a fare is charged but distance is 0" — which is the detectors' real contribution: they discovered a rule, they do not replace one.
+Caveats: 40 records per model, labelled by a single reviewer. For zero-distance, zero-duration records the fare model is right partly for the wrong reason (it predicts an average negotiated fare for an input it rarely saw). Both reviews point to the same missing **rule** — "a fare is charged but distance is 0" — which is the detectors' real contribution: they discovered a rule, they do not replace one.
 
 ## Observability
 
@@ -539,7 +539,7 @@ Plus dbt: 21 tests, all passing (unique/not-null/accepted values, curated contra
 
 - **Semantics of Flex Fare negatives are unresolved** — they drive the SLO breach and may be false positives of DQ021; needs the source owner.
 - **Benchmark negatives are "rule-clean", not "verified correct"**, so rule FPR = 0 is by construction; plausible-error recall numbers depend on the chosen corruption types.
-- **Manual review** covers 40 records, one method, one month, by the author.
+- **Manual reviews** cover 40 records per method, one month, a single reviewer and no independent domain expert.
 - **Swapped zones and tip spikes** remain undetected by every method; `distance ×5` is caught 31% of the time at the fixed budget.
 - **Models**: one validation month for selection (the backtest covers three month pairs but selects nothing); a 10-configuration search; two model families; intervals are for the mean error, not for individual predictions; unreliable on negotiated and Flex fares; no analysis of errors by borough. See the model card.
 - **Freshness** uses HTTP `Last-Modified`, which changes on re-publication.

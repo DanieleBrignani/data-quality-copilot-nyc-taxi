@@ -125,7 +125,7 @@ Manual review of 40 random real flags per model (Jan 2025, seed 7):
 | plausible legitimate | 1 | 1 |
 | undetermined | 1 | 1 |
 
-One false positive in 40 for each model, against 29 in 40 for Isolation Forest. Verdicts were assigned by the project author, not an independent domain expert.
+One false positive in 40 for each model, against 29 in 40 for Isolation Forest. Verdicts were assigned manually by a single reviewer, not by an independent domain expert.
 
 ## Limitations
 
