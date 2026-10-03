@@ -29,7 +29,9 @@ def prom_panel(pid, title, expr, kind, x, y, w, h, unit=None):
     p = {"id": pid, "title": title, "type": kind, "datasource": PROM,
          "gridPos": {"x": x, "y": y, "w": w, "h": h},
          "targets": [{"refId": "A", "datasource": PROM, "expr": expr, "legendFormat": "{{partition}}"}],
-         "fieldConfig": {"defaults": {}, "overrides": []}, "options": {}}
+         "fieldConfig": {"defaults": {}, "overrides": []}, "options": {},
+         # live values: the dashboard's time range covers the historical data months, Prometheus only "now"
+         "timeFrom": "1h"}
     if unit:
         p["fieldConfig"]["defaults"]["unit"] = unit
     return p
@@ -37,9 +39,26 @@ def prom_panel(pid, title, expr, kind, x, y, w, h, unit=None):
 
 month = "to_date(year_month || '-01', 'YYYY-MM-DD')"
 panels = [
-    prom_panel(1, "Quality score (latest, Prometheus)", "dq_quality_score", "stat", 0, 0, 8, 5),
-    prom_panel(2, "Valid record rate % (Prometheus)", "dq_valid_record_rate", "stat", 8, 0, 8, 5, "percent"),
-    prom_panel(3, "Drift alerts (Prometheus)", "dq_drift_alerts_total", "stat", 16, 0, 8, 5),
+    # headline stats read the warehouse: they must show the latest partitions whatever the time range
+    sql_panel(1, "Quality score per partition (latest run)",
+              f"SELECT partition_id AS metric, quality_score AS value FROM {LATEST} x ORDER BY 1",
+              "stat", 0, 0, 8, 5, fmt="table",
+              extra={"options": {"reduceOptions": {"values": True, "calcs": ["lastNotNull"], "fields": "/^value$/"},
+                                 "textMode": "value_and_name", "colorMode": "value"}}),
+    sql_panel(2, "Valid record rate % per partition",
+              f"SELECT partition_id AS metric, valid_record_rate AS value FROM {LATEST} x ORDER BY 1",
+              "stat", 8, 0, 8, 5, fmt="table", unit="percent",
+              extra={"options": {"reduceOptions": {"values": True, "calcs": ["lastNotNull"], "fields": "/^value$/"},
+                                 "textMode": "value_and_name", "colorMode": "value"}}),
+    sql_panel(3, "Drift alerts per partition",
+              f"""SELECT l.partition_id AS metric, count(*) FILTER (WHERE d.status = 'alert') AS value
+                  FROM {LATEST} l LEFT JOIN dq.drift_results d USING (run_id, partition_id) GROUP BY 1 ORDER BY 1""",
+              "stat", 16, 0, 8, 5, fmt="table",
+              extra={"options": {"reduceOptions": {"values": True, "calcs": ["lastNotNull"], "fields": "/^value$/"},
+                                 "textMode": "value_and_name", "colorMode": "value"}}),
+    # live Prometheus series (scraped from the API's /metrics): last hour, independent of the dashboard range
+    prom_panel(12, "Prometheus: dq_quality_score (live scrape, last hour)", "dq_quality_score", "timeseries",
+               0, 41, 24, 7),
     sql_panel(4, "Quality score over time",
               f"SELECT {month} AS time, quality_score, valid_record_rate FROM {LATEST} x ORDER BY 1",
               "timeseries", 0, 5, 12, 8),

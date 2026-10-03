@@ -78,20 +78,20 @@ with tabs[0]:
     long = latest.melt(id_vars="year_month", value_vars=["quality_score", "valid_record_rate"],
                        var_name="measure", value_name="value")
     c1.subheader("Quality score & valid-record rate")
-    c1.altair_chart(line(long, "year_month", "value", "measure", "score / %"), use_container_width=True)
+    c1.altair_chart(line(long, "year_month", "value", "measure", "score / %"), width="stretch")
     c2.subheader("Quarantined records per partition")
-    c2.altair_chart(bars(latest, "year_month", "quarantined_records", title="records"), use_container_width=True)
+    c2.altair_chart(bars(latest, "year_month", "quarantined_records", title="records"), width="stretch")
     c3, c4 = st.columns(2)
     c3.subheader("Dataset volume")
-    c3.altair_chart(bars(latest, "year_month", "rows_total", title="rows"), use_container_width=True)
+    c3.altair_chart(bars(latest, "year_month", "rows_total", title="rows"), width="stretch")
     c4.subheader("Dimension scores")
     dims = pd.DataFrame([{"year_month": r.year_month, "dimension": d, "score": v}
                          for r in latest.itertuples() for d, v in (r.dimension_scores or {}).items()])
     if not dims.empty:
-        c4.altair_chart(line(dims, "year_month", "score", "dimension", "score"), use_container_width=True)
+        c4.altair_chart(line(dims, "year_month", "score", "dimension", "score"), width="stretch")
     st.dataframe(latest[["partition_id", "rows_total", "valid_rows", "quarantined_records", "warning_only_records",
                          "valid_record_rate", "quality_score", "schema_status", "source_lag_days",
-                         "duration_s", "rows_per_sec"]], hide_index=True, use_container_width=True)
+                         "duration_s", "rows_per_sec"]], hide_index=True, width="stretch")
 
 with tabs[1]:
     rr = q("""SELECT rr.partition_id, l.year_month, rr.rule_id, rr.rule_version, rr.severity, rr.dimension,
@@ -102,8 +102,8 @@ with tabs[1]:
     sub = rr[(rr.severity == sev) & (rr.failed_rows > 0)].copy()
     sub["failure_pct"] = 100 * sub.failure_rate
     st.altair_chart(line(sub, "year_month", "failure_pct", "rule_id", "failure rate %", ".4f"),
-                    use_container_width=True)
-    st.dataframe(rr, hide_index=True, use_container_width=True)
+                    width="stretch")
+    st.dataframe(rr, hide_index=True, width="stretch")
 
 with tabs[2]:
     dr = q("""SELECT d.partition_id, d.reference_partition_id, d.column_name, d.metric, d.value, d.threshold, d.status
@@ -122,9 +122,9 @@ with tabs[2]:
         text = alt.Chart(m).mark_text(fontSize=11).encode(
             x="partition_id:N", y="column_name:N", text=alt.Text("value:Q", format=".3f"),
             color=alt.value("#0b0b0b"))
-        st.altair_chart((heat + text).properties(height=34 * m.column_name.nunique()), use_container_width=True)
+        st.altair_chart((heat + text).properties(height=34 * m.column_name.nunique()), width="stretch")
         st.caption("Status is also written in the table below — colour is never the only encoding.")
-        st.dataframe(dr[dr.status.isin(["alert", "warn"])], hide_index=True, use_container_width=True)
+        st.dataframe(dr[dr.status.isin(["alert", "warn"])], hide_index=True, width="stretch")
 
 with tabs[3]:
     an = q("""SELECT a.partition_id, a.method, a.records_scored, a.anomalies, a.anomaly_rate, a.runtime_s, a.per_feature
@@ -134,19 +134,19 @@ with tabs[3]:
     if not an.empty:
         an["anomaly_pct"] = 100 * an.anomaly_rate
         st.altair_chart(bars(an, "partition_id", "anomaly_pct", "method", "% of valid records flagged", ".3f"),
-                        use_container_width=True)
-        st.dataframe(an, hide_index=True, use_container_width=True)
+                        width="stretch")
+        st.dataframe(an, hide_index=True, width="stretch")
         top = q("""SELECT ar.partition_id, ar.method, ar.record_id, ar.score, ar.features
                    FROM dq.anomaly_records ar JOIN (""" + LATEST + """) l USING (run_id, partition_id)
                    WHERE ar.method='isolation_forest' ORDER BY ar.score DESC LIMIT 50""")
         st.subheader("Top Isolation Forest anomalies")
-        st.dataframe(top, hide_index=True, use_container_width=True)
+        st.dataframe(top, hide_index=True, width="stretch")
 
 with tabs[4]:
     qs = q("""SELECT partition_id, failed_rule, count(*) AS rows, count(DISTINCT record_id) AS records,
                      count(*) FILTER (WHERE review_status <> 'pending') AS reviewed
               FROM dq.quarantine WHERE resolved_by_run_id IS NULL GROUP BY 1, 2 ORDER BY 1, 3 DESC""")
-    st.dataframe(qs, hide_index=True, use_container_width=True)
+    st.dataframe(qs, hide_index=True, width="stretch")
     c1, c2 = st.columns(2)
     part = c1.selectbox("Partition", sorted(qs.partition_id.unique())) if not qs.empty else None
     rule = c2.selectbox("Rule", sorted(qs[qs.partition_id == part].failed_rule.unique())) if part else None
@@ -155,12 +155,12 @@ with tabs[4]:
                            review_status, original_record
                     FROM dq.quarantine WHERE partition_id=%s AND failed_rule=%s AND resolved_by_run_id IS NULL
                     ORDER BY quarantine_id LIMIT 200""", (part, rule))
-        st.dataframe(rows, hide_index=True, use_container_width=True)
+        st.dataframe(rows, hide_index=True, width="stretch")
 
 with tabs[5]:
     st.dataframe(q("""SELECT s.partition_id, s.check_name, s.column_name, s.severity, s.detail, s.checked_at
                       FROM dq.schema_checks s ORDER BY s.checked_at DESC LIMIT 200"""),
-                 hide_index=True, use_container_width=True)
+                 hide_index=True, width="stretch")
 
 with tabs[6]:
     st.warning("Every item below is a SUGGESTION generated after detection. It is not verified, changes no "
@@ -185,14 +185,14 @@ with tabs[7]:
     st.dataframe(q("""SELECT run_id, started_at, finished_at, status, trigger, ruleset_version, rules_sha256,
                              code_version, partitions, rows_processed, duration_s, error
                       FROM dq.pipeline_runs ORDER BY started_at DESC LIMIT 50"""), hide_index=True,
-                 use_container_width=True)
+                 width="stretch")
     st.subheader("Raw partitions (immutable sources)")
     st.dataframe(q("""SELECT partition_id, source_url, file_format, sha256, size_bytes, row_count, downloaded_at,
                              source_last_modified, loaded_sha256 = sha256 AS loaded_matches_source
-                      FROM dq.dataset_partitions ORDER BY partition_id"""), hide_index=True, use_container_width=True)
+                      FROM dq.dataset_partitions ORDER BY partition_id"""), hide_index=True, width="stretch")
     st.subheader("Quarantine review log")
     st.dataframe(q("SELECT * FROM dq.quarantine_review_log ORDER BY reviewed_at DESC LIMIT 100"), hide_index=True,
-                 use_container_width=True)
+                 width="stretch")
 
 with tabs[8]:
     regs = q("SELECT DISTINCT ON (model_name) * FROM dq.model_registry ORDER BY model_name, version DESC")
@@ -210,17 +210,17 @@ with tabs[8]:
                (r.model_name, int(r.version)))
         c1, c2 = st.columns(2)
         c1.subheader("MAE per partition, out-of-time monitoring")
-        c1.altair_chart(bars(mm, "partition_id", "mae", title="MAE", fmt=".3f"), use_container_width=True)
+        c1.altair_chart(bars(mm, "partition_id", "mae", title="MAE", fmt=".3f"), width="stretch")
         sel = pd.DataFrame([{"candidate": k, "validation_mae": v["mae"]} for k, v in (r.selection or {}).items()
                             if not k.startswith("baseline_median")]).sort_values("validation_mae")
         c2.subheader("Candidates on the validation month (median baseline omitted)")
-        c2.altair_chart(bars(sel, "candidate", "validation_mae", title="MAE", fmt=".3f"), use_container_width=True)
-        st.dataframe(mm, hide_index=True, use_container_width=True)
+        c2.altair_chart(bars(sel, "candidate", "validation_mae", title="MAE", fmt=".3f"), width="stretch")
+        st.dataframe(mm, hide_index=True, width="stretch")
         st.subheader("Rolling-origin backtest (train on month t, evaluate on t+1)")
-        st.dataframe(pd.DataFrame(r.backtest or []), hide_index=True, use_container_width=True)
+        st.dataframe(pd.DataFrame(r.backtest or []), hide_index=True, width="stretch")
         st.subheader("Top flagged records: investigation queue")
         st.dataframe(q("""SELECT partition_id, record_id, actual_value, round(predicted_value::numeric, 2) AS predicted,
                                  round(log_ratio::numeric, 3) AS log_ratio, features
                           FROM dq.model_flags WHERE model_name=%s AND version=%s
                           ORDER BY log_ratio DESC LIMIT 100""", (r.model_name, int(r.version))),
-                     hide_index=True, use_container_width=True)
+                     hide_index=True, width="stretch")

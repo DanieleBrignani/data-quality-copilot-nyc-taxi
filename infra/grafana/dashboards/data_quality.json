@@ -14,17 +14,148 @@
   "panels": [
     {
       "id": 1,
-      "title": "Quality score (latest, Prometheus)",
+      "title": "Quality score per partition (latest run)",
       "type": "stat",
       "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
       },
       "gridPos": {
         "x": 0,
         "y": 0,
         "w": 8,
         "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT partition_id AS metric, quality_score AS value FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) x ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/"
+        },
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Valid record rate % per partition",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT partition_id AS metric, valid_record_rate AS value FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) x ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/"
+        },
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Drift alerts per partition",
+      "type": "stat",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "dqc_pg"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 0,
+        "w": 8,
+        "h": 5
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "dqc_pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT l.partition_id AS metric, count(*) FILTER (WHERE d.status = 'alert') AS value\n                  FROM (SELECT DISTINCT ON (pq.partition_id) pq.*, p.year_month\n  FROM dq.partition_quality pq JOIN dq.pipeline_runs r USING (run_id)\n  JOIN dq.dataset_partitions p USING (partition_id) WHERE p.service='yellow'\n  ORDER BY pq.partition_id, r.started_at DESC) l LEFT JOIN dq.drift_results d USING (run_id, partition_id) GROUP BY 1 ORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "values": true,
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^value$/"
+        },
+        "textMode": "value_and_name",
+        "colorMode": "value"
+      }
+    },
+    {
+      "id": 12,
+      "title": "Prometheus: dq_quality_score (live scrape, last hour)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 41,
+        "w": 24,
+        "h": 7
       },
       "targets": [
         {
@@ -41,71 +172,8 @@
         "defaults": {},
         "overrides": []
       },
-      "options": {}
-    },
-    {
-      "id": 2,
-      "title": "Valid record rate % (Prometheus)",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 8,
-        "y": 0,
-        "w": 8,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "dq_valid_record_rate",
-          "legendFormat": "{{partition}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "options": {}
-    },
-    {
-      "id": 3,
-      "title": "Drift alerts (Prometheus)",
-      "type": "stat",
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
-      "gridPos": {
-        "x": 16,
-        "y": 0,
-        "w": 8,
-        "h": 5
-      },
-      "targets": [
-        {
-          "refId": "A",
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
-          "expr": "dq_drift_alerts_total",
-          "legendFormat": "{{partition}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "options": {}
+      "options": {},
+      "timeFrom": "1h"
     },
     {
       "id": 4,
