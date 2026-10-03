@@ -6,7 +6,7 @@ Reviewed on 2026-10-03 against the repository as committed. Statuses are `PASS`,
 
 **Not production-ready for an enterprise deployment. Ready as a single-node system on a trusted network.**
 
-No category is `FAIL` after this review, but 14 of 29 are `PARTIAL`. The blocking gaps for a real production deployment are the ones a single machine cannot close: the CI workflow has never run on a hosted runner, there is no TLS or secret store, backups are manual, alerts fire but notify nobody, and nothing has been tested beyond the current volume (14.4M rows, 4 partitions).
+No category is `FAIL` after this review, but 14 of 29 are `PARTIAL`. The blocking gaps for a real production deployment are the ones a single machine cannot close: there is no deployment pipeline, there is no TLS or secret store, backups are manual, alerts fire but notify nobody, and nothing has been tested beyond the current volume (14.4M rows, 4 partitions).
 
 ### What this review changed
 
@@ -61,7 +61,7 @@ Two more defects surfaced during the review and were fixed: the Prefect flow wou
 | Testing | Logic is covered by automated tests | PASS | 72 unit tests, no database needed (`reports/test_counts.json`) | `pytest` | Coverage is not measured | A coverage report with a threshold |
 | Integration testing | Components are tested together against a real database | PASS | 5 tests on an isolated PostgreSQL database: idempotency, quarantine resolution, schema break, integrity failure, audit and privileges | `pytest -m db` | One database version (PostgreSQL 16) | A version matrix |
 | End-to-end testing | The whole system is exercised on real data | PASS | `scripts/reproduce.sh` on 14,367,509 real rows; failure demo with 6 defect fixtures; dbt 21 of 21, Soda contract 16 of 16 | The script and `python -m dqc demo-failures` | The script takes about 53 minutes on this machine (last uninterrupted run: 2026-10-03, exit 0), too long for a CI job | A smaller end-to-end profile for CI |
-| CI/CD | Every change is tested and gated automatically; releases are automated | PARTIAL | `.github/workflows/ci.yml`: lint, unit tests, quality gate, then integration on a PostgreSQL service; the gate is tested (`tests/test_gate.py`) | The same commands pass locally | **The workflow has never run on GitHub**: the repository is not published yet. No deployment stage, no image publishing | Publish, get a green run, add a release pipeline |
+| CI/CD | Every change is tested and gated automatically; releases are automated | PARTIAL | `.github/workflows/ci.yml`: lint, unit tests, quality gate, then integration on a PostgreSQL service; the gate is tested (`tests/test_gate.py`) | GitHub Actions run 2 on commit `e21a496` (2026-10-03): both jobs green in 4 min 49 s. Run 1 failed in the integration job and led to a fix: the SLO gate exits 1 on 2025-01 because the data breaches the SLO, and now reports it without failing the build | Two runs only. No deployment stage, no image publishing, no branch protection; the two SLO steps are non-blocking, so an SLO regression is visible in the log but does not stop a merge | A release pipeline, branch protection, an SLO report surfaced on the pull request |
 | Containerization | Services run from reproducible images | PARTIAL | `Dockerfile` (non-root, cached dependency layer), `docker-compose.yml` with health checks and restart policies for 5 services | Stack started and probed during this review | The batch pipeline runs from a host virtualenv, not a container; images are tagged, not pinned by digest; the image does not use the lock file | Containerise the pipeline, pin digests, build from the lock file |
 
 ### Observability and service levels
@@ -95,5 +95,4 @@ Two more defects surfaced during the review and were fixed: the Prefect flow wou
 - No production traffic, users or adoption: the system has run only on this build machine.
 - No reliability figure: there is no uptime history to compute one from.
 - No cost saving: nothing was measured against an alternative.
-- No statement that the CI workflow passes on GitHub: it has not run there.
 - The optional LLM provider was never executed; nothing is claimed about its output.
