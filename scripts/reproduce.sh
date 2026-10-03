@@ -6,6 +6,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 PY="${PY:-python}"
 BIN="$(dirname "$(command -v "$PY")")"
+"$PY" -c "import dqc" 2>/dev/null || { echo "$PY cannot import dqc: activate the virtualenv or pass PY=/path/to/python (nothing was changed)"; exit 1; }
 [ -f .env ] || { echo "missing .env: copy .env.example to .env and set the passwords"; exit 1; }
 set -a; . ./.env; set +a          # credentials live in .env (gitignored), never in this script
 export PYTHONIOENCODING=utf-8 DQC_PG_HOST="${DQC_PG_HOST:-localhost}" DQC_PG_PORT="${DQC_PG_PORT:-5433}" DQC_PG_USER="${DQC_PG_USER:-dqc}" DQC_PG_DB="${DQC_PG_DB:-dqc}"

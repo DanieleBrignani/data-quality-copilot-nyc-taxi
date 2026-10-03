@@ -1,7 +1,7 @@
 {
-  "backup_file": "dq_20261003T123803Z.dump",
-  "backup_bytes": 37557173,
-  "restore_seconds": 41,
+  "backup_file": "dq_20261003T154646Z.dump",
+  "backup_bytes": 37554608,
+  "restore_seconds": 30,
   "tables": {
     "anomaly_records": 16000,
     "anomaly_results": 32,
