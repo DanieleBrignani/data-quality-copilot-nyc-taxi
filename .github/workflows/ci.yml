@@ -27,16 +27,19 @@ jobs:
     services:
       postgres:
         image: postgres:16
-        env: {POSTGRES_USER: dqc, POSTGRES_PASSWORD: dqc, POSTGRES_DB: dqc}
+        # throwaway credentials for an ephemeral service container that exists only for this job
+        env: {POSTGRES_USER: dqc, POSTGRES_PASSWORD: ci-ephemeral, POSTGRES_DB: dqc}
         ports: ["5433:5432"]
         options: >-
           --health-cmd "pg_isready -U dqc" --health-interval 5s --health-retries 20
     env:
-      DQC_PG_DSN: postgresql://dqc:dqc@localhost:5433/dqc
       DQC_PG_HOST: localhost
       DQC_PG_PORT: "5433"
       DQC_PG_USER: dqc
-      DQC_PG_PASSWORD: dqc
+      DQC_PG_PASSWORD: ci-ephemeral
+      DQC_COPILOT_PASSWORD: ci-ephemeral-copilot
+      DQC_READER_PASSWORD: ci-ephemeral-reader
+      DQC_API_KEY: ci-ephemeral-key
       DQC_PG_DB: dqc
     steps:
       - uses: actions/checkout@v4
@@ -56,6 +59,10 @@ jobs:
       - name: Soda contract on curated layer
         working-directory: soda
         run: soda scan -d dqc -c configuration.yml checks_clean_trips.yml
+      - name: Soda SLO checks (a finding about the data, not a build failure)
+        working-directory: soda
+        continue-on-error: true
+        run: soda scan -d dqc -c configuration.yml checks_slo.yml
       - name: SLO gate on warehouse results
         run: python -m dqc gate --slo
       - name: Failure demo (controlled fixtures must all be detected)

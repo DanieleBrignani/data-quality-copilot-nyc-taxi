@@ -10,7 +10,14 @@ import pandas as pd
 import psycopg
 import streamlit as st
 
-DSN = os.environ.get("DQC_PG_DSN", "postgresql://dqc:dqc@localhost:5433/dqc")
+from dqc import config
+
+# read-only role when its password is configured; never a hardcoded credential
+DSN = (os.environ.get("DQC_DASHBOARD_DSN") or config.role_dsn("dqc_reader", "DQC_READER_PASSWORD")
+       or config.PG_DSN)
+if not DSN:
+    st.error("Database credentials are not configured: see .env.example")
+    st.stop()
 # validated categorical order (dataviz reference palette), assigned in fixed order, never cycled
 SERIES = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
 STATUS = {"ok": "#0ca30c", "warn": "#fab219", "alert": "#d03b3b"}

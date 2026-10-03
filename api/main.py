@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+import hmac
 import os
 from datetime import datetime
 from typing import Literal
 
 import psycopg
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.responses import Response
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, generate_latest
 from prometheus_client.core import CounterMetricFamily, GaugeMetricFamily
@@ -15,7 +16,17 @@ from pydantic import BaseModel
 
 from dqc import config
 
-DSN = os.environ.get("DQC_PG_DSN", config.PG_DSN)
+DSN = os.environ.get("DQC_PG_DSN") or config.PG_DSN
+
+
+def require_api_key(x_api_key: str | None = Header(default=None)) -> None:
+    """Every endpoint that writes requires X-API-Key == DQC_API_KEY. With no key configured, writes are
+    disabled (secure by default) rather than open."""
+    expected = os.environ.get("DQC_API_KEY")
+    if not expected:
+        raise HTTPException(503, "write endpoints are disabled: DQC_API_KEY is not configured")
+    if not x_api_key or not hmac.compare_digest(x_api_key, expected):
+        raise HTTPException(401, "missing or invalid X-API-Key")
 app = FastAPI(title="Data Quality Copilot — NYC Taxi", version="0.1.0")
 
 LATEST = """
@@ -97,7 +108,7 @@ class Review(BaseModel):
     note: str | None = None
 
 
-@app.patch("/quarantine/{quarantine_id}/review")
+@app.patch("/quarantine/{quarantine_id}/review", dependencies=[Depends(require_api_key)])
 def review(quarantine_id: int, body: Review):
     """Human review changes only the review status (audited). It never republishes the record."""
     with psycopg.connect(DSN) as conn:
@@ -117,7 +128,7 @@ def suggestions(limit: int = 20):
     return q("SELECT * FROM dq.copilot_suggestions ORDER BY suggestion_id DESC LIMIT %s", (limit,))
 
 
-@app.post("/copilot/explain")
+@app.post("/copilot/explain", dependencies=[Depends(require_api_key)])
 def copilot_explain(limit: int = Query(3, le=10)):
     from dqc import copilot
     return copilot.explain_latest(limit)
@@ -129,7 +140,7 @@ class SuggestionReview(BaseModel):
     note: str | None = None
 
 
-@app.patch("/copilot/suggestions/{suggestion_id}")
+@app.patch("/copilot/suggestions/{suggestion_id}", dependencies=[Depends(require_api_key)])
 def review_suggestion(suggestion_id: int, body: SuggestionReview):
     """Accepting a suggestion records the decision only; any rule change still goes through a PR."""
     with psycopg.connect(DSN) as conn:
@@ -162,7 +173,8 @@ def _model():
     """Latest registered model, loaded once. A missing model is not cached, so training later is picked up."""
     from dqc.ml import residual
     if "lm" not in _MODEL_CACHE:
-        lm = residual.load("fare_model")
+        pinned = os.environ.get("DQC_FARE_MODEL_VERSION")   # rollback: pin an earlier registered version
+        lm = residual.load("fare_model", int(pinned) if pinned else None)
         if lm is None:
             return None
         _MODEL_CACHE["lm"] = lm

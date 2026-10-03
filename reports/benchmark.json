@@ -825,22 +825,22 @@
     }
   },
   "runtime_s": {
-    "rules": 0.136,
-    "iqr": 0.061,
-    "iqr_log": 0.059,
-    "zscore": 0.018,
-    "isolation_forest": 2.079,
-    "fare_model": 0.239,
-    "distance_model": 0.528
+    "rules": 10.447,
+    "iqr": 2.403,
+    "iqr_log": 0.874,
+    "zscore": 0.38,
+    "isolation_forest": 47.143,
+    "fare_model": 5.667,
+    "distance_model": 11.241
   },
   "rows_per_sec": {
-    "rules": 1470506,
-    "iqr": 3291146,
-    "iqr_log": 3401125,
-    "zscore": 11399807,
-    "isolation_forest": 96390,
-    "fare_model": 837521,
-    "distance_model": 379275
+    "rules": 19180,
+    "iqr": 83392,
+    "iqr_log": 229260,
+    "zscore": 526973,
+    "isolation_forest": 4250,
+    "fare_model": 35353,
+    "distance_model": 17825
   },
   "seed": 42
 }

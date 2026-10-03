@@ -1,0 +1,9 @@
+# Quality SLOs on the per-partition history. Kept apart from the curated-layer contract on purpose:
+# a failed CONTRACT means bad data leaked past quarantine (a defect: block the run);
+# a failed SLO means the source got worse (a finding: alert, do not crash the pipeline).
+checks for fct_partition_quality:
+  - row_count > 0
+  - min(valid_record_rate) >= 95:
+      name: SLO — valid record rate >= 95% on every partition
+  - max(unexpected_schema_changes) = 0:
+      name: SLO — no unexpected schema changes

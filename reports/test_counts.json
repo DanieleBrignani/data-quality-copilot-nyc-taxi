@@ -1,0 +1,16 @@
+{
+  "pytest_total": 77,
+  "pytest_db": 5,
+  "pytest_unit": 72,
+  "dbt_build.log": [
+    21
+  ],
+  "soda_scan.log": [
+    16,
+    16
+  ],
+  "soda_slo.log": [
+    2,
+    3
+  ]
+}

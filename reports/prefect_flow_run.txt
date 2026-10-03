@@ -1,0 +1,5 @@
+python flows/quality_flow.py --months 2025-02   (wall clock 8m41s, exit code 0)
+
+14:49:14.658 | WARNING | Task run 'soda_slo-5b2' - Soda SLO checks failed (exit 2): see the scan output above
+14:49:15.281 | WARNING | Task run 'slo_gate-ce5' - SLO breaches: ['yellow_2025-01: quality_score 91.99 < 92.0', 'yellow_2025-01: source lag 81.7d > 75d', 'yellow_2025-02: valid_record_rate 94.73 < 95.0', 'yellow_2025-02: quality_score 89.54 < 92.0']
+{'run_id': '8ca93af7-16d7-4735-aea6-c57fec3d627e', 'soda_slo_ok': False, 'slo_breaches': ['yellow_2025-01: quality_score 91.99 < 92.0', 'yellow_2025-01: source lag 81.7d > 75d', 'yellow_2025-02: valid_record_rate 94.73 < 95.0', 'yellow_2025-02: quality_score 89.54 < 92.0'], 'copilot_suggestions': 0}

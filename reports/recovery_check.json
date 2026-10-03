@@ -1,0 +1,25 @@
+{
+  "backup_file": "dq_20261003T123803Z.dump",
+  "backup_bytes": 37557173,
+  "restore_seconds": 41,
+  "tables": {
+    "anomaly_records": 16000,
+    "anomaly_results": 32,
+    "copilot_suggestions": 5,
+    "dataset_partitions": 4,
+    "drift_results": 402,
+    "model_flags": 4000,
+    "model_metrics": 8,
+    "model_registry": 2,
+    "partition_quality": 8,
+    "pipeline_runs": 2,
+    "profile_snapshots": 168,
+    "quarantine_review_log": 0,
+    "quarantine": 737524,
+    "record_quality": 2606001,
+    "rule_definitions": 23,
+    "rule_results": 184,
+    "schema_checks": 6
+  },
+  "row_counts_match_live": true
+}

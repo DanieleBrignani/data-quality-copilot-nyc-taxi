@@ -1,42 +1,64 @@
 name: dq-copilot
 
+# Every credential comes from the environment (.env, gitignored — see .env.example).
+# `${VAR:?...}` makes compose refuse to start when a secret is missing instead of using a default.
+
 services:
   postgres:
     image: postgres:16
     shm_size: 1g
     environment:
-      POSTGRES_USER: dqc
-      POSTGRES_PASSWORD: dqc
-      POSTGRES_DB: dqc
+      POSTGRES_USER: ${DQC_PG_USER:-dqc}
+      POSTGRES_PASSWORD: ${DQC_PG_PASSWORD:?set DQC_PG_PASSWORD in .env}
+      POSTGRES_DB: ${DQC_PG_DB:-dqc}
+      DQC_COPILOT_PASSWORD: ${DQC_COPILOT_PASSWORD:?set DQC_COPILOT_PASSWORD in .env}
+      DQC_READER_PASSWORD: ${DQC_READER_PASSWORD:?set DQC_READER_PASSWORD in .env}
     command: ["postgres", "-c", "shared_buffers=512MB", "-c", "max_wal_size=4GB", "-c", "work_mem=64MB"]
-    ports: ["5433:5432"]
+    ports: ["${DQC_PG_PORT:-5433}:5432"]
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/01_init.sql:ro
+      - ./infra/postgres/02_role_passwords.sh:/docker-entrypoint-initdb.d/02_role_passwords.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dqc -d dqc"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       retries: 20
+    restart: unless-stopped
 
   api:
     build: .
     command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
     environment:
-      DQC_PG_DSN: postgresql://dqc:dqc@postgres:5432/dqc
-      DQC_COPILOT_DSN: postgresql://dqc_copilot:copilot@postgres:5432/dqc
+      DQC_PG_HOST: postgres
+      DQC_PG_PORT: "5432"
+      DQC_PG_USER: ${DQC_PG_USER:-dqc}
+      DQC_PG_PASSWORD: ${DQC_PG_PASSWORD:?set DQC_PG_PASSWORD in .env}
+      DQC_PG_DB: ${DQC_PG_DB:-dqc}
+      DQC_COPILOT_PASSWORD: ${DQC_COPILOT_PASSWORD:?set DQC_COPILOT_PASSWORD in .env}
+      DQC_API_KEY: ${DQC_API_KEY:-}            # empty = write endpoints disabled
+      DQC_FARE_MODEL_VERSION: ${DQC_FARE_MODEL_VERSION:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     ports: ["${DQC_API_PORT:-8000}:8000"]
     volumes:
       - ./models:/app/models:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      retries: 5
+    restart: unless-stopped
     depends_on:
       postgres: {condition: service_healthy}
 
   dashboard:
     build: .
     command: ["streamlit", "run", "dashboard/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
-    environment:
-      DQC_PG_DSN: postgresql://dqc_reader:reader@postgres:5432/dqc
+    environment:                                 # read-only role: the dashboard cannot write
+      DQC_PG_HOST: postgres
+      DQC_PG_PORT: "5432"
+      DQC_PG_DB: ${DQC_PG_DB:-dqc}
+      DQC_READER_PASSWORD: ${DQC_READER_PASSWORD:?set DQC_READER_PASSWORD in .env}
     ports: ["${DQC_DASHBOARD_PORT:-8502}:8501"]
+    restart: unless-stopped
     depends_on:
       postgres: {condition: service_healthy}
 
@@ -46,18 +68,21 @@ services:
       - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml:ro
     ports: ["${DQC_PROMETHEUS_PORT:-9091}:9090"]
+    restart: unless-stopped
     depends_on: [api]
 
   grafana:
     image: grafana/grafana:11.3.0
     environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?set GRAFANA_ADMIN_PASSWORD in .env}
       GF_AUTH_ANONYMOUS_ENABLED: "true"
       GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      DQC_READER_PASSWORD: ${DQC_READER_PASSWORD:?set DQC_READER_PASSWORD in .env}
     volumes:
       - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
     ports: ["${DQC_GRAFANA_PORT:-3001}:3000"]
+    restart: unless-stopped
     depends_on: [prometheus, postgres]
 
 volumes:

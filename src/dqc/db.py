@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import io
 import json
+import os
 import re
 from contextlib import contextmanager
 from pathlib import Path
 
 import polars as pl
 import psycopg
+from psycopg import sql as psql
 
 from dqc import config
 
@@ -40,23 +42,36 @@ RAW_COLUMN_MAP = {
 
 @contextmanager
 def connect(dsn: str | None = None):
-    with psycopg.connect(dsn or config.PG_DSN, autocommit=False) as conn:
+    dsn = dsn or config.PG_DSN
+    if not dsn:
+        raise RuntimeError("database credentials are not configured: set DQC_PG_PASSWORD (or DQC_PG_DSN) in the "
+                           "environment or in .env — see .env.example")
+    with psycopg.connect(dsn, autocommit=False) as conn:
         yield conn
 
 
 def init_schema(conn: psycopg.Connection) -> None:
     sql = (config.ROOT / "infra" / "postgres" / "init.sql").read_text(encoding="utf-8")
     conn.execute(sql)
+    # Service roles are created without a password; it is set here from the environment, never from the repo.
+    for role, env in (("dqc_copilot", "DQC_COPILOT_PASSWORD"), ("dqc_reader", "DQC_READER_PASSWORD")):
+        password = os.environ.get(env)
+        if password:
+            conn.execute(psql.SQL("ALTER ROLE {} PASSWORD {}").format(psql.Identifier(role), psql.Literal(password)))
     conn.commit()
 
 
 def dsn_for_database(name: str) -> str:
+    if not config.PG_DSN:
+        raise RuntimeError("database credentials are not configured (see .env.example)")
     return config.PG_DSN.rsplit("/", 1)[0] + f"/{name}"
 
 
 def recreate_database(name: str) -> str:
     """Drop + create an isolated database (demo / tests) with the full schema. Returns its DSN."""
-    with psycopg.connect(config.PG_DSN, autocommit=True) as conn:
+    if not re.fullmatch(r"[a-z_][a-z0-9_]*", name):
+        raise ValueError(f"unsafe database name: {name!r}")
+    with psycopg.connect(dsn_for_database(os.environ.get("DQC_PG_DB", "dqc")), autocommit=True) as conn:
         conn.execute(f"DROP DATABASE IF EXISTS {name} WITH (FORCE)")
         conn.execute(f"CREATE DATABASE {name}")
     dsn = dsn_for_database(name)

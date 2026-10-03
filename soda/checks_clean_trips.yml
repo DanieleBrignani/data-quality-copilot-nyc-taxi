@@ -26,10 +26,3 @@ checks for fct_clean_trips:
   - failed rows:
       name: passenger_count at most 6
       fail condition: passenger_count > 6
-
-checks for fct_partition_quality:
-  - row_count > 0
-  - min(valid_record_rate) >= 95:
-      name: SLO — valid record rate >= 95% on every partition
-  - max(unexpected_schema_changes) = 0:
-      name: SLO — no unexpected schema changes

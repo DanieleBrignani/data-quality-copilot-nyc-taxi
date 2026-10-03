@@ -17,5 +17,9 @@ COPY infra/postgres ./infra/postgres
 COPY api ./api
 COPY dashboard ./dashboard
 
+# run as an unprivileged user
+RUN useradd --create-home --uid 10001 app && chown -R app:app /app
+USER app
+
 EXPOSE 8000 8501
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]

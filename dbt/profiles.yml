@@ -6,7 +6,7 @@ dq_copilot:
       host: "{{ env_var('DQC_PG_HOST', 'localhost') }}"
       port: "{{ env_var('DQC_PG_PORT', '5433') | int }}"
       user: "{{ env_var('DQC_PG_USER', 'dqc') }}"
-      password: "{{ env_var('DQC_PG_PASSWORD', 'dqc') }}"
+      password: "{{ env_var('DQC_PG_PASSWORD') }}"   # required, no default
       dbname: "{{ env_var('DQC_PG_DB', 'dqc') }}"
       schema: analytics
       threads: 4

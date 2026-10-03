@@ -43,6 +43,8 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("action", choices=["train", "score"])
     s.add_argument("--model", choices=["fare_model", "distance_model", "all"], default="all")
 
+    sub.add_parser("evidence", help="recompute the exploratory measurements quoted in the README")
+
     sub.add_parser("report", help="write reports/results.json + results.md from the warehouse")
 
     a = p.parse_args(argv)
@@ -87,6 +89,9 @@ def main(argv: list[str] | None = None) -> int:
         names = list(ml_features.SPECS) if a.model == "all" else [a.model]
         res = {n: (residual.train(n) if a.action == "train" else residual.score_partitions(n)) for n in names}
         print(json.dumps(res, indent=2, default=str))
+    elif a.cmd == "evidence":
+        from dqc import evidence
+        print(json.dumps(evidence.run(), indent=2, default=str))
     elif a.cmd == "report":
         from dqc import report
         print(report.write())

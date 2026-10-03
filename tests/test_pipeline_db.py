@@ -108,13 +108,17 @@ def test_review_is_audited_and_copilot_role_cannot_touch_data(dsn, tmp_path, mon
 
     client = TestClient(api_main.app)
     qid = client.get("/quarantine", params={"partition_id": "fixture_review"}).json()[0]["quarantine_id"]
-    r = client.patch(f"/quarantine/{qid}/review", json={"status": "false_positive", "reviewer": "tester",
-                                                        "note": "reversal pair"})
+    body = {"status": "false_positive", "reviewer": "tester", "note": "reversal pair"}
+    monkeypatch.setenv("DQC_API_KEY", "test-key")
+    assert client.patch(f"/quarantine/{qid}/review", json=body).status_code == 401      # no key -> refused
+    r = client.patch(f"/quarantine/{qid}/review", json=body, headers={"X-API-Key": "test-key"})
     assert r.status_code == 200 and r.json()["old_status"] == "pending"
     assert _count(dsn, "SELECT count(*) FROM dq.quarantine_review_log WHERE quarantine_id=%s", qid) == 1
     assert client.get("/metrics").status_code == 200
 
-    copilot_dsn = dsn.replace("dqc:dqc@", "dqc_copilot:copilot@")
+    from dqc import config
+    copilot_dsn = config.role_dsn("dqc_copilot", "DQC_COPILOT_PASSWORD", database="dqc_test")
+    assert copilot_dsn, "DQC_COPILOT_PASSWORD must be set for this test"
     with psycopg.connect(copilot_dsn) as conn:
         with pytest.raises(psycopg.errors.InsufficientPrivilege):
             conn.execute("UPDATE dq.quarantine SET review_status='pending'")

@@ -162,8 +162,8 @@ def _md(res: dict) -> str:
             f"{100 * a['anomaly_rate']:.3f} | {a['runtime_s']:.2f} |" for a in res["anomalies"]]
     b = res.get("benchmark")
     if b:
-        out += ["", f"## Benchmark on injected errors ({b['partition']}, {b['clean_real_records']:,} real rule-clean "
-                    f"records + {b['injected_error_rows']:,} labelled errors, seed {b['seed']})", "",
+        out += ["", f"## Benchmark on injected errors ({b['partition']}, {b['label_counts']['clean']:,} real "
+                    f"rule-clean records + {b['injected_error_rows']:,} labelled errors, seed {b['seed']})", "",
                 "| detector | precision | 95% CI | recall | 95% CI | FPR | flagged | runtime s |",
                 "|---|---:|---|---:|---|---:|---:|---:|"]
         for name, m in b["results"].items():

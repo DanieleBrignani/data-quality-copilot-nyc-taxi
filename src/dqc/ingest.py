@@ -10,8 +10,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import stat
+import time
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +22,8 @@ from pathlib import Path
 import pyarrow.parquet as pq
 
 from dqc import config
+
+log = logging.getLogger("dqc.ingest")
 
 
 class IntegrityError(RuntimeError):
@@ -58,7 +63,11 @@ def describe_parquet(path: Path) -> dict:
     }
 
 
-def _download(url: str, dest: Path) -> dict:
+DOWNLOAD_ATTEMPTS = 4
+DOWNLOAD_BACKOFF_S = 2.0
+
+
+def _download_once(url: str, dest: Path) -> dict:
     dest.parent.mkdir(parents=True, exist_ok=True)
     tmp = dest.with_suffix(dest.suffix + ".part")
     req = urllib.request.Request(url, headers={"User-Agent": "dq-copilot/0.1"})
@@ -66,8 +75,27 @@ def _download(url: str, dest: Path) -> dict:
         headers = {"last_modified": resp.headers.get("Last-Modified"), "etag": resp.headers.get("ETag")}
         while block := resp.read(1 << 20):
             out.write(block)
-    os.replace(tmp, dest)
+    os.replace(tmp, dest)   # atomic: a partial download never becomes a raw file
     return headers
+
+
+def _download(url: str, dest: Path, attempts: int = DOWNLOAD_ATTEMPTS, backoff_s: float = DOWNLOAD_BACKOFF_S) -> dict:
+    """Download with exponential backoff. Transient failures (network, 5xx, 429) are retried; a client
+    error such as 404 (month not published yet) fails immediately — retrying cannot fix it."""
+    for attempt in range(1, attempts + 1):
+        try:
+            return _download_once(url, dest)
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 and exc.code != 429:
+                raise
+            last = exc
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+            last = exc
+        if attempt < attempts:
+            log.warning("download failed (%s), attempt %d/%d, retrying in %.0fs", last, attempt, attempts,
+                        backoff_s * 2 ** (attempt - 1))
+            time.sleep(backoff_s * 2 ** (attempt - 1))
+    raise RuntimeError(f"download failed after {attempts} attempts: {url}") from last
 
 
 def _make_read_only(path: Path) -> None:

@@ -6,8 +6,8 @@
   "seed": 7,
   "verdict_counts": {
     "likely_data_error": 38,
-    "plausible_legitimate": 1,
-    "undetermined": 1
+    "undetermined": 1,
+    "plausible_legitimate": 1
   },
   "estimated_false_positive_share": 0.025,
   "note": "Verdicts assigned manually by a single reviewer against the criteria documented in the README; not validated by an independent TLC domain expert."

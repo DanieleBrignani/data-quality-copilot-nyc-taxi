@@ -24,7 +24,7 @@ from dqc import config, db
 
 PROMPT_VERSION = "copilot-v2"
 MODEL = "claude-opus-5-5"
-COPILOT_DSN = os.environ.get("DQC_COPILOT_DSN", config.PG_DSN.replace("dqc:dqc@", "dqc_copilot:copilot@"))
+COPILOT_DSN = os.environ.get("DQC_COPILOT_DSN") or config.role_dsn("dqc_copilot", "DQC_COPILOT_PASSWORD")
 
 RESPONSE_SCHEMA = {
     "type": "object",
@@ -336,6 +336,8 @@ def explain(inc: dict) -> dict:
     else:
         response = _template(ev)
     ref = "/".join(str(ev.get(k)) for k in ("run_id", "partition_id", "rule_id", "column_name", "metric") if ev.get(k))
+    if not COPILOT_DSN:
+        raise RuntimeError("copilot role is not configured: set DQC_COPILOT_PASSWORD (see .env.example)")
     with psycopg.connect(COPILOT_DSN) as conn:  # least-privileged role: INSERT on suggestions only
         sid = conn.execute(
             """INSERT INTO dq.copilot_suggestions (incident_type, incident_ref, partition_id, evidence,

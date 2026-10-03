@@ -95,7 +95,7 @@ Flex Fare records are 3–6× harder to price than card or cash trips: their `fa
 
 Score: `|ln((actual + floor) / (predicted + floor))|` (floor $5 for the fare, 0.5 mi for the distance) — symmetric, so "10× too high" and "10× too low" score the same. Threshold: the 99.5th percentile of the score on the validation month, i.e. a **0.5% review budget fixed in advance and identical for both models** (fare 0.908, distance 1.593). By construction 0.5% of validation records are flagged; on the test months the fare model flags 0.28% and 0.14%, the distance model 0.49% and 0.60%.
 
-Benchmark: 200,000 real Jan-2025 records that pass every rule of ruleset 1.4.0 + 4,363 labelled injected errors; 95% bootstrap intervals over benchmark rows. Under ruleset 1.3.0 the same models scored precision 0.78 (fare) and 0.60 (distance): the two new rules removed zero-distance records from the "clean" pool — records the models were flagging correctly.
+Benchmark: 200,000 real Jan-2025 records that pass every rule of ruleset 1.4.0 are sampled; 4,000 are corrupted in place and 363 duplicated (196,000 clean records, 4,363 labelled errors); 95% bootstrap intervals over benchmark rows. Under ruleset 1.3.0 the same models scored precision 0.78 (fare) and 0.60 (distance): the two new rules removed zero-distance records from the "clean" pool — records the models were flagging correctly.
 
 | detector | precision | recall | false-positive rate |
 |---|---|---|---:|

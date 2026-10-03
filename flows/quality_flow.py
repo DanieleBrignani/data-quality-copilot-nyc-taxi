@@ -3,7 +3,7 @@
     python flows/quality_flow.py --months 2024-11 2024-12 2025-01 2025-02
 
 ingest (idempotent) -> verify raw hashes -> quality pipeline (per partition, chronological)
--> dbt build (models + tests) -> soda contract scan -> SLO gate -> copilot suggestions (optional)
+-> dbt build (models + tests) -> soda contract (blocking) -> soda SLO + SLO gate (warnings) -> copilot (optional)
 Every task is a thin wrapper around the same functions the CLI uses, so there is one code path.
 """
 
@@ -15,9 +15,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-from prefect import flow, get_run_logger, task
+os.environ.setdefault("PREFECT_SERVER_ANALYTICS_ENABLED", "false")   # no usage telemetry leaves the machine
 
-from dqc import gate, ingest, pipeline
+from prefect import flow, get_run_logger, task  # noqa: E402
+
+from dqc import gate, ingest, pipeline  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 BIN = Path(sys.executable).parent
@@ -42,16 +44,18 @@ def run_quality(partition_ids: list[str]) -> dict:
     return pipeline.run(srcs, trigger="prefect")
 
 
-def _cmd(args: list[str], cwd: Path) -> None:
+def _cmd(args: list[str], cwd: Path, check: bool = True) -> int:
     log = get_run_logger()
+    # credentials come from the environment / .env (loaded by dqc.config); only non-secret defaults here
     env = {**os.environ, "DQC_PG_HOST": os.environ.get("DQC_PG_HOST", "localhost"),
-           "DQC_PG_PORT": os.environ.get("DQC_PG_PORT", "5433"), "DQC_PG_USER": "dqc",
-           "DQC_PG_PASSWORD": "dqc", "DQC_PG_DB": "dqc"}
+           "DQC_PG_PORT": os.environ.get("DQC_PG_PORT", "5433"), "DQC_PG_USER": os.environ.get("DQC_PG_USER", "dqc"),
+           "DQC_PG_DB": os.environ.get("DQC_PG_DB", "dqc")}
     res = subprocess.run(args, cwd=cwd, env=env, capture_output=True, text=True)
     log.info(res.stdout[-4000:])
-    if res.returncode:
+    if res.returncode and check:
         log.error(res.stderr[-4000:])
         raise RuntimeError(f"{args[0]} failed ({res.returncode})")
+    return res.returncode
 
 
 @task
@@ -60,8 +64,19 @@ def dbt_build() -> None:
 
 
 @task
-def soda_scan() -> None:
+def soda_contract() -> None:
+    """Curated-layer contract: a failure means bad data leaked past quarantine, so the flow fails."""
     _cmd([str(BIN / "soda"), "scan", "-d", "dqc", "-c", "configuration.yml", "checks_clean_trips.yml"], ROOT / "soda")
+
+
+@task
+def soda_slo() -> bool:
+    """SLO checks: a failure is a finding about the source, reported as a warning, never a crash."""
+    code = _cmd([str(BIN / "soda"), "scan", "-d", "dqc", "-c", "configuration.yml", "checks_slo.yml"], ROOT / "soda",
+                check=False)
+    if code:
+        get_run_logger().warning("Soda SLO checks failed (exit %s): see the scan output above", code)
+    return code == 0
 
 
 @task
@@ -84,10 +99,11 @@ def quality_flow(months: list[str], copilot_limit: int = 0) -> dict:
     verify_raw()
     result = run_quality([i["partition_id"] for i in ingested])
     dbt_build()
-    soda_scan()
+    soda_contract()
+    slo_ok = soda_slo()
     breaches = slo_gate()
     n = copilot_suggestions(copilot_limit) if copilot_limit else 0
-    return {"run_id": result["run_id"], "slo_breaches": breaches, "copilot_suggestions": n}
+    return {"run_id": result["run_id"], "soda_slo_ok": slo_ok, "slo_breaches": breaches, "copilot_suggestions": n}
 
 
 if __name__ == "__main__":

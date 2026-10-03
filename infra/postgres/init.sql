@@ -316,7 +316,7 @@ CREATE TABLE IF NOT EXISTS dq.copilot_suggestions (
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'dqc_copilot') THEN
-        CREATE ROLE dqc_copilot LOGIN PASSWORD 'copilot';
+        CREATE ROLE dqc_copilot LOGIN;  -- password set from DQC_COPILOT_PASSWORD (02_role_passwords.sh / init-db)
     END IF;
 END $$;
 GRANT USAGE ON SCHEMA dq TO dqc_copilot;
@@ -330,7 +330,7 @@ REVOKE ALL ON SCHEMA analytics FROM dqc_copilot;
 DO $$
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'dqc_reader') THEN
-        CREATE ROLE dqc_reader LOGIN PASSWORD 'reader';
+        CREATE ROLE dqc_reader LOGIN;   -- password set from DQC_READER_PASSWORD
     END IF;
 END $$;
 GRANT USAGE ON SCHEMA dq, analytics TO dqc_reader;

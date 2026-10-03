@@ -13,7 +13,7 @@ datasources:
     url: postgres:5432
     user: dqc_reader
     secureJsonData:
-      password: reader
+      password: $DQC_READER_PASSWORD   # expanded by Grafana from its environment
     jsonData:
       database: dqc
       sslmode: disable
